@@ -1,7 +1,448 @@
 [
-  {
-    "command": "hello:org",
-    "plugin": "@salesforce/plugin-template",
-    "flags": ["apiversion", "force", "json", "loglevel", "name", "targetdevhubusername", "targetusername"]
-  }
+    {
+        "command": "analytics",
+        "plugin": "@salesforce/analytics",
+        "flags": [
+            "json",
+            "loglevel"
+        ]
+    },
+    {
+        "command": "analytics:app:create",
+        "plugin": "@salesforce/analytics",
+        "flags": [
+            "allevents",
+            "apiversion",
+            "appname",
+            "async",
+            "definitionfile",
+            "json",
+            "loglevel",
+            "targetusername",
+            "templateid",
+            "templatename",
+            "wait"
+        ]
+    },
+    {
+        "command": "analytics:app:decouple",
+        "plugin": "@salesforce/analytics",
+        "flags": [
+            "apiversion",
+            "folderid",
+            "json",
+            "loglevel",
+            "targetusername",
+            "templateid"
+        ]
+    },
+    {
+        "command": "analytics:app:delete",
+        "plugin": "@salesforce/analytics",
+        "flags": [
+            "apiversion",
+            "folderid",
+            "json",
+            "loglevel",
+            "noprompt",
+            "targetusername"
+        ]
+    },
+    {
+        "command": "analytics:app:display",
+        "plugin": "@salesforce/analytics",
+        "flags": [
+            "apiversion",
+            "applog",
+            "folderid",
+            "json",
+            "loglevel",
+            "targetusername"
+        ]
+    },
+    {
+        "command": "analytics:app:list",
+        "plugin": "@salesforce/analytics",
+        "flags": [
+            "apiversion",
+            "folderid",
+            "json",
+            "loglevel",
+            "targetusername"
+        ]
+    },
+    {
+        "command": "analytics:app:update",
+        "plugin": "@salesforce/analytics",
+        "flags": [
+            "apiversion",
+            "folderid",
+            "json",
+            "loglevel",
+            "targetusername",
+            "templateid"
+        ]
+    },
+    {
+        "command": "analytics:asset:publisher:create",
+        "plugin": "@salesforce/analytics",
+        "flags": [
+            "apiversion",
+            "assetid",
+            "json",
+            "loglevel",
+            "targetusername"
+        ]
+    },
+    {
+        "command": "analytics:asset:publisher:delete",
+        "plugin": "@salesforce/analytics",
+        "flags": [
+            "apiversion",
+            "assetid",
+            "id",
+            "json",
+            "loglevel",
+            "targetusername"
+        ]
+    },
+    {
+        "command": "analytics:asset:publisher:deleteall",
+        "plugin": "@salesforce/analytics",
+        "flags": [
+            "apiversion",
+            "assetid",
+            "json",
+            "loglevel",
+            "noprompt",
+            "targetusername"
+        ]
+    },
+    {
+        "command": "analytics:asset:publisher:list",
+        "plugin": "@salesforce/analytics",
+        "flags": [
+            "apiversion",
+            "assetid",
+            "json",
+            "loglevel",
+            "targetusername"
+        ]
+    },
+    {
+        "command": "analytics:autoinstall:app:create",
+        "plugin": "@salesforce/analytics",
+        "flags": [
+            "apiversion",
+            "async",
+            "json",
+            "loglevel",
+            "noenqueue",
+            "pollinterval",
+            "targetusername",
+            "templateid",
+            "templatename",
+            "wait"
+        ]
+    },
+    {
+        "command": "analytics:autoinstall:app:delete",
+        "plugin": "@salesforce/analytics",
+        "flags": [
+            "apiversion",
+            "async",
+            "folderid",
+            "json",
+            "loglevel",
+            "pollinterval",
+            "targetusername",
+            "wait"
+        ]
+    },
+    {
+        "command": "analytics:autoinstall:app:update",
+        "plugin": "@salesforce/analytics",
+        "flags": [
+            "apiversion",
+            "async",
+            "folderid",
+            "json",
+            "loglevel",
+            "pollinterval",
+            "targetusername",
+            "templateid",
+            "templatename",
+            "wait"
+        ]
+    },
+    {
+        "command": "analytics:autoinstall:display",
+        "plugin": "@salesforce/analytics",
+        "flags": [
+            "apiversion",
+            "applog",
+            "autoinstallid",
+            "json",
+            "loglevel",
+            "targetusername"
+        ]
+    },
+    {
+        "command": "analytics:autoinstall:list",
+        "plugin": "@salesforce/analytics",
+        "flags": [
+            "apiversion",
+            "json",
+            "loglevel",
+            "targetusername"
+        ]
+    },
+    {
+        "command": "analytics:dashboard:history:list",
+        "plugin": "@salesforce/analytics",
+        "flags": [
+            "apiversion",
+            "dashboardid",
+            "json",
+            "loglevel",
+            "targetusername"
+        ]
+    },
+    {
+        "command": "analytics:dashboard:history:revert",
+        "plugin": "@salesforce/analytics",
+        "flags": [
+            "apiversion",
+            "dashboardid",
+            "historyid",
+            "json",
+            "label",
+            "loglevel",
+            "targetusername"
+        ]
+    },
+    {
+        "command": "analytics:dashboard:list",
+        "plugin": "@salesforce/analytics",
+        "flags": [
+            "apiversion",
+            "json",
+            "loglevel",
+            "targetusername"
+        ]
+    },
+    {
+        "command": "analytics:dashboard:update",
+        "plugin": "@salesforce/analytics",
+        "flags": [
+            "apiversion",
+            "currenthistoryid",
+            "dashboardid",
+            "json",
+            "loglevel",
+            "removecurrenthistory",
+            "targetusername"
+        ]
+    },
+    {
+        "command": "analytics:dataflow:history:list",
+        "plugin": "@salesforce/analytics",
+        "flags": [
+            "apiversion",
+            "dataflowid",
+            "json",
+            "loglevel",
+            "targetusername"
+        ]
+    },
+    {
+        "command": "analytics:dataflow:history:revert",
+        "plugin": "@salesforce/analytics",
+        "flags": [
+            "apiversion",
+            "dataflowid",
+            "historyid",
+            "json",
+            "label",
+            "loglevel",
+            "targetusername"
+        ]
+    },
+    {
+        "command": "analytics:dataflow:list",
+        "plugin": "@salesforce/analytics",
+        "flags": [
+            "apiversion",
+            "json",
+            "loglevel",
+            "targetusername"
+        ]
+    },
+    {
+        "command": "analytics:dataset:display",
+        "plugin": "@salesforce/analytics",
+        "flags": [
+            "apiversion",
+            "datasetid",
+            "datasetname",
+            "json",
+            "loglevel",
+            "targetusername"
+        ]
+    },
+    {
+        "command": "analytics:dataset:list",
+        "plugin": "@salesforce/analytics",
+        "flags": [
+            "apiversion",
+            "json",
+            "loglevel",
+            "targetusername"
+        ]
+    },
+    {
+        "command": "analytics:dataset:rows:fetch",
+        "plugin": "@salesforce/analytics",
+        "flags": [
+            "apiversion",
+            "datasetid",
+            "datasetname",
+            "dryrun",
+            "json",
+            "limit",
+            "loglevel",
+            "resultformat",
+            "targetusername"
+        ]
+    },
+    {
+        "command": "analytics:enable",
+        "plugin": "@salesforce/analytics",
+        "flags": [
+            "apiversion",
+            "async",
+            "json",
+            "loglevel",
+            "pollinterval",
+            "targetusername",
+            "wait"
+        ]
+    },
+    {
+        "command": "analytics:lens:history:list",
+        "plugin": "@salesforce/analytics",
+        "flags": [
+            "apiversion",
+            "json",
+            "lensid",
+            "loglevel",
+            "targetusername"
+        ]
+    },
+    {
+        "command": "analytics:lens:history:revert",
+        "plugin": "@salesforce/analytics",
+        "flags": [
+            "apiversion",
+            "historyid",
+            "json",
+            "label",
+            "lensid",
+            "loglevel",
+            "targetusername"
+        ]
+    },
+    {
+        "command": "analytics:lens:list",
+        "plugin": "@salesforce/analytics",
+        "flags": [
+            "apiversion",
+            "json",
+            "loglevel",
+            "targetusername"
+        ]
+    },
+    {
+        "command": "analytics:query",
+        "plugin": "@salesforce/analytics",
+        "flags": [
+            "apiversion",
+            "connector",
+            "dryrun",
+            "json",
+            "limit",
+            "loglevel",
+            "nomapnames",
+            "query",
+            "queryfile",
+            "resultformat",
+            "sql",
+            "targetusername",
+            "timezone"
+        ]
+    },
+    {
+        "command": "analytics:template:create",
+        "plugin": "@salesforce/analytics",
+        "flags": [
+            "apiversion",
+            "description",
+            "folderid",
+            "json",
+            "label",
+            "loglevel",
+            "targetusername"
+        ]
+    },
+    {
+        "command": "analytics:template:delete",
+        "plugin": "@salesforce/analytics",
+        "flags": [
+            "apiversion",
+            "decouple",
+            "forcedelete",
+            "json",
+            "loglevel",
+            "noprompt",
+            "targetusername",
+            "templateid"
+        ]
+    },
+    {
+        "command": "analytics:template:display",
+        "plugin": "@salesforce/analytics",
+        "flags": [
+            "apiversion",
+            "json",
+            "loglevel",
+            "targetusername",
+            "templateid",
+            "templatename"
+        ]
+    },
+    {
+        "command": "analytics:template:list",
+        "plugin": "@salesforce/analytics",
+        "flags": [
+            "apiversion",
+            "includembeddedtemplates",
+            "includesalesforcetemplates",
+            "json",
+            "loglevel",
+            "targetusername"
+        ]
+    },
+    {
+        "command": "analytics:template:update",
+        "plugin": "@salesforce/analytics",
+        "flags": [
+            "apiversion",
+            "folderid",
+            "json",
+            "loglevel",
+            "targetusername",
+            "templateid",
+            "templatename"
+        ]
+    }
 ]

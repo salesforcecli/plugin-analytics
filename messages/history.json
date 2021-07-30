@@ -1,0 +1,30 @@
+{
+  "listDashboardHistoryCommandDescription": "list history records for Tableau CRM dashboards",
+  "listDashboardHistoryCommandLongDescription": "Lists history records for Tableau CRM dashboards in the specified target org.",
+  "dashboardsHistoriesFound": "Found [%s] Tableau CRM dashboard history records.",
+  "dashboardidFlagDescription": "dashboard ID",
+  "dashboardidFlagLongDescription": "The ID of the dashboard to show history records.",
+  "dashboardHistoryidFlagDescription": "dashboard history ID",
+  "dashboardHistoryidFlagLongDescription": "The ID of the dashboard history records.",
+  "revertLabelFlagDescription": "label for new reverted history record",
+  "revertLabelFlagLongDescription": "Label for new reverted history record.",
+  "revertCommandDescription": "revert to specified history record",
+  "revertCommandLongDescription": "Revert to a specified history record.",
+  "revertSuccess": "Successfully reverted asset [%s] to history [%s].",
+
+  "listDataflowHistoryCommandDescription": "list history records for Tableau CRM dataflows",
+  "listDataflowHistoryCommandLongDescription": "Lists history records for Tableau CRM dataflows in the specified target org.",
+  "dataflowsHistoriesFound": "Found [%s] Tableau CRM dataflow history records.",
+  "dataflowidFlagDescription": "dataflow ID",
+  "dataflowidFlagLongDescription": "The ID of the dataflow to show history records.",
+  "dataflowHistoryidFlagDescription": "dataflow history ID",
+  "dataflowHistoryidFlagLongDescription": "The ID of the dataflow history record.",
+
+  "listLensHistoryCommandDescription": "list history records for Tableau CRM lenses",
+  "listLensHistoryCommandLongDescription": "Lists history records for Tableau CRM lenses in the specified target org.",
+  "lensHistoriesFound": "Found [%s] Tableau CRM lens history records.",
+  "lensidFlagDescription": "lens ID",
+  "lensidFlagLongDescription": "The ID of the lens to show history records.",
+  "lensHistoryidFlagDescription": "lens history ID",
+  "lensHistoryidFlagLongDescription": "The ID of the lens history records."
+}
