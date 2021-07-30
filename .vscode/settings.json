@@ -10,7 +10,11 @@
     "**/lib": true,
     "**/bin": true
   },
-  "editor.tabSize": 2,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
-  "rewrap.wrappingColumn": 80
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.rulers": [120],
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "typescript.tsdk": "./node_modules/typescript/lib"
 }
