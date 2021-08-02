@@ -9,7 +9,7 @@ workflows:
           filters:
             branches:
               ignore: main
-        release-management/test-package:
+      - release-management/test-package:
           matrix:
             parameters:
               os:
@@ -32,7 +32,7 @@ workflows:
           filters:
             branches:
               only: main
-        release-management/test-nut:
+      - release-management/test-nut:
           matrix:
             parameters:
               os:
