@@ -48,8 +48,8 @@ export default class Create extends SfdxCommand {
     }),
     templateid: flags.string({
       char: 't',
-      description: messages.getMessage('templateidFlagDescription'),
-      longDescription: messages.getMessage('templateidFlagLongDescription'),
+      description: messages.getMessage('templateidFlagDescriptionForCreate'),
+      longDescription: messages.getMessage('templateidFlagLongDescriptionForCreate'),
       exclusive: ['templatename', 'definitionfile']
     }),
     templatename: flags.string({
