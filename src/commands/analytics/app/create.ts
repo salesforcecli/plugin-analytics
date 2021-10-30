@@ -133,7 +133,7 @@ export default class Create extends SfdxCommand {
           undefined,
           undefined,
           undefined,
-          e instanceof Error ? e : new Error((e && String(e)) ?? '<unknown>')
+          e instanceof Error ? e : new Error(e ? String(e) : '<unknown>')
         );
       }
       if (typeof json !== 'object') {
