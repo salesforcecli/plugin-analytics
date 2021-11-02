@@ -253,6 +253,10 @@ export default class Create extends SfdxCommand {
         this.logEvent('Asset', 'deleted', waveAssetEvent);
         break;
       }
+      case 'Image': {
+        this.logEvent('Images', 'created', waveAssetEvent);
+        break;
+      }
       case 'Application': {
         this.createEventJson(waveAssetEvent);
         if (waveAssetEvent.status === 'Success') {
