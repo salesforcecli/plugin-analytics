@@ -59,13 +59,18 @@ export async function fetchAllPages<T>(
   const all = [] as T[];
   let nextUrl = firstPageUrl;
   while (++pageNum <= maxPages) {
+    // eslint-disable-next-line no-console
     // console.debug(`#!#! Fetching page ${pageNum} from ${nextUrl}`);
     const response = await fetchUrl(connection, { method: 'GET', url: nextUrl }, options);
+    // eslint-disable-next-line no-console
+    // console.log(response);
     const items: unknown =
       typeof getItems === 'string' ? (response as Record<string, unknown>)[getItems] : getItems(response);
     if (!items || !Array.isArray(items)) {
       break;
     }
+    // eslint-disable-next-line no-console
+    // console.log(items);
     all.push(...items);
     const nextPagePath =
       typeof getNextPagePath === 'string'
