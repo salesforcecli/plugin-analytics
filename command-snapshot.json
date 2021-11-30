@@ -44,7 +44,7 @@
   {
     "command": "analytics:app:update",
     "plugin": "@salesforce/analytics",
-    "flags": ["apiversion", "assetversion", "folderid", "json", "loglevel", "targetusername", "templateid"]
+    "flags": ["apiversion", "folderid", "json", "loglevel", "targetusername", "templateid"]
   },
   {
     "command": "analytics:asset:publisher:create",
@@ -250,6 +250,15 @@
   {
     "command": "analytics:template:update",
     "plugin": "@salesforce/analytics",
-    "flags": ["apiversion", "folderid", "json", "loglevel", "targetusername", "templateid", "templatename"]
+    "flags": [
+      "apiversion",
+      "assetversion",
+      "folderid",
+      "json",
+      "loglevel",
+      "targetusername",
+      "templateid",
+      "templatename"
+    ]
   }
 ]
