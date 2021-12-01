@@ -64,12 +64,14 @@ export default class WaveTemplate {
   public async update(
     folderid: string,
     templateIdOrName: string,
-    templateAssetVersion: number | undefined
+    templateAssetVersion: number | unknown
   ): Promise<{ id: string | undefined; name: string | undefined } | undefined> {
-    let body = JSON.stringify({ folderSource: { id: folderid } });
+    const opts: Record<string, unknown> = { folderSource: { id: folderid } };
     if (templateAssetVersion && this.serverVersion >= 54.0) {
-      body = JSON.stringify({ folderSource: { id: folderid }, assetVersion: templateAssetVersion });
+      opts.assetVersion = templateAssetVersion;
     }
+
+    const body = JSON.stringify(opts);
     const wtUrl = this.templatesUrl + encodeURIComponent(templateIdOrName);
     const response = await connectRequest<TemplateType>(this.connection, {
       method: 'PUT',
