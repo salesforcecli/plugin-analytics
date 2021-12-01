@@ -583,18 +583,17 @@
     safe-json-stringify "~1"
 
 "@salesforce/cli-plugins-testkit@^1.1.5":
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/@salesforce/cli-plugins-testkit/-/cli-plugins-testkit-1.1.5.tgz#d4ff270e3dce6bc9b2abdb9fbd7c315a24be541c"
-  integrity sha512-FgUsyQlP6y8sqBD6k7loj1i+xbuKlRI6LDKU7R1YCdRH5rSRJejrO3jheaasLeT3uoWerAyqrfmvQTV/GlDywQ==
+  version "1.4.20"
+  resolved "https://registry.yarnpkg.com/@salesforce/cli-plugins-testkit/-/cli-plugins-testkit-1.4.20.tgz#de444fdc3ad79bf6b347b40bf9175c26c988bac1"
+  integrity sha512-xnJ2h3iAiv5PL7QiMWfKvdqYUfGUWRowEWw30u6Iv+/KH0kuKRN7lMfKsRLHS9v0WcKJACn2kKiIqfmMoVDfnA==
   dependencies:
-    "@salesforce/core" "^2.20.3"
-    "@salesforce/kit" "^1.4.5"
-    "@salesforce/ts-types" "^1.5.5"
+    "@salesforce/core" "^2.24.0"
+    "@salesforce/kit" "^1.5.13"
+    "@salesforce/ts-types" "^1.5.17"
     archiver "^5.2.0"
     debug "^4.3.1"
     shelljs "^0.8.4"
-    sinon "^10.0.0"
-    strip-ansi "6.0.0"
+    strip-ansi "6.0.1"
 
 "@salesforce/command@^3.0.0", "@salesforce/command@^3.1.3":
   version "3.1.3"
@@ -612,24 +611,25 @@
     chalk "^2.4.2"
     cli-ux "^4.9.3"
 
-"@salesforce/core@^2.2.0", "@salesforce/core@^2.20.3", "@salesforce/core@^2.23.4", "@salesforce/core@^2.25.1":
-  version "2.25.1"
-  resolved "https://registry.yarnpkg.com/@salesforce/core/-/core-2.25.1.tgz#2be78b4fc824bfb69537174a0440ba35d19d8fa4"
-  integrity sha512-kRo1Uce8sFFXNBEu3odJ4zsFkvja+s/cmj7ICI6EvCsgwMHSLCw4P7zhqAsOJnBUim3M2qb4p0HpVtkQ4Cz3Kg==
+"@salesforce/core@^2.2.0", "@salesforce/core@^2.23.4", "@salesforce/core@^2.24.0", "@salesforce/core@^2.25.1":
+  version "2.31.0"
+  resolved "https://registry.yarnpkg.com/@salesforce/core/-/core-2.31.0.tgz#cdeaa9968060afb52f40c12bf5a4f9844a2a1909"
+  integrity sha512-ROEjX/M0ZHpGlmRfNUoDKsE4ppOZUU5Hcl3XHr2pCO7F505imAmhKg8I+XfGSxXyj4bL/kftkNTK5xFffJ+6mw==
   dependencies:
     "@salesforce/bunyan" "^2.0.0"
     "@salesforce/kit" "^1.5.0"
     "@salesforce/schemas" "^1.0.1"
     "@salesforce/ts-types" "^1.5.13"
     "@types/graceful-fs" "^4.1.5"
-    "@types/jsforce" "^1.9.29"
+    "@types/jsforce" "^1.9.35"
     "@types/mkdirp" "^1.0.1"
     debug "^3.1.0"
     graceful-fs "^4.2.4"
     jsen "0.6.6"
-    jsforce "^1.10.1"
+    jsforce "^1.11.0"
     jsonwebtoken "8.5.0"
     mkdirp "1.0.4"
+    semver "^7.3.5"
     sfdx-faye "^1.0.9"
     ts-retry-promise "^0.6.0"
 
@@ -679,13 +679,14 @@
     typescript "^4.1.3"
     xunit-file "^1.0.0"
 
-"@salesforce/kit@^1.2.2", "@salesforce/kit@^1.4.5", "@salesforce/kit@^1.5.0":
-  version "1.5.8"
-  resolved "https://registry.yarnpkg.com/@salesforce/kit/-/kit-1.5.8.tgz#7a1abb46ffd6af8f35d4af8ee08a80eee9bcdbb1"
-  integrity sha512-tBq4eJfLvmtQT/jJElEN8bSJzKbVkY5yh9W/0CASTVw+aSOQ46Z8jYDtnYhRo+u5gDS4EiUQJKcq1J6xfkY7ZQ==
+"@salesforce/kit@^1.2.2", "@salesforce/kit@^1.5.0", "@salesforce/kit@^1.5.13":
+  version "1.5.18"
+  resolved "https://registry.yarnpkg.com/@salesforce/kit/-/kit-1.5.18.tgz#77c30e3351d71dbe37444e6741c80e0ce7e233f3"
+  integrity sha512-SntvHmzzxc6vY4MpyWw6xB/vYKPoGiJG9SLzbAaRgSd+F2j6TX1na2HabrxQo8ppxGLjIou2gfezkiyuO+Ru6w==
   dependencies:
-    "@salesforce/ts-types" "^1.5.13"
-    tslib "^1.10.0"
+    "@salesforce/ts-types" "^1.5.20"
+    shx "^0.3.3"
+    tslib "^2.2.0"
 
 "@salesforce/plugin-command-reference@^1.3.16":
   version "1.3.16"
@@ -720,14 +721,7 @@
     sinon "^5.1.1"
     tslib "^2.2.0"
 
-"@salesforce/ts-types@^1.2.0", "@salesforce/ts-types@^1.5.13", "@salesforce/ts-types@^1.5.5":
-  version "1.5.17"
-  resolved "https://registry.yarnpkg.com/@salesforce/ts-types/-/ts-types-1.5.17.tgz#d69e92dfa716638d84b244a2611be80fb7986024"
-  integrity sha512-zyF1+4EacGsIWtfntbq7PvxjB2XABz33RzKfOhot15JC4tFiQaSFPtNb8d6hj7BkQSjo2Zs3qEeLJwRFcpaEIQ==
-  dependencies:
-    tslib "^2.2.0"
-
-"@salesforce/ts-types@^1.5.20":
+"@salesforce/ts-types@^1.2.0", "@salesforce/ts-types@^1.5.13", "@salesforce/ts-types@^1.5.17", "@salesforce/ts-types@^1.5.20":
   version "1.5.20"
   resolved "https://registry.yarnpkg.com/@salesforce/ts-types/-/ts-types-1.5.20.tgz#f6875a710ceca48223b240026a14af6d3b39882f"
   integrity sha512-Ov6um4CWd63EvkRavkHG0J/P9XYL55sdkDWPMr7+AIgqh5flHxDRz09/C4e9M94aX30rzJxW4TVX6EBf4Cu2BQ==
@@ -847,10 +841,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/jsforce@^1.9.29":
-  version "1.9.30"
-  resolved "https://registry.yarnpkg.com/@types/jsforce/-/jsforce-1.9.30.tgz#725cba4175ddc17cf9902b6e647f2ed4a9614b50"
-  integrity sha512-T0fgAfa99sx13gkClPkJsQRHzTcJ0Rgj7//6XEY9Qq6VRQH0U+cxlM1fqAsQ8rhAfAzyGhQk+j1nR1cWkp06NQ==
+"@types/jsforce@^1.9.35":
+  version "1.9.35"
+  resolved "https://registry.yarnpkg.com/@types/jsforce/-/jsforce-1.9.35.tgz#abda87c796910d286420b07a97382c782b576ca8"
+  integrity sha512-GEb1iMAK8raElbBbozR7aVEuMl47jrPYLNkeh+3h2vLJIG21uQ/kOk4kPgMiMFwCmgfX4/tPDugnjb7qrMav4A==
   dependencies:
     "@types/node" "*"
 
@@ -1072,10 +1066,10 @@ ansi-regex@^4.1.0:
   resolved "https://registry.npmjs.org/ansi-regex/-/ansi-regex-4.1.0.tgz#8b9f8f08cf1acb843756a839ca8c7e3168c51997"
   integrity sha512-1apePfXM1UOSqw0o9IiFAovVz9M5S1Dg+4TrDwfMewQ6p/rmMueb7tWZjQ1rx4Loy1ArBggoqGpfqqdI4rondg==
 
-ansi-regex@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.npmjs.org/ansi-regex/-/ansi-regex-5.0.0.tgz#388539f55179bf39339c81af30a654d69f87cb75"
-  integrity sha512-bY6fj56OUQ0hU1KjFNDQuJFezqKdrAyFdIevADiqrWHwSlbmBNMHp5ak2f40Pm8JTFyM2mqxkG6ngkHO11f/lg==
+ansi-regex@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/ansi-regex/-/ansi-regex-5.0.1.tgz#082cb2c89c9fe8659a311a53bd6a4dc5301db304"
+  integrity sha512-quJQXlTSUGL2LH9SUXo8VwsY4soanhgo6LNSm84E1LBcE8s3O0wpdiRzyR9z/ZZJMlMWv37qOOb9pdJlMUEKFQ==
 
 ansi-styles@^3.2.0, ansi-styles@^3.2.1:
   version "3.2.1"
@@ -2062,7 +2056,7 @@ dayjs@^1.8.16:
   resolved "https://registry.npmjs.org/dayjs/-/dayjs-1.8.33.tgz#18bc4a2b6c1c6f4d67b4c4f2536c0b97e5b766f7"
   integrity sha512-881TDLZCdpJFKbraWRHcUG8zfMLLX400ENf9rFZDuWc5zYMss6xifo2PhlDX0ftOmR2NRmaIY47bAa4gKQfXqw==
 
-debug@4.3.1, debug@^4.0.1, debug@^4.1.0, debug@^4.1.1, debug@^4.3.1:
+debug@4.3.1:
   version "4.3.1"
   resolved "https://registry.npmjs.org/debug/-/debug-4.3.1.tgz#f0d229c505e0c6d8c49ac553d1b13dc183f6b2ee"
   integrity sha512-doEwdvm4PCeK4K3RQN2ZC2BYUBaxwLARCqZmMjtF8a51J2Rb0xpVloFRnCODwqjpwnAoao4pelN8l3RJdv3gRQ==
@@ -2083,7 +2077,7 @@ debug@^3.1.0, debug@^3.2.7:
   dependencies:
     ms "^2.1.1"
 
-debug@^4.3.2:
+debug@^4.0.1, debug@^4.1.0, debug@^4.1.1, debug@^4.3.1, debug@^4.3.2:
   version "4.3.2"
   resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.2.tgz#f0a49c18ac8779e31d4a0c6029dfb76873c7428b"
   integrity sha512-mOp8wKcvj7XxC78zLgw/ZA+6TSgkoE2C/ienthhRD298T7UNwAg9diBpLRxC0mOezLl4B0xV7M0cCO6P/O0Xhw==
@@ -2883,7 +2877,7 @@ faye-websocket@~0.9.1:
   dependencies:
     websocket-driver ">=0.5.1"
 
-faye@^1.2.0:
+faye@^1.4.0:
   version "1.4.0"
   resolved "https://registry.npmjs.org/faye/-/faye-1.4.0.tgz#01d3d26ed5642c1cb203eed358afb1c1444b8669"
   integrity sha512-kRrIg4be8VNYhycS2PY//hpBJSzZPr/DBbcy9VWelhZMW3KhyLkQR0HL0k0MNpmVoNFF4EdfMFkNAWjTP65g6w==
@@ -4132,10 +4126,10 @@ jsesc@^2.5.1:
   resolved "https://registry.npmjs.org/jsesc/-/jsesc-2.5.2.tgz#80564d2e483dacf6e8ef209650a67df3f0c283a4"
   integrity sha512-OYu7XEzjkCQ3C5Ps3QIZsQfNpqoJyZZA99wd9aWd05NCtC5pWOkShK2mkL6HXQR6/Cy2lbNdPlZBpuQHXE63gA==
 
-jsforce@^1.10.1:
-  version "1.10.1"
-  resolved "https://registry.yarnpkg.com/jsforce/-/jsforce-1.10.1.tgz#ca1cf58d4439d94e1f84482d83081acd12c93269"
-  integrity sha512-rv+UpBR9n/sWdgLhyPOJuKgT9ZKngypYf9XOHoXVRpSllvTFCjn+M3H81Nu1oYjPH9JKXVS8hL1dmmq8+kOAJg==
+jsforce@^1.11.0:
+  version "1.11.0"
+  resolved "https://registry.yarnpkg.com/jsforce/-/jsforce-1.11.0.tgz#7e853b82c534f1fe8e18f432a344bae81881a133"
+  integrity sha512-vYNXJXXdz9ZQNdfRqq/MCJ/zU7JGA7iEduwafQDzChR9FeqXgTNfHTppLVbw9mIniKkQZemmxSOtl7N04lj/5Q==
   dependencies:
     base64-url "^2.2.0"
     co-prompt "^1.0.0"
@@ -4143,7 +4137,7 @@ jsforce@^1.10.1:
     commander "^2.9.0"
     csv-parse "^4.10.1"
     csv-stringify "^1.0.4"
-    faye "^1.2.0"
+    faye "^1.4.0"
     inherits "^2.0.1"
     lodash "^4.17.19"
     multistream "^2.0.5"
@@ -6030,7 +6024,7 @@ shelljs@^0.8.4, shelljs@~0.8.4:
     interpret "^1.0.0"
     rechoir "^0.6.2"
 
-shx@0.3.3:
+shx@0.3.3, shx@^0.3.3:
   version "0.3.3"
   resolved "https://registry.yarnpkg.com/shx/-/shx-0.3.3.tgz#681a88c7c10db15abe18525349ed474f0f1e7b9f"
   integrity sha512-nZJ3HFWVoTSyyB+evEKjJ1STiixGztlqwKLTUNV5KqMWtGey9fTd4KU1gdZ1X9BV6215pswQ/Jew9NsuS/fNDA==
@@ -6052,7 +6046,7 @@ signal-exit@^3.0.0, signal-exit@^3.0.2, signal-exit@^3.0.3:
   resolved "https://registry.npmjs.org/signal-exit/-/signal-exit-3.0.3.tgz#a1410c2edd8f077b08b4e253c8eacfcaf057461c"
   integrity sha512-VUJ49FC8U1OxwZLxIbTTrDvLnf/6TDgxZcK8wxR8zs13xpx7xbG60ndBlhNrFi2EMuFRoeDoJO7wthSLq42EjA==
 
-sinon@10.0.0, sinon@^10.0.0:
+sinon@10.0.0:
   version "10.0.0"
   resolved "https://registry.yarnpkg.com/sinon/-/sinon-10.0.0.tgz#52279f97e35646ff73d23207d0307977c9b81430"
   integrity sha512-XAn5DxtGVJBlBWYrcYKEhWCz7FLwZGdyvANRyK06419hyEpdT0dMc5A8Vcxg5SCGHc40CsqoKsc1bt1CbJPfNw==
@@ -6341,12 +6335,12 @@ stringify-object@^3.3.0:
     is-obj "^1.0.1"
     is-regexp "^1.0.0"
 
-strip-ansi@6.0.0, strip-ansi@^6.0.0:
-  version "6.0.0"
-  resolved "https://registry.npmjs.org/strip-ansi/-/strip-ansi-6.0.0.tgz#0b1571dd7669ccd4f3e06e14ef1eed26225ae532"
-  integrity sha512-AuvKTrTfQNYNIctbR1K/YGTR1756GycPsg7b9bdV9Duqur4gv6aKqHXah67Z8ImS7WEz5QVcOtlfW2rZEugt6w==
+strip-ansi@6.0.1, strip-ansi@^6.0.0:
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
+  integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
   dependencies:
-    ansi-regex "^5.0.0"
+    ansi-regex "^5.0.1"
 
 strip-ansi@^4.0.0:
   version "4.0.0"
@@ -6683,7 +6677,7 @@ tsconfig-paths@^3.9.0:
     minimist "^1.2.0"
     strip-bom "^3.0.0"
 
-tslib@^1, tslib@^1.10.0, tslib@^1.8.1, tslib@^1.9.0, tslib@^1.9.3:
+tslib@^1, tslib@^1.8.1, tslib@^1.9.0, tslib@^1.9.3:
   version "1.13.0"
   resolved "https://registry.npmjs.org/tslib/-/tslib-1.13.0.tgz#c881e13cc7015894ed914862d276436fa9a47043"
   integrity sha512-i/6DQjL8Xf3be4K/E6Wgpekn5Qasl1usyw++dAA35Ue5orEn65VIxOA+YvNNl9HV3qv70T7CNwjODHZrLwvd1Q==
