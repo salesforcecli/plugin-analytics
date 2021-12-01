@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.2](https://github.com/salesforcecli/plugin-analytics/compare/v1.0.1...v1.0.2) (2021-12-01)
+
+
+### Bug Fixes
+
+* supporting upgrading template version ([#47](https://github.com/salesforcecli/plugin-analytics/issues/47)) ([8e60e0e](https://github.com/salesforcecli/plugin-analytics/commit/8e60e0eb0842b6f7d68b25609c0c52440146aebe))
+
 ### [1.0.1](https://github.com/salesforcecli/plugin-analytics/compare/v1.0.0...v1.0.1) (2021-11-02)
 
 
