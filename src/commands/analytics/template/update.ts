@@ -37,6 +37,11 @@ export default class Update extends SfdxCommand {
       char: 'f',
       description: messages.getMessage('folderidFlagDescription'),
       longDescription: messages.getMessage('folderidFlagLongDescription')
+    }),
+    assetversion: flags.integer({
+      char: 'v',
+      description: messages.getMessage('assetVersionFlagDescription'),
+      longDescription: messages.getMessage('assetVersionFlagLongDescription')
     })
   };
 
@@ -60,6 +65,7 @@ export default class Update extends SfdxCommand {
       throw new SfdxError(messages.getMessage('missingRequiredField'));
     }
     let folderid = this.flags.folderid as string | undefined;
+    const assetversion = this.flags.assetversion as number | undefined;
 
     const template = new WaveTemplate(this.org as Org);
 
@@ -96,7 +102,7 @@ export default class Update extends SfdxCommand {
         return;
       }
     }
-    const result = await template.update(folderid, templateInput);
+    const result = await template.update(folderid, templateInput, assetversion);
     this.ux.log(messages.getMessage('updateSuccess', [result?.name, result?.id, folderid]));
     return templateInput;
   }

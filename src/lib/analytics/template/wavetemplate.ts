@@ -22,12 +22,14 @@ export type TemplateType = Record<string, unknown> & {
 };
 
 export default class WaveTemplate {
+  public readonly serverVersion: number;
   private readonly connection: Connection;
   private readonly templatesUrl: string;
 
   public constructor(organization: Org) {
     this.connection = organization.getConnection();
     this.templatesUrl = `${this.connection.baseUrl()}/wave/templates/`;
+    this.serverVersion = +this.connection.getApiVersion();
   }
 
   public async fetch(templateNameOrId: string, viewOnly = true): Promise<TemplateType> {
@@ -61,9 +63,15 @@ export default class WaveTemplate {
 
   public async update(
     folderid: string,
-    templateIdOrName: string
+    templateIdOrName: string,
+    templateAssetVersion: number | unknown
   ): Promise<{ id: string | undefined; name: string | undefined } | undefined> {
-    const body = JSON.stringify({ folderSource: { id: folderid } });
+    const opts: Record<string, unknown> = { folderSource: { id: folderid } };
+    if (templateAssetVersion && this.serverVersion >= 54.0) {
+      opts.assetVersion = templateAssetVersion;
+    }
+
+    const body = JSON.stringify(opts);
     const wtUrl = this.templatesUrl + encodeURIComponent(templateIdOrName);
     const response = await connectRequest<TemplateType>(this.connection, {
       method: 'PUT',
