@@ -39,7 +39,7 @@ export default class Decouple extends SfdxCommand {
 
   public async run() {
     const folder = new Folder(this.org as Org);
-    const folderId = await folder.decouple(this.flags.folderid, this.flags.templateid);
+    const folderId = await folder.decouple(this.flags.folderid as string, this.flags.templateid as string);
     // If error occurs here fails out in the decouple call and reports back, otherwise success
     this.ux.log(messages.getMessage('decoupleSuccess', [folderId, this.flags.templateid]));
     return folderId;

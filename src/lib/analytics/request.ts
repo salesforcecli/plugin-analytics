@@ -66,7 +66,7 @@ export async function fetchAllPages<T>(
     if (!items || !Array.isArray(items)) {
       break;
     }
-    all.push(...items);
+    all.push(...(items as T[]));
     const nextPagePath =
       typeof getNextPagePath === 'string'
         ? (response as Record<string, unknown>)[getNextPagePath]

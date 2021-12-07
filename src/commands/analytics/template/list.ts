@@ -43,7 +43,7 @@ export default class List extends SfdxCommand {
 
   public async run() {
     const wavetemplate = new WaveTemplate(this.org as Org);
-    const templates = ((await wavetemplate.list(this.flags.includembeddedtemplates)) || [])
+    const templates = ((await wavetemplate.list(!!this.flags.includembeddedtemplates)) || [])
       .filter(template => this.flags.includesalesforcetemplates || template.id?.startsWith('0Nk'))
       .map(template => ({
         name: template.name,

@@ -58,7 +58,7 @@ export default class Delete extends SfdxCommand {
 
   public async run() {
     const autoinstall = new AutoInstall(this.org as Org);
-    const autoInstallId = await autoinstall.delete(this.flags.folderid);
+    const autoInstallId = await autoinstall.delete(this.flags.folderid as string);
     if (this.flags.async || this.flags.wait <= 0) {
       this.ux.log(messages.getMessage('appDeleteRequestSuccess', [autoInstallId]));
     } else if (autoInstallId) {

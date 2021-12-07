@@ -77,7 +77,7 @@ export default class Update extends SfdxCommand {
       throw new SfdxError(messages.getMessage('missingRequiredField'));
     }
     const autoinstall = new AutoInstall(this.org as Org);
-    const autoInstallId = await autoinstall.update(templateInput, this.flags.folderid);
+    const autoInstallId = await autoinstall.update(templateInput, this.flags.folderid as string);
     if (this.flags.async || this.flags.wait <= 0) {
       this.ux.log(messages.getMessage('appUpdateRequestSuccess', [autoInstallId]));
     } else if (autoInstallId) {

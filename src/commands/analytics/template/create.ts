@@ -44,7 +44,7 @@ export default class Create extends SfdxCommand {
   public async run() {
     const template = new WaveTemplate(this.org as Org);
     // Create the wave template from an app/folder id
-    const waveTemplateId = await template.create(this.flags.folderid, {
+    const waveTemplateId = await template.create(this.flags.folderid as string, {
       label: this.flags.label as string | undefined,
       description: this.flags.description as string | undefined
     });

@@ -74,7 +74,7 @@ export default class Query extends SfdxCommand {
       throw new SfdxError(messages.getMessage('missingRequiredField'));
     }
     let queryStr = this.flags.queryfile
-      ? await fs.readFile(this.flags.queryfile, 'utf8')
+      ? await fs.readFile(this.flags.queryfile as string, 'utf8')
       : (this.flags.query as string);
 
     const querySvc = new QuerySvc((this.org as Org).getConnection());
@@ -98,7 +98,7 @@ export default class Query extends SfdxCommand {
       if (this.flags.sql) {
         queryLanguage = 'Sql';
       } else if (this.flags.queryfile) {
-        const ext = path.extname(this.flags.queryfile);
+        const ext = path.extname(this.flags.queryfile as string);
         if (ext.toLocaleLowerCase() === '.sql') {
           queryLanguage = 'Sql';
         }

@@ -1,6 +1,7 @@
 {
   "extends": "@salesforce/dev-config/tsconfig-strict",
   "compilerOptions": {
+    "target": "ES2019",
     "outDir": "lib",
     "rootDir": "src",
     "noImplicitAny": true,

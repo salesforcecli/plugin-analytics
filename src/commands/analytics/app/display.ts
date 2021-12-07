@@ -68,7 +68,7 @@ export default class Display extends SfdxCommand {
 
   public async run() {
     const folder = new Folder(this.org as Org);
-    const app = await folder.fetch(this.flags.folderid, !!this.flags.applog);
+    const app = await folder.fetch(this.flags.folderid as string, !!this.flags.applog);
 
     // force:org:display does a blue chalk on the headers, so do it here, too
     this.ux.styledHeader(blue(messages.getMessage('displayDetailHeader')));

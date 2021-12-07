@@ -68,7 +68,7 @@ export default class Display extends SfdxCommand {
 
   public async run(): Promise<AutoInstallRequestType> {
     const autoinstall = new AutoInstall(this.org as Org);
-    const autoinstallRep = await autoinstall.fetch(this.flags.autoinstallid);
+    const autoinstallRep = await autoinstall.fetch(this.flags.autoinstallid as string);
 
     // force:org:display does a blue chalk on the headers, so do it here, too
     this.ux.styledHeader(blue(messages.getMessage('displayDetailHeader')));
