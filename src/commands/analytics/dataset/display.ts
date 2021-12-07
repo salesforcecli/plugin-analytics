@@ -62,7 +62,7 @@ export default class Display extends SfdxCommand {
       throw new SfdxError(messages.getMessage('missingRequiredField'));
     }
     const svc = new DatasetSvc((this.org as Org).getConnection());
-    const dataset = await svc.fetch(this.flags.datasetid || this.flags.datasetname);
+    const dataset = await svc.fetch((this.flags.datasetid || this.flags.datasetname) as string);
 
     // force:org:display does a blue chalk on the headers, so do it here, too
     this.ux.styledHeader(blue(messages.getMessage('displayDetailHeader')));

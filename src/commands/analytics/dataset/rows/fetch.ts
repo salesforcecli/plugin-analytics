@@ -49,7 +49,7 @@ export default class Fetch extends SfdxCommand {
     }
     const connection = (this.org as Org).getConnection();
     const svc = new DatasetSvc(connection);
-    const dataset = await svc.fetch(this.flags.datasetid || this.flags.datasetname);
+    const dataset = await svc.fetch((this.flags.datasetid || this.flags.datasetname) as string);
 
     const options = {
       ux: !this.flags.json ? this.ux : undefined,

@@ -107,7 +107,7 @@ export default class Create extends SfdxCommand {
     if (this.flags.templateid || this.flags.templatename) {
       const templateSvc = new WaveTemplate(this.org as Org);
       const matchedTemplate = this.flags.templateid
-        ? await templateSvc.fetch(this.flags.templateid)
+        ? await templateSvc.fetch(this.flags.templateid as string)
         : (await templateSvc.list()).find(
             template => template.name === this.flags.templatename || template.label === this.flags.templatename
           );
@@ -163,7 +163,7 @@ export default class Create extends SfdxCommand {
     const options = new StreamingClient.DefaultOptions(this.org as Org, '/event/WaveAssetEvent', message =>
       this.streamProcessor(folderId, message)
     );
-    const timeout: Duration = Duration.minutes(this.flags.wait);
+    const timeout: Duration = Duration.minutes(this.flags.wait as number);
     options.setHandshakeTimeout(timeout);
     options.setSubscribeTimeout(timeout);
     const asyncStatusClient: StreamingClient = await StreamingClient.create(options);

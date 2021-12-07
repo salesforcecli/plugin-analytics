@@ -51,7 +51,7 @@ export default class Delete extends SfdxCommand {
 
   private async executeCommand(): Promise<void> {
     const folder = new Folder(this.org as Org);
-    await folder.deleteFolder(this.flags.folderid);
+    await folder.deleteFolder(this.flags.folderid as string);
     this.ux.log(messages.getMessage('deleteAppSuccess', [this.flags.folderid]));
   }
 }

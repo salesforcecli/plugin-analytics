@@ -39,7 +39,7 @@ export default class Update extends SfdxCommand {
 
   public async run() {
     const folder = new Folder(this.org as Org);
-    const waveAppId = await folder.update(this.flags.folderid, this.flags.templateid);
+    const waveAppId = await folder.update(this.flags.folderid as string, this.flags.templateid as string);
     // If error occurs here fails out in the update call and reports back, otherwise success
     this.ux.log(messages.getMessage('updateSuccess', [waveAppId]));
     return waveAppId;

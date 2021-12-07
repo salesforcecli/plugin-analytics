@@ -49,7 +49,7 @@ export default class Update extends SfdxCommand {
     // -h and -r are kind of exclusive, and, in the oclif flags, you can pass in neither,
     // in which case we should should consider a missing or no -h to be the same as -r
     const historyId = (!this.flags.removecurrenthistory && (this.flags.currenthistoryid as string)) || '';
-    const id = await dashboard.updateCurrentHistoryId(this.flags.dashboardid, historyId);
+    const id = await dashboard.updateCurrentHistoryId(this.flags.dashboardid as string, historyId);
     // If error occurs here fails out in the update call and reports back, otherwise success
 
     // if we sent up an empty historyId, that's the same as -r
