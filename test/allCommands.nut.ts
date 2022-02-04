@@ -26,7 +26,7 @@ describe('verifies all command run successfully', () => {
   it('analytics --json', () => {
     const output = execCmd<JsonMap>('analytics --json', { ensureExitCode: 0 }).jsonOutput;
     expect(output, 'output').to.not.be.undefined;
-    const result = (output as JsonMap).result as JsonMap;
+    const result = output?.result;
     expect(result, 'result').to.not.be.undefined;
     expect(result?.adxVersion, 'adxVersion').to.match(/^\d+\.\d+\.\d+$/);
   });
