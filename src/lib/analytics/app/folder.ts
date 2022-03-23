@@ -77,8 +77,6 @@ export default class Folder {
       } else if (!body.templateOptions.dynamicOptions) {
         body.templateOptions.dynamicOptions = { productionType: 'ATF_3_0', runtimeLogEntryLevel: 'Warning' };
       }
-      // eslint-disable-next-line no-console
-      console.log(body);
     }
     const response = await connectRequest<AppFolder>(this.connection, {
       method: 'POST',
