@@ -30,6 +30,7 @@ export type AppFolder = Record<string, unknown> & {
   templateSourceId?: string;
   templateValues?: Record<string, unknown>;
   templateVersion?: string;
+  templateOptions?: Record<string, unknown>;
 };
 
 export type CreateAppBody = {
@@ -39,15 +40,22 @@ export type CreateAppBody = {
   assetIcon?: string;
   templateValues?: Record<string, unknown>;
   name?: string;
+  templateOptions?: {
+    dynamicOptions?: Record<string, unknown>;
+    appAction?: string;
+    disableApex?: boolean;
+  };
 };
 
 export default class Folder {
+  public readonly serverVersion: number;
   private readonly connection: Connection;
   private readonly foldersUrl: string;
 
   public constructor(organization: Org) {
     this.connection = organization.getConnection();
     this.foldersUrl = `${this.connection.baseUrl()}/wave/folders/`;
+    this.serverVersion = +this.connection.getApiVersion();
   }
 
   public async fetch(folderid: string, includeLog = false): Promise<AppFolder> {
@@ -63,6 +71,15 @@ export default class Folder {
   }
 
   public async create(body: CreateAppBody): Promise<string | undefined> {
+    if (this.serverVersion >= 55.0) {
+      if (!body.templateOptions) {
+        body.templateOptions = { dynamicOptions: { productionType: 'ATF_3_0', runtimeLogEntryLevel: 'Warning' } };
+      } else if (!body.templateOptions.dynamicOptions) {
+        body.templateOptions.dynamicOptions = { productionType: 'ATF_3_0', runtimeLogEntryLevel: 'Warning' };
+      }
+      // eslint-disable-next-line no-console
+      console.log(body);
+    }
     const response = await connectRequest<AppFolder>(this.connection, {
       method: 'POST',
       url: this.foldersUrl,
