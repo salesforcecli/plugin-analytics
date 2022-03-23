@@ -81,41 +81,42 @@ sfdx plugins
 ## Commands
 
 <!-- commands -->
-* [`sfdx analytics:app:create [-f <filepath> | -m <string> | -t <string>] [-n <string>] [-a] [-v] [-w <number>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsappcreate--f-filepath---m-string---t-string--n-string--a--v--w-number--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx analytics:app:decouple -f <id> -t <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsappdecouple--f-id--t-id--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx analytics:app:delete -f <id> [-p] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsappdelete--f-id--p--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx analytics:app:display -f <id> [-a] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsappdisplay--f-id--a--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx analytics:app:list [-f <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsapplist--f-string--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx analytics:app:update -t <id> -f <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsappupdate--t-id--f-id--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx analytics:asset:publisher:create -i <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsassetpublishercreate--i-id--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx analytics:asset:publisher:delete -i <id> -a <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsassetpublisherdelete--i-id--a-id--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx analytics:asset:publisher:deleteall -i <id> [-p] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsassetpublisherdeleteall--i-id--p--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx analytics:asset:publisher:list -i <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsassetpublisherlist--i-id--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx analytics:autoinstall:app:create [-t <id> | -n <string>] [-a] [-w <number>] [-p <number>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsautoinstallappcreate--t-id---n-string--a--w-number--p-number--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx analytics:autoinstall:app:delete -f <id> [-a] [-w <number>] [-p <number>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsautoinstallappdelete--f-id--a--w-number--p-number--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx analytics:autoinstall:app:update -f <id> [-t <id> | -n <string>] [-a] [-w <number>] [-p <number>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsautoinstallappupdate--f-id--t-id---n-string--a--w-number--p-number--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx analytics:autoinstall:display -i <id> [-a] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsautoinstalldisplay--i-id--a--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx analytics:autoinstall:list [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsautoinstalllist--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx analytics:dashboard:history:list -i <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsdashboardhistorylist--i-id--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx analytics:dashboard:history:revert -i <id> -y <id> [-l <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsdashboardhistoryrevert--i-id--y-id--l-string--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx analytics:dashboard:list [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsdashboardlist--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx analytics:dashboard:update -i <id> [-y <id>] [-r] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsdashboardupdate--i-id--y-id--r--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx analytics:dataflow:history:list -i <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsdataflowhistorylist--i-id--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx analytics:dataflow:history:revert -i <id> -y <id> [-l <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsdataflowhistoryrevert--i-id--y-id--l-string--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx analytics:dataflow:list [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsdataflowlist--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx analytics:dataset:display [-i <id> | -n <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsdatasetdisplay--i-id---n-string--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx analytics:dataset:list [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsdatasetlist--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx analytics:dataset:rows:fetch [-i <id> | -n <string>] [--limit <number>] [-r human|csv|json] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsdatasetrowsfetch--i-id---n-string---limit-number--r-humancsvjson--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx analytics:enable [-a] [-w <number>] [-p <number>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsenable--a--w-number--p-number--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx analytics:lens:history:list -i <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticslenshistorylist--i-id--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx analytics:lens:history:revert -i <id> -y <id> [-l <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticslenshistoryrevert--i-id--y-id--l-string--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx analytics:lens:list [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticslenslist--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx analytics:query [-f <filepath> | -q <string>] [--nomapnames] [--sql] [-t <string>] [--connector <string>] [--limit <number>] [-r human|csv|json] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsquery--f-filepath---q-string---nomapnames---sql--t-string---connector-string---limit-number--r-humancsvjson--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx analytics:template:create -f <id> [-l <string>] [--description <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticstemplatecreate--f-id--l-string---description-string--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx analytics:template:delete -t <id> [--forcedelete] [--decouple] [-p] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticstemplatedelete--t-id---forcedelete---decouple--p--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx analytics:template:display [-t <id> | -n <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticstemplatedisplay--t-id---n-string--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx analytics:template:list [-a] [-e] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticstemplatelist--a--e--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx analytics:template:update [-t <id> | -n <string>] [-f <id>] [-v <integer>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticstemplateupdate--t-id---n-string--f-id--v-integer--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+
+- [`sfdx analytics:app:create [-f <filepath> | -m <string> | -t <string>] [-n <string>] [-a] [-v] [-w <number>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsappcreate--f-filepath---m-string---t-string--n-string--a--v--w-number--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx analytics:app:decouple -f <id> -t <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsappdecouple--f-id--t-id--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx analytics:app:delete -f <id> [-p] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsappdelete--f-id--p--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx analytics:app:display -f <id> [-a] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsappdisplay--f-id--a--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx analytics:app:list [-f <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsapplist--f-string--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx analytics:app:update -t <id> -f <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsappupdate--t-id--f-id--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx analytics:asset:publisher:create -i <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsassetpublishercreate--i-id--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx analytics:asset:publisher:delete -i <id> -a <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsassetpublisherdelete--i-id--a-id--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx analytics:asset:publisher:deleteall -i <id> [-p] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsassetpublisherdeleteall--i-id--p--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx analytics:asset:publisher:list -i <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsassetpublisherlist--i-id--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx analytics:autoinstall:app:create [-t <id> | -n <string>] [-a] [-w <number>] [-p <number>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsautoinstallappcreate--t-id---n-string--a--w-number--p-number--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx analytics:autoinstall:app:delete -f <id> [-a] [-w <number>] [-p <number>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsautoinstallappdelete--f-id--a--w-number--p-number--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx analytics:autoinstall:app:update -f <id> [-t <id> | -n <string>] [-a] [-w <number>] [-p <number>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsautoinstallappupdate--f-id--t-id---n-string--a--w-number--p-number--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx analytics:autoinstall:display -i <id> [-a] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsautoinstalldisplay--i-id--a--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx analytics:autoinstall:list [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsautoinstalllist--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx analytics:dashboard:history:list -i <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsdashboardhistorylist--i-id--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx analytics:dashboard:history:revert -i <id> -y <id> [-l <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsdashboardhistoryrevert--i-id--y-id--l-string--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx analytics:dashboard:list [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsdashboardlist--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx analytics:dashboard:update -i <id> [-y <id>] [-r] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsdashboardupdate--i-id--y-id--r--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx analytics:dataflow:history:list -i <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsdataflowhistorylist--i-id--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx analytics:dataflow:history:revert -i <id> -y <id> [-l <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsdataflowhistoryrevert--i-id--y-id--l-string--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx analytics:dataflow:list [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsdataflowlist--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx analytics:dataset:display [-i <id> | -n <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsdatasetdisplay--i-id---n-string--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx analytics:dataset:list [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsdatasetlist--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx analytics:dataset:rows:fetch [-i <id> | -n <string>] [--limit <number>] [-r human|csv|json] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsdatasetrowsfetch--i-id---n-string---limit-number--r-humancsvjson--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx analytics:enable [-a] [-w <number>] [-p <number>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsenable--a--w-number--p-number--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx analytics:lens:history:list -i <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticslenshistorylist--i-id--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx analytics:lens:history:revert -i <id> -y <id> [-l <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticslenshistoryrevert--i-id--y-id--l-string--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx analytics:lens:list [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticslenslist--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx analytics:query [-f <filepath> | -q <string>] [--nomapnames] [--sql] [-t <string>] [--connector <string>] [--limit <number>] [-r human|csv|json] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsquery--f-filepath---q-string---nomapnames---sql--t-string---connector-string---limit-number--r-humancsvjson--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx analytics:template:create -f <id> [-l <string>] [--description <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticstemplatecreate--f-id--l-string---description-string--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx analytics:template:delete -t <id> [--forcedelete] [--decouple] [-p] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticstemplatedelete--t-id---forcedelete---decouple--p--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx analytics:template:display [-t <id> | -n <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticstemplatedisplay--t-id---n-string--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx analytics:template:list [-a] [-e] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticstemplatelist--a--e--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx analytics:template:update [-t <id> | -n <string>] [-f <id>] [-v <integer>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticstemplateupdate--t-id---n-string--f-id--v-integer--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
 
 ## `sfdx analytics:app:create [-f <filepath> | -m <string> | -t <string>] [-n <string>] [-a] [-v] [-w <number>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -123,8 +124,8 @@ create a Tableau CRM app
 
 ```
 USAGE
-  $ sfdx analytics:app:create [-f <filepath> | -m <string> | -t <string>] [-n <string>] [-a] [-v] [-w <number>] [-u 
-  <string>] [--apiversion <string>] [--json] [--loglevel 
+  $ sfdx analytics:app:create [-f <filepath> | -m <string> | -t <string>] [-n <string>] [-a] [-v] [-w <number>] [-u
+  <string>] [--apiversion <string>] [--json] [--loglevel
   trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -164,7 +165,7 @@ EXAMPLES
   $ sfdx analytics:app:create -f path_to_json_file
 ```
 
-_See code: [src/commands/analytics/app/create.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.2/src/commands/analytics/app/create.ts)_
+_See code: [src/commands/analytics/app/create.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.3/src/commands/analytics/app/create.ts)_
 
 ## `sfdx analytics:app:decouple -f <id> -t <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -172,7 +173,7 @@ decouples a Tableau CRM app from a Tableau CRM template
 
 ```
 USAGE
-  $ sfdx analytics:app:decouple -f <id> -t <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel 
+  $ sfdx analytics:app:decouple -f <id> -t <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel
   trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -194,7 +195,7 @@ EXAMPLE
   $ sfdx analytics:app:decouple -f folderId -t templateId
 ```
 
-_See code: [src/commands/analytics/app/decouple.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.2/src/commands/analytics/app/decouple.ts)_
+_See code: [src/commands/analytics/app/decouple.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.3/src/commands/analytics/app/decouple.ts)_
 
 ## `sfdx analytics:app:delete -f <id> [-p] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -202,7 +203,7 @@ delete Tableau CRM apps
 
 ```
 USAGE
-  $ sfdx analytics:app:delete -f <id> [-p] [-u <string>] [--apiversion <string>] [--json] [--loglevel 
+  $ sfdx analytics:app:delete -f <id> [-p] [-u <string>] [--apiversion <string>] [--json] [--loglevel
   trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -226,7 +227,7 @@ EXAMPLE
   $ sfdx analytics:app:delete -f folderid
 ```
 
-_See code: [src/commands/analytics/app/delete.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.2/src/commands/analytics/app/delete.ts)_
+_See code: [src/commands/analytics/app/delete.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.3/src/commands/analytics/app/delete.ts)_
 
 ## `sfdx analytics:app:display -f <id> [-a] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -234,7 +235,7 @@ displays a Tableau CRM app's details
 
 ```
 USAGE
-  $ sfdx analytics:app:display -f <id> [-a] [-u <string>] [--apiversion <string>] [--json] [--loglevel 
+  $ sfdx analytics:app:display -f <id> [-a] [-u <string>] [--apiversion <string>] [--json] [--loglevel
   trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -258,7 +259,7 @@ EXAMPLE
   $ sfdx analytics:app:display -f folderId -a
 ```
 
-_See code: [src/commands/analytics/app/display.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.2/src/commands/analytics/app/display.ts)_
+_See code: [src/commands/analytics/app/display.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.3/src/commands/analytics/app/display.ts)_
 
 ## `sfdx analytics:app:list [-f <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -266,7 +267,7 @@ list Tableau CRM apps
 
 ```
 USAGE
-  $ sfdx analytics:app:list [-f <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel 
+  $ sfdx analytics:app:list [-f <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel
   trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -287,7 +288,7 @@ EXAMPLE
   $ sfdx analytics:app:list
 ```
 
-_See code: [src/commands/analytics/app/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.2/src/commands/analytics/app/list.ts)_
+_See code: [src/commands/analytics/app/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.3/src/commands/analytics/app/list.ts)_
 
 ## `sfdx analytics:app:update -t <id> -f <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -295,7 +296,7 @@ updates a Tableau CRM app from a template
 
 ```
 USAGE
-  $ sfdx analytics:app:update -t <id> -f <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel 
+  $ sfdx analytics:app:update -t <id> -f <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel
   trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -317,7 +318,7 @@ EXAMPLE
   $ sfdx analytics:app:update -f folderId -t templateId
 ```
 
-_See code: [src/commands/analytics/app/update.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.2/src/commands/analytics/app/update.ts)_
+_See code: [src/commands/analytics/app/update.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.3/src/commands/analytics/app/update.ts)_
 
 ## `sfdx analytics:asset:publisher:create -i <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -325,7 +326,7 @@ create a publisher record for the Tableau CRM asset
 
 ```
 USAGE
-  $ sfdx analytics:asset:publisher:create -i <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel 
+  $ sfdx analytics:asset:publisher:create -i <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel
   trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -347,7 +348,7 @@ EXAMPLE
   $ sfdx analytics:asset:publisher:create -i assetId
 ```
 
-_See code: [src/commands/analytics/asset/publisher/create.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.2/src/commands/analytics/asset/publisher/create.ts)_
+_See code: [src/commands/analytics/asset/publisher/create.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.3/src/commands/analytics/asset/publisher/create.ts)_
 
 ## `sfdx analytics:asset:publisher:delete -i <id> -a <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -355,7 +356,7 @@ delete a Tableau CRM asset publisher
 
 ```
 USAGE
-  $ sfdx analytics:asset:publisher:delete -i <id> -a <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel 
+  $ sfdx analytics:asset:publisher:delete -i <id> -a <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel
   trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -380,7 +381,7 @@ EXAMPLE
   $ sfdx analytics:asset:publisher:delete -a assetId -i assetPublisherId
 ```
 
-_See code: [src/commands/analytics/asset/publisher/delete.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.2/src/commands/analytics/asset/publisher/delete.ts)_
+_See code: [src/commands/analytics/asset/publisher/delete.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.3/src/commands/analytics/asset/publisher/delete.ts)_
 
 ## `sfdx analytics:asset:publisher:deleteall -i <id> [-p] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -388,7 +389,7 @@ delete Tableau CRM asset publishers
 
 ```
 USAGE
-  $ sfdx analytics:asset:publisher:deleteall -i <id> [-p] [-u <string>] [--apiversion <string>] [--json] [--loglevel 
+  $ sfdx analytics:asset:publisher:deleteall -i <id> [-p] [-u <string>] [--apiversion <string>] [--json] [--loglevel
   trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -413,7 +414,7 @@ EXAMPLE
   $ sfdx analytics:asset:publisher:deleteall -i assetId
 ```
 
-_See code: [src/commands/analytics/asset/publisher/deleteall.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.2/src/commands/analytics/asset/publisher/deleteall.ts)_
+_See code: [src/commands/analytics/asset/publisher/deleteall.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.3/src/commands/analytics/asset/publisher/deleteall.ts)_
 
 ## `sfdx analytics:asset:publisher:list -i <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -421,7 +422,7 @@ list Tableau CRM asset publishers
 
 ```
 USAGE
-  $ sfdx analytics:asset:publisher:list -i <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel 
+  $ sfdx analytics:asset:publisher:list -i <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel
   trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -443,7 +444,7 @@ EXAMPLE
   $ sfdx analytics:asset:publisher:list -i assetId
 ```
 
-_See code: [src/commands/analytics/asset/publisher/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.2/src/commands/analytics/asset/publisher/list.ts)_
+_See code: [src/commands/analytics/asset/publisher/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.3/src/commands/analytics/asset/publisher/list.ts)_
 
 ## `sfdx analytics:autoinstall:app:create [-t <id> | -n <string>] [-a] [-w <number>] [-p <number>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -451,7 +452,7 @@ creates auto-install request to create Tableau CRM app
 
 ```
 USAGE
-  $ sfdx analytics:autoinstall:app:create [-t <id> | -n <string>] [-a] [-w <number>] [-p <number>] [-u <string>] 
+  $ sfdx analytics:autoinstall:app:create [-t <id> | -n <string>] [-a] [-w <number>] [-p <number>] [-u <string>]
   [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -483,7 +484,7 @@ EXAMPLES
   $ sfdx analytics:autoinstall:app:create -n templatename
 ```
 
-_See code: [src/commands/analytics/autoinstall/app/create.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.2/src/commands/analytics/autoinstall/app/create.ts)_
+_See code: [src/commands/analytics/autoinstall/app/create.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.3/src/commands/analytics/autoinstall/app/create.ts)_
 
 ## `sfdx analytics:autoinstall:app:delete -f <id> [-a] [-w <number>] [-p <number>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -520,7 +521,7 @@ EXAMPLE
   $ sfdx analytics:autoinstall:app:delete -f folderid
 ```
 
-_See code: [src/commands/analytics/autoinstall/app/delete.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.2/src/commands/analytics/autoinstall/app/delete.ts)_
+_See code: [src/commands/analytics/autoinstall/app/delete.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.3/src/commands/analytics/autoinstall/app/delete.ts)_
 
 ## `sfdx analytics:autoinstall:app:update -f <id> [-t <id> | -n <string>] [-a] [-w <number>] [-p <number>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -561,7 +562,7 @@ EXAMPLES
   $ sfdx analytics:autoinstall:app:update -n templatename -f folderid
 ```
 
-_See code: [src/commands/analytics/autoinstall/app/update.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.2/src/commands/analytics/autoinstall/app/update.ts)_
+_See code: [src/commands/analytics/autoinstall/app/update.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.3/src/commands/analytics/autoinstall/app/update.ts)_
 
 ## `sfdx analytics:autoinstall:display -i <id> [-a] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -569,7 +570,7 @@ displays a Tableau CRM auto-install request details
 
 ```
 USAGE
-  $ sfdx analytics:autoinstall:display -i <id> [-a] [-u <string>] [--apiversion <string>] [--json] [--loglevel 
+  $ sfdx analytics:autoinstall:display -i <id> [-a] [-u <string>] [--apiversion <string>] [--json] [--loglevel
   trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -593,7 +594,7 @@ EXAMPLE
   $ sfdx analytics:autoinstall:display -i id
 ```
 
-_See code: [src/commands/analytics/autoinstall/display.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.2/src/commands/analytics/autoinstall/display.ts)_
+_See code: [src/commands/analytics/autoinstall/display.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.3/src/commands/analytics/autoinstall/display.ts)_
 
 ## `sfdx analytics:autoinstall:list [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -601,7 +602,7 @@ list Tableau CRM auto-install requests
 
 ```
 USAGE
-  $ sfdx analytics:autoinstall:list [-u <string>] [--apiversion <string>] [--json] [--loglevel 
+  $ sfdx analytics:autoinstall:list [-u <string>] [--apiversion <string>] [--json] [--loglevel
   trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -620,7 +621,7 @@ EXAMPLE
   $ sfdx analytics:autoinstall:list
 ```
 
-_See code: [src/commands/analytics/autoinstall/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.2/src/commands/analytics/autoinstall/list.ts)_
+_See code: [src/commands/analytics/autoinstall/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.3/src/commands/analytics/autoinstall/list.ts)_
 
 ## `sfdx analytics:dashboard:history:list -i <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -628,7 +629,7 @@ list history records for Tableau CRM dashboards
 
 ```
 USAGE
-  $ sfdx analytics:dashboard:history:list -i <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel 
+  $ sfdx analytics:dashboard:history:list -i <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel
   trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -649,7 +650,7 @@ EXAMPLE
   $ sfdx analytics:dashboard:history:list --dashboardid <dashboardid>
 ```
 
-_See code: [src/commands/analytics/dashboard/history/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.2/src/commands/analytics/dashboard/history/list.ts)_
+_See code: [src/commands/analytics/dashboard/history/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.3/src/commands/analytics/dashboard/history/list.ts)_
 
 ## `sfdx analytics:dashboard:history:revert -i <id> -y <id> [-l <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -683,7 +684,7 @@ EXAMPLE
   $ sfdx analytics:dashboard:history:revert -i <dashboardid> -y <historyid> -l <historyLabel>
 ```
 
-_See code: [src/commands/analytics/dashboard/history/revert.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.2/src/commands/analytics/dashboard/history/revert.ts)_
+_See code: [src/commands/analytics/dashboard/history/revert.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.3/src/commands/analytics/dashboard/history/revert.ts)_
 
 ## `sfdx analytics:dashboard:list [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -691,7 +692,7 @@ list Tableau CRM dashboards
 
 ```
 USAGE
-  $ sfdx analytics:dashboard:list [-u <string>] [--apiversion <string>] [--json] [--loglevel 
+  $ sfdx analytics:dashboard:list [-u <string>] [--apiversion <string>] [--json] [--loglevel
   trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -710,7 +711,7 @@ EXAMPLE
   $ sfdx analytics:dashboard:list
 ```
 
-_See code: [src/commands/analytics/dashboard/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.2/src/commands/analytics/dashboard/list.ts)_
+_See code: [src/commands/analytics/dashboard/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.3/src/commands/analytics/dashboard/list.ts)_
 
 ## `sfdx analytics:dashboard:update -i <id> [-y <id>] [-r] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -718,7 +719,7 @@ updates a Tableau CRM dashboard
 
 ```
 USAGE
-  $ sfdx analytics:dashboard:update -i <id> [-y <id>] [-r] [-u <string>] [--apiversion <string>] [--json] [--loglevel 
+  $ sfdx analytics:dashboard:update -i <id> [-y <id>] [-r] [-u <string>] [--apiversion <string>] [--json] [--loglevel
   trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -745,7 +746,7 @@ EXAMPLES
   $ sfdx analytics:dashboard:update -i dashboardId -r
 ```
 
-_See code: [src/commands/analytics/dashboard/update.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.2/src/commands/analytics/dashboard/update.ts)_
+_See code: [src/commands/analytics/dashboard/update.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.3/src/commands/analytics/dashboard/update.ts)_
 
 ## `sfdx analytics:dataflow:history:list -i <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -753,7 +754,7 @@ list history records for Tableau CRM dataflows
 
 ```
 USAGE
-  $ sfdx analytics:dataflow:history:list -i <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel 
+  $ sfdx analytics:dataflow:history:list -i <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel
   trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -774,7 +775,7 @@ EXAMPLE
   $ sfdx analytics:dataflow:history:list --dataflowid <dataflowid>
 ```
 
-_See code: [src/commands/analytics/dataflow/history/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.2/src/commands/analytics/dataflow/history/list.ts)_
+_See code: [src/commands/analytics/dataflow/history/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.3/src/commands/analytics/dataflow/history/list.ts)_
 
 ## `sfdx analytics:dataflow:history:revert -i <id> -y <id> [-l <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -782,7 +783,7 @@ revert to specified history record
 
 ```
 USAGE
-  $ sfdx analytics:dataflow:history:revert -i <id> -y <id> [-l <string>] [-u <string>] [--apiversion <string>] [--json] 
+  $ sfdx analytics:dataflow:history:revert -i <id> -y <id> [-l <string>] [-u <string>] [--apiversion <string>] [--json]
   [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -808,7 +809,7 @@ EXAMPLE
   $ sfdx analytics:dataflow:history:revert -i <dataflowid> -y <historyid> -l <historyLabel>
 ```
 
-_See code: [src/commands/analytics/dataflow/history/revert.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.2/src/commands/analytics/dataflow/history/revert.ts)_
+_See code: [src/commands/analytics/dataflow/history/revert.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.3/src/commands/analytics/dataflow/history/revert.ts)_
 
 ## `sfdx analytics:dataflow:list [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -816,7 +817,7 @@ list Tableau CRM dataflows
 
 ```
 USAGE
-  $ sfdx analytics:dataflow:list [-u <string>] [--apiversion <string>] [--json] [--loglevel 
+  $ sfdx analytics:dataflow:list [-u <string>] [--apiversion <string>] [--json] [--loglevel
   trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -835,7 +836,7 @@ EXAMPLE
   $ sfdx analytics:dataflow:list
 ```
 
-_See code: [src/commands/analytics/dataflow/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.2/src/commands/analytics/dataflow/list.ts)_
+_See code: [src/commands/analytics/dataflow/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.3/src/commands/analytics/dataflow/list.ts)_
 
 ## `sfdx analytics:dataset:display [-i <id> | -n <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -843,7 +844,7 @@ displays a Tableau CRM dataset's details
 
 ```
 USAGE
-  $ sfdx analytics:dataset:display [-i <id> | -n <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel 
+  $ sfdx analytics:dataset:display [-i <id> | -n <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel
   trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -866,7 +867,7 @@ EXAMPLES
   $ sfdx analytics:dataset:display -n datasetApiName
 ```
 
-_See code: [src/commands/analytics/dataset/display.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.2/src/commands/analytics/dataset/display.ts)_
+_See code: [src/commands/analytics/dataset/display.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.3/src/commands/analytics/dataset/display.ts)_
 
 ## `sfdx analytics:dataset:list [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -874,7 +875,7 @@ list Tableau CRM datasets
 
 ```
 USAGE
-  $ sfdx analytics:dataset:list [-u <string>] [--apiversion <string>] [--json] [--loglevel 
+  $ sfdx analytics:dataset:list [-u <string>] [--apiversion <string>] [--json] [--loglevel
   trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -893,7 +894,7 @@ EXAMPLE
   $ sfdx analytics:dataset:list
 ```
 
-_See code: [src/commands/analytics/dataset/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.2/src/commands/analytics/dataset/list.ts)_
+_See code: [src/commands/analytics/dataset/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.3/src/commands/analytics/dataset/list.ts)_
 
 ## `sfdx analytics:dataset:rows:fetch [-i <id> | -n <string>] [--limit <number>] [-r human|csv|json] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -901,7 +902,7 @@ fetch the rows of a Tableau CRM dataset
 
 ```
 USAGE
-  $ sfdx analytics:dataset:rows:fetch [-i <id> | -n <string>] [--limit <number>] [-r human|csv|json] [-u <string>] 
+  $ sfdx analytics:dataset:rows:fetch [-i <id> | -n <string>] [--limit <number>] [-r human|csv|json] [-u <string>]
   [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -929,7 +930,7 @@ EXAMPLES
   $ sfdx analytics:dataset:rows:fetch -n datasetApiName -r csv
 ```
 
-_See code: [src/commands/analytics/dataset/rows/fetch.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.2/src/commands/analytics/dataset/rows/fetch.ts)_
+_See code: [src/commands/analytics/dataset/rows/fetch.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.3/src/commands/analytics/dataset/rows/fetch.ts)_
 
 ## `sfdx analytics:enable [-a] [-w <number>] [-p <number>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -937,7 +938,7 @@ enable Tableau CRM
 
 ```
 USAGE
-  $ sfdx analytics:enable [-a] [-w <number>] [-p <number>] [-u <string>] [--apiversion <string>] [--json] [--loglevel 
+  $ sfdx analytics:enable [-a] [-w <number>] [-p <number>] [-u <string>] [--apiversion <string>] [--json] [--loglevel
   trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -965,7 +966,7 @@ EXAMPLE
   $ sfdx analytics:enable
 ```
 
-_See code: [src/commands/analytics/enable.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.2/src/commands/analytics/enable.ts)_
+_See code: [src/commands/analytics/enable.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.3/src/commands/analytics/enable.ts)_
 
 ## `sfdx analytics:lens:history:list -i <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -973,7 +974,7 @@ list history records for Tableau CRM lenses
 
 ```
 USAGE
-  $ sfdx analytics:lens:history:list -i <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel 
+  $ sfdx analytics:lens:history:list -i <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel
   trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -994,7 +995,7 @@ EXAMPLE
   $ sfdx analytics:lens:history:list --lensid <lensid>
 ```
 
-_See code: [src/commands/analytics/lens/history/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.2/src/commands/analytics/lens/history/list.ts)_
+_See code: [src/commands/analytics/lens/history/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.3/src/commands/analytics/lens/history/list.ts)_
 
 ## `sfdx analytics:lens:history:revert -i <id> -y <id> [-l <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -1002,7 +1003,7 @@ revert to specified history record
 
 ```
 USAGE
-  $ sfdx analytics:lens:history:revert -i <id> -y <id> [-l <string>] [-u <string>] [--apiversion <string>] [--json] 
+  $ sfdx analytics:lens:history:revert -i <id> -y <id> [-l <string>] [-u <string>] [--apiversion <string>] [--json]
   [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -1028,7 +1029,7 @@ EXAMPLE
   $ sfdx analytics:dashboard:history:revert -i <dashboardid> -y <historyid> -l <historyLabel>
 ```
 
-_See code: [src/commands/analytics/lens/history/revert.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.2/src/commands/analytics/lens/history/revert.ts)_
+_See code: [src/commands/analytics/lens/history/revert.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.3/src/commands/analytics/lens/history/revert.ts)_
 
 ## `sfdx analytics:lens:list [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -1036,7 +1037,7 @@ list Tableau CRM lenses
 
 ```
 USAGE
-  $ sfdx analytics:lens:list [-u <string>] [--apiversion <string>] [--json] [--loglevel 
+  $ sfdx analytics:lens:list [-u <string>] [--apiversion <string>] [--json] [--loglevel
   trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -1055,7 +1056,7 @@ EXAMPLE
   $ sfdx analytics:lens:list
 ```
 
-_See code: [src/commands/analytics/lens/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.2/src/commands/analytics/lens/list.ts)_
+_See code: [src/commands/analytics/lens/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.3/src/commands/analytics/lens/list.ts)_
 
 ## `sfdx analytics:query [-f <filepath> | -q <string>] [--nomapnames] [--sql] [-t <string>] [--connector <string>] [--limit <number>] [-r human|csv|json] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -1063,8 +1064,8 @@ execute a Tableau CRM query
 
 ```
 USAGE
-  $ sfdx analytics:query [-f <filepath> | -q <string>] [--nomapnames] [--sql] [-t <string>] [--connector <string>] 
-  [--limit <number>] [-r human|csv|json] [-u <string>] [--apiversion <string>] [--json] [--loglevel 
+  $ sfdx analytics:query [-f <filepath> | -q <string>] [--nomapnames] [--sql] [-t <string>] [--connector <string>]
+  [--limit <number>] [-r human|csv|json] [-u <string>] [--apiversion <string>] [--json] [--loglevel
   trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -1105,7 +1106,7 @@ EXAMPLES
   sfdx analytics:query -q "..." --sql --limit 10 -r csv
 ```
 
-_See code: [src/commands/analytics/query.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.2/src/commands/analytics/query.ts)_
+_See code: [src/commands/analytics/query.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.3/src/commands/analytics/query.ts)_
 
 ## `sfdx analytics:template:create -f <id> [-l <string>] [--description <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -1113,7 +1114,7 @@ create Tableau CRM templates
 
 ```
 USAGE
-  $ sfdx analytics:template:create -f <id> [-l <string>] [--description <string>] [-u <string>] [--apiversion <string>] 
+  $ sfdx analytics:template:create -f <id> [-l <string>] [--description <string>] [-u <string>] [--apiversion <string>]
   [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -1137,7 +1138,7 @@ EXAMPLE
   $ sfdx analytics:template:create -f folderid
 ```
 
-_See code: [src/commands/analytics/template/create.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.2/src/commands/analytics/template/create.ts)_
+_See code: [src/commands/analytics/template/create.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.3/src/commands/analytics/template/create.ts)_
 
 ## `sfdx analytics:template:delete -t <id> [--forcedelete] [--decouple] [-p] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -1145,7 +1146,7 @@ delete Tableau CRM templates
 
 ```
 USAGE
-  $ sfdx analytics:template:delete -t <id> [--forcedelete] [--decouple] [-p] [-u <string>] [--apiversion <string>] 
+  $ sfdx analytics:template:delete -t <id> [--forcedelete] [--decouple] [-p] [-u <string>] [--apiversion <string>]
   [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -1175,7 +1176,7 @@ EXAMPLE
   $ sfdx analytics:template:delete -t templateid
 ```
 
-_See code: [src/commands/analytics/template/delete.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.2/src/commands/analytics/template/delete.ts)_
+_See code: [src/commands/analytics/template/delete.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.3/src/commands/analytics/template/delete.ts)_
 
 ## `sfdx analytics:template:display [-t <id> | -n <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -1183,7 +1184,7 @@ displays a Tableau CRM template's details
 
 ```
 USAGE
-  $ sfdx analytics:template:display [-t <id> | -n <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel 
+  $ sfdx analytics:template:display [-t <id> | -n <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel
   trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -1206,7 +1207,7 @@ EXAMPLES
   $ sfdx analytics:template:display -n templatename
 ```
 
-_See code: [src/commands/analytics/template/display.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.2/src/commands/analytics/template/display.ts)_
+_See code: [src/commands/analytics/template/display.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.3/src/commands/analytics/template/display.ts)_
 
 ## `sfdx analytics:template:list [-a] [-e] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -1214,7 +1215,7 @@ list Tableau CRM templates
 
 ```
 USAGE
-  $ sfdx analytics:template:list [-a] [-e] [-u <string>] [--apiversion <string>] [--json] [--loglevel 
+  $ sfdx analytics:template:list [-a] [-e] [-u <string>] [--apiversion <string>] [--json] [--loglevel
   trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -1238,7 +1239,7 @@ EXAMPLES
   $ sfdx analytics:template:list --includesalesforcetemplates
 ```
 
-_See code: [src/commands/analytics/template/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.2/src/commands/analytics/template/list.ts)_
+_See code: [src/commands/analytics/template/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.3/src/commands/analytics/template/list.ts)_
 
 ## `sfdx analytics:template:update [-t <id> | -n <string>] [-f <id>] [-v <integer>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -1246,7 +1247,7 @@ update Tableau CRM templates
 
 ```
 USAGE
-  $ sfdx analytics:template:update [-t <id> | -n <string>] [-f <id>] [-v <integer>] [-u <string>] [--apiversion 
+  $ sfdx analytics:template:update [-t <id> | -n <string>] [-f <id>] [-v <integer>] [-u <string>] [--apiversion
   <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -1273,5 +1274,6 @@ EXAMPLE
   $ sfdx analytics:template:update -t templateid -f folderid
 ```
 
-_See code: [src/commands/analytics/template/update.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.2/src/commands/analytics/template/update.ts)_
+_See code: [src/commands/analytics/template/update.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.3/src/commands/analytics/template/update.ts)_
+
 <!-- commandsstop -->
