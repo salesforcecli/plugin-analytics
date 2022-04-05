@@ -91,7 +91,16 @@ export default class Folder {
   }
 
   public async update(folderid: string, templateid: string): Promise<string | undefined> {
-    const body = JSON.stringify({ templateSourceId: templateid, templateOptions: { appAction: 'Upgrade' } });
+    let body = JSON.stringify({ templateSourceId: templateid, templateOptions: { appAction: 'Upgrade' } });
+    if (this.serverVersion >= 55.0) {
+      body = JSON.stringify({
+        templateSourceId: templateid,
+        templateOptions: {
+          appAction: 'Upgrade',
+          dynamicOptions: { productionType: 'ATF_3_0', runtimeLogEntryLevel: 'Warning' }
+        }
+      });
+    }
     const wtUrl = this.foldersUrl + encodeURIComponent(folderid);
     const response = await connectRequest<AppFolder>(this.connection, {
       method: 'PUT',
