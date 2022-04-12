@@ -5,6 +5,7 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
+import { promises as fs } from 'fs';
 import * as core from '@salesforce/core';
 import { expect, test } from '@salesforce/command/lib/test';
 import { AnyJson, ensureJsonMap, ensureString } from '@salesforce/ts-types';
@@ -188,7 +189,7 @@ describe('analytics:app:create', () => {
       }
       return Promise.reject();
     })
-    .stub(core.fs, 'readFile', () =>
+    .stub(fs, 'readFile', () =>
       Promise.resolve(
         JSON.stringify({
           templateSourceId: testTemplateJson.id,
@@ -222,7 +223,7 @@ describe('analytics:app:create', () => {
       }
       return Promise.reject();
     })
-    .stub(core.fs, 'readFile', () =>
+    .stub(fs, 'readFile', () =>
       Promise.resolve(
         JSON.stringify({
           templateSourceId: testTemplateJson.id,
@@ -256,7 +257,7 @@ describe('analytics:app:create', () => {
       }
       return Promise.reject();
     })
-    .stub(core.fs, 'readFile', () =>
+    .stub(fs, 'readFile', () =>
       Promise.resolve(
         JSON.stringify({
           assetIcon: '16.png',
@@ -300,7 +301,7 @@ describe('analytics:app:create', () => {
           })
       };
     })
-    .stub(core.fs, 'readFile', () =>
+    .stub(fs, 'readFile', () =>
       Promise.resolve(
         JSON.stringify({
           templateSourceId: testTemplateJson.id,
@@ -346,7 +347,7 @@ describe('analytics:app:create', () => {
         }
       };
     })
-    .stub(core.fs, 'readFile', () =>
+    .stub(fs, 'readFile', () =>
       Promise.resolve(
         JSON.stringify({
           templateSourceId: testTemplateJson.id,
@@ -396,7 +397,7 @@ describe('analytics:app:create', () => {
           })
       };
     })
-    .stub(core.fs, 'readFile', () =>
+    .stub(fs, 'readFile', () =>
       Promise.resolve(
         JSON.stringify({
           templateSourceId: testTemplateJson.id,
@@ -446,7 +447,7 @@ describe('analytics:app:create', () => {
         }
       };
     })
-    .stub(core.fs, 'readFile', () =>
+    .stub(fs, 'readFile', () =>
       Promise.resolve(
         JSON.stringify({
           templateSourceId: testTemplateJson.id,

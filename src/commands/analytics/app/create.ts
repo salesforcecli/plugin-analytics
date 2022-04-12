@@ -5,9 +5,10 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
+import { promises as fs } from 'fs';
 import { EOL } from 'os';
 import { flags, SfdxCommand } from '@salesforce/command';
-import { fs, Messages, Org, SfdxError, StatusResult, StreamingClient } from '@salesforce/core';
+import { Messages, Org, SfdxError, StatusResult, StreamingClient } from '@salesforce/core';
 import { Duration } from '@salesforce/kit';
 import { JsonMap } from '@salesforce/ts-types';
 import chalk from 'chalk';

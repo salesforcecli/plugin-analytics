@@ -5,9 +5,10 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
+import { promises as fs } from 'fs';
 import * as path from 'path';
 import { flags, SfdxCommand } from '@salesforce/command';
-import { fs, Messages, Org, SfdxError } from '@salesforce/core';
+import { Messages, Org, SfdxError } from '@salesforce/core';
 import QuerySvc, {
   DRYRUN_FLAG,
   LIMIT_FLAG,
