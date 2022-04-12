@@ -7,7 +7,7 @@
 // the test data is actual data from a server, which uses _ in field names
 /* eslint-disable camelcase */
 
-import { core } from '@salesforce/command';
+import * as core from '@salesforce/core';
 import { expect, test } from '@salesforce/command/lib/test';
 import { SfdxError } from '@salesforce/core';
 import { AnyJson, JsonMap, ensureJsonMap, ensureString } from '@salesforce/ts-types';

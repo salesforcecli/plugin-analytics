@@ -5,7 +5,8 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { core, UX } from '@salesforce/command';
+import { UX } from '@salesforce/command';
+import * as core from '@salesforce/core';
 import { expect, test } from '@salesforce/command/lib/test';
 import { SfdxError } from '@salesforce/core';
 import { JsonMap } from '@salesforce/ts-types';
