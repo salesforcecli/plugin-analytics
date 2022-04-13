@@ -7,7 +7,8 @@
 // our test data is real data from a server, which uses _'s in the field names
 /* eslint-disable camelcase */
 
-import { core } from '@salesforce/command';
+import { promises as fs } from 'fs';
+import * as core from '@salesforce/core';
 import { expect, test } from '@salesforce/command/lib/test';
 import { SfdxError } from '@salesforce/core';
 import { AnyJson, JsonMap, ensureJsonMap, ensureString } from '@salesforce/ts-types';
@@ -315,7 +316,7 @@ describe('analytics:query', () => {
       }
       return Promise.reject(new SfdxError('Invalid connection request'));
     })
-    .stub(core.fs, 'readFile', () => Promise.resolve(sqlResponse.query))
+    .stub(fs, 'readFile', () => Promise.resolve(sqlResponse.query))
     .stdout()
     .stderr()
     .command(['analytics:query', '-f', 'query.sql'])
@@ -348,7 +349,7 @@ describe('analytics:query', () => {
       }
       return Promise.reject(new SfdxError('Invalid connection request'));
     })
-    .stub(core.fs, 'readFile', () => Promise.resolve('q = load "datasetname";'))
+    .stub(fs, 'readFile', () => Promise.resolve('q = load "datasetname";'))
     .stderr()
     .stdout()
     .command(['analytics:query', '-f', 'query.saql'])
