@@ -118,3 +118,4 @@ workflows:
     jobs:
       - release-management/dependabot-automerge:
           merge-method: squash
+          context: release
