@@ -7,6 +7,8 @@
 
 import { flags, SfdxCommand } from '@salesforce/command';
 import { Messages, Org } from '@salesforce/core';
+import { DEF_APP_CREATE_UPDATE_TIMEOUT } from '../../../lib/analytics/constants';
+import AppStreaming, { StreamingResult } from '../../../lib/analytics/event/appStreaming';
 
 import Folder from '../../../lib/analytics/app/folder';
 
@@ -20,7 +22,7 @@ export default class Update extends SfdxCommand {
   public static examples = ['$ sfdx analytics:app:update -f folderId -t templateId'];
 
   protected static flagsConfig = {
-    templateid: flags.id({
+    templateid: flags.string({
       char: 't',
       required: true,
       description: messages.getMessage('templateidForUpdateFlagDescription'),
@@ -31,17 +33,52 @@ export default class Update extends SfdxCommand {
       required: true,
       description: messages.getMessage('folderidFlagDescription'),
       longDescription: messages.getMessage('folderidFlagLongDescription')
+    }),
+    async: flags.boolean({
+      char: 'a',
+      description: messages.getMessage('appUpdateAsyncDescription'),
+      longDescription: messages.getMessage('appUpdateAsyncLongDescription')
+    }),
+    allevents: flags.boolean({
+      char: 'v',
+      description: messages.getMessage('appCreateAllEventsDescription'),
+      longDescription: messages.getMessage('appCreateAllEventsLongDescription')
+    }),
+    wait: flags.number({
+      char: 'w',
+      description: messages.getMessage('streamingWaitDescription'),
+      longDescription: messages.getMessage('streamingWaitLongDescription', [DEF_APP_CREATE_UPDATE_TIMEOUT]),
+      min: 0,
+      default: DEF_APP_CREATE_UPDATE_TIMEOUT
     })
   };
 
   protected static requiresUsername = true;
   protected static requiresProject = false;
 
+  public streamingResults = [] as StreamingResult[];
+
   public async run() {
     const folder = new Folder(this.org as Org);
-    const waveAppId = await folder.update(this.flags.folderid as string, this.flags.templateid as string);
-    // If error occurs here fails out in the update call and reports back, otherwise success
-    this.ux.log(messages.getMessage('updateSuccess', [waveAppId]));
-    return waveAppId;
+    const appStreaming = new AppStreaming(
+      this.org as Org,
+      this.flags.allEvents as boolean,
+      this.flags.wait as number,
+      this.ux
+    );
+    if (this.flags.async || this.flags.wait <= 0) {
+      const waveAppId = await folder.update(this.flags.folderid as string, this.flags.templateid as string);
+      // If error occurs here fails out in the update call and reports back, otherwise success
+      this.ux.log(messages.getMessage('updateSuccess', [waveAppId]));
+      return { id: waveAppId };
+    } else {
+      const waveAppId = await appStreaming.streamUpdateEvent(
+        folder,
+        this.flags.folderid as string,
+        this.flags.templateid as string
+      );
+      this.streamingResults = appStreaming.getStreamingResults();
+      return { id: waveAppId, events: this.streamingResults };
+    }
   }
 }
