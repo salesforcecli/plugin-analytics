@@ -8,7 +8,7 @@
 import { flags, SfdxCommand } from '@salesforce/command';
 import { Messages, Org } from '@salesforce/core';
 import { DEF_APP_CREATE_UPDATE_TIMEOUT } from '../../../lib/analytics/constants';
-import AppStreaming, { StreamingResult } from '../../../lib/analytics/event/appStreaming';
+import AppStreaming from '../../../lib/analytics/event/appStreaming';
 
 import Folder from '../../../lib/analytics/app/folder';
 
@@ -56,8 +56,6 @@ export default class Update extends SfdxCommand {
   protected static requiresUsername = true;
   protected static requiresProject = false;
 
-  public streamingResults = [] as StreamingResult[];
-
   public async run() {
     const folder = new Folder(this.org as Org);
     const appStreaming = new AppStreaming(
@@ -77,8 +75,7 @@ export default class Update extends SfdxCommand {
         this.flags.folderid as string,
         this.flags.templateid as string
       );
-      this.streamingResults = appStreaming.getStreamingResults();
-      return { id: waveAppId, events: this.streamingResults };
+      return { id: waveAppId, events: appStreaming.getStreamingResults() };
     }
   }
 }

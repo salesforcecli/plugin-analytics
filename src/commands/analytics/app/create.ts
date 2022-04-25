@@ -10,7 +10,7 @@ import { EOL } from 'os';
 import { flags, SfdxCommand } from '@salesforce/command';
 import { Messages, Org, SfdxError } from '@salesforce/core';
 import Folder, { CreateAppBody } from '../../../lib/analytics/app/folder';
-import AppStreaming, { StreamingResult } from '../../../lib/analytics/event/appStreaming';
+import AppStreaming from '../../../lib/analytics/event/appStreaming';
 import { DEF_APP_CREATE_UPDATE_TIMEOUT } from '../../../lib/analytics/constants';
 import WaveTemplate from '../../../lib/analytics/template/wavetemplate';
 
@@ -73,8 +73,6 @@ export default class Create extends SfdxCommand {
   protected static requiresUsername = true;
   protected static requiresProject = false;
 
-  public streamingResults = [] as StreamingResult[];
-
   public async run() {
     const folder = new Folder(this.org as Org);
     const body = await this.generateCreateAppBody();
@@ -94,8 +92,7 @@ export default class Create extends SfdxCommand {
       return { id: waveAppId };
     } else {
       const waveAppId = await appStreaming.streamCreateEvent(folder, body);
-      this.streamingResults = appStreaming.getStreamingResults();
-      return { id: waveAppId, events: this.streamingResults };
+      return { id: waveAppId, events: appStreaming.getStreamingResults() };
     }
   }
 
