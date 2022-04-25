@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.7](https://github.com/salesforcecli/plugin-analytics/compare/v1.0.6...v1.0.7) (2022-04-25)
+
+### Bug Fixes
+
+- stream app update W-10942900 ([#106](https://github.com/salesforcecli/plugin-analytics/issues/106)) ([b417cf1](https://github.com/salesforcecli/plugin-analytics/commit/b417cf17feefb649af4bee46fbff24c6b71e9b91))
+
 ### [1.0.6](https://github.com/salesforcecli/plugin-analytics/compare/v1.0.5...v1.0.6) (2022-04-13)
 
 ### Bug Fixes

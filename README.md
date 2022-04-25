@@ -87,7 +87,7 @@ sfdx plugins
 - [`sfdx analytics:app:delete -f <id> [-p] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsappdelete--f-id--p--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
 - [`sfdx analytics:app:display -f <id> [-a] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsappdisplay--f-id--a--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
 - [`sfdx analytics:app:list [-f <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsapplist--f-string--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-- [`sfdx analytics:app:update -t <id> -f <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsappupdate--t-id--f-id--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx analytics:app:update -t <string> -f <id> [-a] [-v] [-w <number>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsappupdate--t-string--f-id--a--v--w-number--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
 - [`sfdx analytics:asset:publisher:create -i <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsassetpublishercreate--i-id--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
 - [`sfdx analytics:asset:publisher:delete -i <id> -a <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsassetpublisherdelete--i-id--a-id--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
 - [`sfdx analytics:asset:publisher:deleteall -i <id> [-p] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-analyticsassetpublisherdeleteall--i-id--p--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
@@ -165,7 +165,7 @@ EXAMPLES
   $ sfdx analytics:app:create -f path_to_json_file
 ```
 
-_See code: [src/commands/analytics/app/create.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.5/src/commands/analytics/app/create.ts)_
+_See code: [src/commands/analytics/app/create.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.6/src/commands/analytics/app/create.ts)_
 
 ## `sfdx analytics:app:decouple -f <id> -t <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -195,7 +195,7 @@ EXAMPLE
   $ sfdx analytics:app:decouple -f folderId -t templateId
 ```
 
-_See code: [src/commands/analytics/app/decouple.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.5/src/commands/analytics/app/decouple.ts)_
+_See code: [src/commands/analytics/app/decouple.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.6/src/commands/analytics/app/decouple.ts)_
 
 ## `sfdx analytics:app:delete -f <id> [-p] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -227,7 +227,7 @@ EXAMPLE
   $ sfdx analytics:app:delete -f folderid
 ```
 
-_See code: [src/commands/analytics/app/delete.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.5/src/commands/analytics/app/delete.ts)_
+_See code: [src/commands/analytics/app/delete.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.6/src/commands/analytics/app/delete.ts)_
 
 ## `sfdx analytics:app:display -f <id> [-a] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -259,7 +259,7 @@ EXAMPLE
   $ sfdx analytics:app:display -f folderId -a
 ```
 
-_See code: [src/commands/analytics/app/display.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.5/src/commands/analytics/app/display.ts)_
+_See code: [src/commands/analytics/app/display.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.6/src/commands/analytics/app/display.ts)_
 
 ## `sfdx analytics:app:list [-f <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -288,23 +288,30 @@ EXAMPLE
   $ sfdx analytics:app:list
 ```
 
-_See code: [src/commands/analytics/app/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.5/src/commands/analytics/app/list.ts)_
+_See code: [src/commands/analytics/app/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.6/src/commands/analytics/app/list.ts)_
 
-## `sfdx analytics:app:update -t <id> -f <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
+## `sfdx analytics:app:update -t <string> -f <id> [-a] [-v] [-w <number>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
 updates a Tableau CRM app from a template
 
 ```
 USAGE
-  $ sfdx analytics:app:update -t <id> -f <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel
-  trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
+  $ sfdx analytics:app:update -t <string> -f <id> [-a] [-v] [-w <number>] [-u <string>] [--apiversion <string>] [--json]
+   [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
+  -a, --async                                                                       update app asynchronously
   -f, --folderid=folderid                                                           (required) folder ID
   -t, --templateid=templateid                                                       (required) template ID
 
   -u, --targetusername=targetusername                                               username or alias for the target
                                                                                     org; overrides default target org
+
+  -v, --allevents                                                                   verbose display of all app create
+                                                                                    events
+
+  -w, --wait=wait                                                                   [default: 10] wait time in minutes
+                                                                                    for streaming app creation events
 
   --apiversion=apiversion                                                           override the api version used for
                                                                                     api requests made by this command
@@ -318,7 +325,7 @@ EXAMPLE
   $ sfdx analytics:app:update -f folderId -t templateId
 ```
 
-_See code: [src/commands/analytics/app/update.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.5/src/commands/analytics/app/update.ts)_
+_See code: [src/commands/analytics/app/update.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.6/src/commands/analytics/app/update.ts)_
 
 ## `sfdx analytics:asset:publisher:create -i <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -348,7 +355,7 @@ EXAMPLE
   $ sfdx analytics:asset:publisher:create -i assetId
 ```
 
-_See code: [src/commands/analytics/asset/publisher/create.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.5/src/commands/analytics/asset/publisher/create.ts)_
+_See code: [src/commands/analytics/asset/publisher/create.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.6/src/commands/analytics/asset/publisher/create.ts)_
 
 ## `sfdx analytics:asset:publisher:delete -i <id> -a <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -381,7 +388,7 @@ EXAMPLE
   $ sfdx analytics:asset:publisher:delete -a assetId -i assetPublisherId
 ```
 
-_See code: [src/commands/analytics/asset/publisher/delete.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.5/src/commands/analytics/asset/publisher/delete.ts)_
+_See code: [src/commands/analytics/asset/publisher/delete.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.6/src/commands/analytics/asset/publisher/delete.ts)_
 
 ## `sfdx analytics:asset:publisher:deleteall -i <id> [-p] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -414,7 +421,7 @@ EXAMPLE
   $ sfdx analytics:asset:publisher:deleteall -i assetId
 ```
 
-_See code: [src/commands/analytics/asset/publisher/deleteall.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.5/src/commands/analytics/asset/publisher/deleteall.ts)_
+_See code: [src/commands/analytics/asset/publisher/deleteall.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.6/src/commands/analytics/asset/publisher/deleteall.ts)_
 
 ## `sfdx analytics:asset:publisher:list -i <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -444,7 +451,7 @@ EXAMPLE
   $ sfdx analytics:asset:publisher:list -i assetId
 ```
 
-_See code: [src/commands/analytics/asset/publisher/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.5/src/commands/analytics/asset/publisher/list.ts)_
+_See code: [src/commands/analytics/asset/publisher/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.6/src/commands/analytics/asset/publisher/list.ts)_
 
 ## `sfdx analytics:autoinstall:app:create [-t <id> | -n <string>] [-a] [-w <number>] [-p <number>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -484,7 +491,7 @@ EXAMPLES
   $ sfdx analytics:autoinstall:app:create -n templatename
 ```
 
-_See code: [src/commands/analytics/autoinstall/app/create.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.5/src/commands/analytics/autoinstall/app/create.ts)_
+_See code: [src/commands/analytics/autoinstall/app/create.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.6/src/commands/analytics/autoinstall/app/create.ts)_
 
 ## `sfdx analytics:autoinstall:app:delete -f <id> [-a] [-w <number>] [-p <number>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -521,7 +528,7 @@ EXAMPLE
   $ sfdx analytics:autoinstall:app:delete -f folderid
 ```
 
-_See code: [src/commands/analytics/autoinstall/app/delete.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.5/src/commands/analytics/autoinstall/app/delete.ts)_
+_See code: [src/commands/analytics/autoinstall/app/delete.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.6/src/commands/analytics/autoinstall/app/delete.ts)_
 
 ## `sfdx analytics:autoinstall:app:update -f <id> [-t <id> | -n <string>] [-a] [-w <number>] [-p <number>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -562,7 +569,7 @@ EXAMPLES
   $ sfdx analytics:autoinstall:app:update -n templatename -f folderid
 ```
 
-_See code: [src/commands/analytics/autoinstall/app/update.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.5/src/commands/analytics/autoinstall/app/update.ts)_
+_See code: [src/commands/analytics/autoinstall/app/update.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.6/src/commands/analytics/autoinstall/app/update.ts)_
 
 ## `sfdx analytics:autoinstall:display -i <id> [-a] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -594,7 +601,7 @@ EXAMPLE
   $ sfdx analytics:autoinstall:display -i id
 ```
 
-_See code: [src/commands/analytics/autoinstall/display.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.5/src/commands/analytics/autoinstall/display.ts)_
+_See code: [src/commands/analytics/autoinstall/display.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.6/src/commands/analytics/autoinstall/display.ts)_
 
 ## `sfdx analytics:autoinstall:list [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -621,7 +628,7 @@ EXAMPLE
   $ sfdx analytics:autoinstall:list
 ```
 
-_See code: [src/commands/analytics/autoinstall/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.5/src/commands/analytics/autoinstall/list.ts)_
+_See code: [src/commands/analytics/autoinstall/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.6/src/commands/analytics/autoinstall/list.ts)_
 
 ## `sfdx analytics:dashboard:history:list -i <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -650,7 +657,7 @@ EXAMPLE
   $ sfdx analytics:dashboard:history:list --dashboardid <dashboardid>
 ```
 
-_See code: [src/commands/analytics/dashboard/history/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.5/src/commands/analytics/dashboard/history/list.ts)_
+_See code: [src/commands/analytics/dashboard/history/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.6/src/commands/analytics/dashboard/history/list.ts)_
 
 ## `sfdx analytics:dashboard:history:revert -i <id> -y <id> [-l <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -684,7 +691,7 @@ EXAMPLE
   $ sfdx analytics:dashboard:history:revert -i <dashboardid> -y <historyid> -l <historyLabel>
 ```
 
-_See code: [src/commands/analytics/dashboard/history/revert.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.5/src/commands/analytics/dashboard/history/revert.ts)_
+_See code: [src/commands/analytics/dashboard/history/revert.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.6/src/commands/analytics/dashboard/history/revert.ts)_
 
 ## `sfdx analytics:dashboard:list [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -711,7 +718,7 @@ EXAMPLE
   $ sfdx analytics:dashboard:list
 ```
 
-_See code: [src/commands/analytics/dashboard/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.5/src/commands/analytics/dashboard/list.ts)_
+_See code: [src/commands/analytics/dashboard/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.6/src/commands/analytics/dashboard/list.ts)_
 
 ## `sfdx analytics:dashboard:update -i <id> [-y <id>] [-r] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -746,7 +753,7 @@ EXAMPLES
   $ sfdx analytics:dashboard:update -i dashboardId -r
 ```
 
-_See code: [src/commands/analytics/dashboard/update.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.5/src/commands/analytics/dashboard/update.ts)_
+_See code: [src/commands/analytics/dashboard/update.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.6/src/commands/analytics/dashboard/update.ts)_
 
 ## `sfdx analytics:dataflow:history:list -i <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -775,7 +782,7 @@ EXAMPLE
   $ sfdx analytics:dataflow:history:list --dataflowid <dataflowid>
 ```
 
-_See code: [src/commands/analytics/dataflow/history/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.5/src/commands/analytics/dataflow/history/list.ts)_
+_See code: [src/commands/analytics/dataflow/history/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.6/src/commands/analytics/dataflow/history/list.ts)_
 
 ## `sfdx analytics:dataflow:history:revert -i <id> -y <id> [-l <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -809,7 +816,7 @@ EXAMPLE
   $ sfdx analytics:dataflow:history:revert -i <dataflowid> -y <historyid> -l <historyLabel>
 ```
 
-_See code: [src/commands/analytics/dataflow/history/revert.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.5/src/commands/analytics/dataflow/history/revert.ts)_
+_See code: [src/commands/analytics/dataflow/history/revert.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.6/src/commands/analytics/dataflow/history/revert.ts)_
 
 ## `sfdx analytics:dataflow:list [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -836,7 +843,7 @@ EXAMPLE
   $ sfdx analytics:dataflow:list
 ```
 
-_See code: [src/commands/analytics/dataflow/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.5/src/commands/analytics/dataflow/list.ts)_
+_See code: [src/commands/analytics/dataflow/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.6/src/commands/analytics/dataflow/list.ts)_
 
 ## `sfdx analytics:dataset:display [-i <id> | -n <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -867,7 +874,7 @@ EXAMPLES
   $ sfdx analytics:dataset:display -n datasetApiName
 ```
 
-_See code: [src/commands/analytics/dataset/display.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.5/src/commands/analytics/dataset/display.ts)_
+_See code: [src/commands/analytics/dataset/display.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.6/src/commands/analytics/dataset/display.ts)_
 
 ## `sfdx analytics:dataset:list [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -894,7 +901,7 @@ EXAMPLE
   $ sfdx analytics:dataset:list
 ```
 
-_See code: [src/commands/analytics/dataset/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.5/src/commands/analytics/dataset/list.ts)_
+_See code: [src/commands/analytics/dataset/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.6/src/commands/analytics/dataset/list.ts)_
 
 ## `sfdx analytics:dataset:rows:fetch [-i <id> | -n <string>] [--limit <number>] [-r human|csv|json] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -930,7 +937,7 @@ EXAMPLES
   $ sfdx analytics:dataset:rows:fetch -n datasetApiName -r csv
 ```
 
-_See code: [src/commands/analytics/dataset/rows/fetch.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.5/src/commands/analytics/dataset/rows/fetch.ts)_
+_See code: [src/commands/analytics/dataset/rows/fetch.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.6/src/commands/analytics/dataset/rows/fetch.ts)_
 
 ## `sfdx analytics:enable [-a] [-w <number>] [-p <number>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -966,7 +973,7 @@ EXAMPLE
   $ sfdx analytics:enable
 ```
 
-_See code: [src/commands/analytics/enable.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.5/src/commands/analytics/enable.ts)_
+_See code: [src/commands/analytics/enable.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.6/src/commands/analytics/enable.ts)_
 
 ## `sfdx analytics:lens:history:list -i <id> [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -995,7 +1002,7 @@ EXAMPLE
   $ sfdx analytics:lens:history:list --lensid <lensid>
 ```
 
-_See code: [src/commands/analytics/lens/history/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.5/src/commands/analytics/lens/history/list.ts)_
+_See code: [src/commands/analytics/lens/history/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.6/src/commands/analytics/lens/history/list.ts)_
 
 ## `sfdx analytics:lens:history:revert -i <id> -y <id> [-l <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -1029,7 +1036,7 @@ EXAMPLE
   $ sfdx analytics:dashboard:history:revert -i <dashboardid> -y <historyid> -l <historyLabel>
 ```
 
-_See code: [src/commands/analytics/lens/history/revert.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.5/src/commands/analytics/lens/history/revert.ts)_
+_See code: [src/commands/analytics/lens/history/revert.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.6/src/commands/analytics/lens/history/revert.ts)_
 
 ## `sfdx analytics:lens:list [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -1056,7 +1063,7 @@ EXAMPLE
   $ sfdx analytics:lens:list
 ```
 
-_See code: [src/commands/analytics/lens/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.5/src/commands/analytics/lens/list.ts)_
+_See code: [src/commands/analytics/lens/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.6/src/commands/analytics/lens/list.ts)_
 
 ## `sfdx analytics:query [-f <filepath> | -q <string>] [--nomapnames] [--sql] [-t <string>] [--connector <string>] [--limit <number>] [-r human|csv|json] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -1106,7 +1113,7 @@ EXAMPLES
   sfdx analytics:query -q "..." --sql --limit 10 -r csv
 ```
 
-_See code: [src/commands/analytics/query.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.5/src/commands/analytics/query.ts)_
+_See code: [src/commands/analytics/query.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.6/src/commands/analytics/query.ts)_
 
 ## `sfdx analytics:template:create -f <id> [-l <string>] [--description <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -1138,7 +1145,7 @@ EXAMPLE
   $ sfdx analytics:template:create -f folderid
 ```
 
-_See code: [src/commands/analytics/template/create.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.5/src/commands/analytics/template/create.ts)_
+_See code: [src/commands/analytics/template/create.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.6/src/commands/analytics/template/create.ts)_
 
 ## `sfdx analytics:template:delete -t <id> [--forcedelete] [--decouple] [-p] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -1176,7 +1183,7 @@ EXAMPLE
   $ sfdx analytics:template:delete -t templateid
 ```
 
-_See code: [src/commands/analytics/template/delete.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.5/src/commands/analytics/template/delete.ts)_
+_See code: [src/commands/analytics/template/delete.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.6/src/commands/analytics/template/delete.ts)_
 
 ## `sfdx analytics:template:display [-t <id> | -n <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -1207,7 +1214,7 @@ EXAMPLES
   $ sfdx analytics:template:display -n templatename
 ```
 
-_See code: [src/commands/analytics/template/display.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.5/src/commands/analytics/template/display.ts)_
+_See code: [src/commands/analytics/template/display.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.6/src/commands/analytics/template/display.ts)_
 
 ## `sfdx analytics:template:list [-a] [-e] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -1239,7 +1246,7 @@ EXAMPLES
   $ sfdx analytics:template:list --includesalesforcetemplates
 ```
 
-_See code: [src/commands/analytics/template/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.5/src/commands/analytics/template/list.ts)_
+_See code: [src/commands/analytics/template/list.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.6/src/commands/analytics/template/list.ts)_
 
 ## `sfdx analytics:template:update [-t <id> | -n <string>] [-f <id>] [-v <integer>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -1274,6 +1281,6 @@ EXAMPLE
   $ sfdx analytics:template:update -t templateid -f folderid
 ```
 
-_See code: [src/commands/analytics/template/update.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.5/src/commands/analytics/template/update.ts)_
+_See code: [src/commands/analytics/template/update.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.6/src/commands/analytics/template/update.ts)_
 
 <!-- commandsstop -->
