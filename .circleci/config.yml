@@ -45,6 +45,7 @@ workflows:
           filters:
             branches:
               ignore: main
+          context: release
       - release-management/test-package:
           matrix:
             parameters:
