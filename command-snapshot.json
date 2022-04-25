@@ -44,7 +44,17 @@
   {
     "command": "analytics:app:update",
     "plugin": "@salesforce/analytics",
-    "flags": ["apiversion", "folderid", "json", "loglevel", "targetusername", "templateid"]
+    "flags": [
+      "allevents",
+      "apiversion",
+      "async",
+      "folderid",
+      "json",
+      "loglevel",
+      "targetusername",
+      "templateid",
+      "wait"
+    ]
   },
   {
     "command": "analytics:asset:publisher:create",

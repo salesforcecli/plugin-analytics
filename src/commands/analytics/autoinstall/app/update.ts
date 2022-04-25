@@ -10,7 +10,7 @@ import { Messages, Org, SfdxError } from '@salesforce/core';
 
 import AutoInstall from '../../../../lib/analytics/autoinstall/autoinstall';
 import {
-  DEF_APP_CREATE_TIMEOUT,
+  DEF_APP_CREATE_UPDATE_TIMEOUT,
   DEF_POLLING_INTERVAL,
   MIN_POLLING_INTERVAL
 } from '../../../../lib/analytics/constants';
@@ -55,9 +55,9 @@ export default class Update extends SfdxCommand {
     wait: flags.number({
       char: 'w',
       description: messages.getMessage('autoInstallWaitDescription'),
-      longDescription: messages.getMessage('autoInstallWaitLongDescription', [DEF_APP_CREATE_TIMEOUT]),
+      longDescription: messages.getMessage('autoInstallWaitLongDescription', [DEF_APP_CREATE_UPDATE_TIMEOUT]),
       min: 0,
-      default: DEF_APP_CREATE_TIMEOUT
+      default: DEF_APP_CREATE_UPDATE_TIMEOUT
     }),
     pollinterval: flags.number({
       char: 'p',

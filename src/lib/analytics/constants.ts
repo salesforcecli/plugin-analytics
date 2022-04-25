@@ -5,8 +5,8 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-/** Default timeout to wait for app creation commands, in minutes. */
-export const DEF_APP_CREATE_TIMEOUT = 10;
+/** Default timeout to wait for app creation/update commands, in minutes. */
+export const DEF_APP_CREATE_UPDATE_TIMEOUT = 10;
 
 /** Default server polling interval, in milliseconds. */
 // the md commands in force: default to 5000ms. polling interval so use the same here
