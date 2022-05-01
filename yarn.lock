@@ -648,9 +648,9 @@
     safe-json-stringify "~1"
 
 "@salesforce/cli-plugins-testkit@^1.1.5":
-  version "1.5.9"
-  resolved "https://registry.yarnpkg.com/@salesforce/cli-plugins-testkit/-/cli-plugins-testkit-1.5.9.tgz#98392c75a235caf713064ed4559c9cadf2919481"
-  integrity sha512-yMnSjRuLkR/P0JeQN5pN33c7gRgigpxexlwc4fFd7i4S91YPWrPzpMWMeu03a6h2dkatW5Hk19r/A0D2N8IiOg==
+  version "1.5.30"
+  resolved "https://registry.yarnpkg.com/@salesforce/cli-plugins-testkit/-/cli-plugins-testkit-1.5.30.tgz#a444c1d647e766854cf0c23b0cb53c29e91046e3"
+  integrity sha512-MPvcUV/3QpSSI/XbD5boVJPosO3yxRhP3ED1lD0KdUIAOuShGgAO0Qq3HnW720QMgiY7Z1Vq1PqHvaQjbpG0vA==
   dependencies:
     "@salesforce/core" "^2.24.0"
     "@salesforce/kit" "^1.5.13"
@@ -677,31 +677,7 @@
     chalk "^2.4.2"
     cli-ux "^4.9.3"
 
-"@salesforce/core@^2.24.0", "@salesforce/core@^2.29.0", "@salesforce/core@^2.35.0":
-  version "2.35.0"
-  resolved "https://registry.yarnpkg.com/@salesforce/core/-/core-2.35.0.tgz#15890d5b0294c56b5b435a4803f37f6a0c177893"
-  integrity sha512-eqBZtaHn3s3FsASjsrZ8T9e/TE+aHuB2DkuKDEierDYW5cSVqJyZ0ccMi9QKI7oQuPO1UHhcUyWmyezkdEjYzg==
-  dependencies:
-    "@salesforce/bunyan" "^2.0.0"
-    "@salesforce/kit" "^1.5.17"
-    "@salesforce/schemas" "^1.0.1"
-    "@salesforce/ts-types" "^1.5.20"
-    "@types/graceful-fs" "^4.1.5"
-    "@types/jsforce" "^1.9.38"
-    "@types/mkdirp" "^1.0.1"
-    archiver "^5.3.0"
-    debug "^3.1.0"
-    faye "^1.4.0"
-    graceful-fs "^4.2.4"
-    js2xmlparser "^4.0.1"
-    jsen "0.6.6"
-    jsforce "^1.11.0"
-    jsonwebtoken "8.5.0"
-    mkdirp "1.0.4"
-    semver "^7.3.5"
-    ts-retry-promise "^0.6.0"
-
-"@salesforce/core@^2.36.0":
+"@salesforce/core@^2.24.0", "@salesforce/core@^2.29.0", "@salesforce/core@^2.35.0", "@salesforce/core@^2.36.0":
   version "2.36.0"
   resolved "https://registry.yarnpkg.com/@salesforce/core/-/core-2.36.0.tgz#eadade3d663f0a2e11d0cc9f9097c528c182997d"
   integrity sha512-VsKt7SXArxrOelaJl5Ez21Pmtdp2eU6qimqZ5clxnNaZDZKOySDPYnKHu7AYCt1LUNFN9cfsX8K5yOHxS+wT+w==
@@ -930,13 +906,6 @@
   version "4.1.5"
   resolved "https://registry.yarnpkg.com/@types/graceful-fs/-/graceful-fs-4.1.5.tgz#21ffba0d98da4350db64891f92a9e5db3cdb4e15"
   integrity sha512-anKkLmZZ+xm4p8JWBf4hElkM4XR+EZeA2M9BAkkTldmcyDY4mbdIJnRghDJH3Ov5ooY7/UAoENtmdMSkaAd7Cw==
-  dependencies:
-    "@types/node" "*"
-
-"@types/jsforce@^1.9.38":
-  version "1.9.40"
-  resolved "https://registry.yarnpkg.com/@types/jsforce/-/jsforce-1.9.40.tgz#fc83fd4b5d8b67f19543cf8b86d24653e3f13ede"
-  integrity sha512-Zj53GKHjmrpbVmItS+XlenPFHtQAntADjt8g1zEs05dVfvfCHEty9NnlKTjwYA49BRNi4tD3S8TZb/gRgC0FyA==
   dependencies:
     "@types/node" "*"
 
