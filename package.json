@@ -134,6 +134,9 @@
               }
             }
           },
+          "recipe": {
+            "description": "manage analytics recipess"
+          },
           "template": {
             "description": "create and manage analytics templates"
           }
