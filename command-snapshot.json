@@ -231,6 +231,11 @@
     ]
   },
   {
+    "command": "analytics:recipe:list",
+    "plugin": "@salesforce/analytics",
+    "flags": ["apiversion", "json", "loglevel", "targetusername"]
+  },
+  {
     "command": "analytics:template:create",
     "plugin": "@salesforce/analytics",
     "flags": ["apiversion", "description", "folderid", "json", "label", "loglevel", "targetusername"]
