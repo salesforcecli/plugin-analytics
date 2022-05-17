@@ -17,7 +17,10 @@ export default class Create extends SfdxCommand {
   public static description = messages.getMessage('createCommandDescription');
   public static longDescription = messages.getMessage('createCommandLongDescription');
 
-  public static examples = ['$ sfdx analytics:template:create -f folderid'];
+  public static examples = [
+    '$ sfdx analytics:template:create -f folderid',
+    '$ sfdx analytics:template:create -f folderid -r "recipeid1, recipeid2"'
+  ];
 
   protected static flagsConfig = {
     folderid: flags.id({

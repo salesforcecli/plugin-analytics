@@ -18,7 +18,10 @@ export default class Update extends SfdxCommand {
   public static description = messages.getMessage('updateCommandDescription');
   public static longDescription = messages.getMessage('updateCommandLongDescription');
 
-  public static examples = ['$ sfdx analytics:template:update -t templateid -f folderid'];
+  public static examples = [
+    '$ sfdx analytics:template:update -t templateid -f folderid',
+    '$ sfdx analytics:template:update -t templateid -f folderid -r "recipeid1, recipeid2"'
+  ];
 
   protected static flagsConfig = {
     templateid: flags.id({

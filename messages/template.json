@@ -46,5 +46,5 @@
   "assetVersionFlagDescription": "version number for upgrading the template (available in api version 54.0)",
   "assetVersionFlagLongDescription": "Version number for upgrading the template.",
   "recipeidsFlagDescription": "comma-separated list of recipe IDs",
-  "recipeidsFlagLongDescription": "comma-separated list of recipe IDs to be includes with the template. "
+  "recipeidsFlagLongDescription": "comma-separated list of recipe IDs to be included with the template. "
 }
