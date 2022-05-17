@@ -26,7 +26,14 @@ export default class Create extends SfdxCommand {
       description: messages.getMessage('folderidFlagDescription'),
       longDescription: messages.getMessage('folderidFlagLongDescription')
     }),
-    // label & description only work in 232+, they are sliently ignored on the server in 230
+    // recipeids only work in 238+, they are silently ignored on the server in 236-
+    recipeids: flags.array({
+      char: 'r',
+      required: false,
+      description: messages.getMessage('recipeidsFlagDescription'),
+      longDescription: messages.getMessage('recipeidsFlagLongDescription')
+    }),
+    // label & description only work in 232+, they are silently ignored on the server in 230
     label: flags.string({
       char: 'l',
       description: messages.getMessage('templateLabelFlagDescription'),
@@ -46,7 +53,8 @@ export default class Create extends SfdxCommand {
     // Create the wave template from an app/folder id
     const waveTemplateId = await template.create(this.flags.folderid as string, {
       label: this.flags.label as string | undefined,
-      description: this.flags.description as string | undefined
+      description: this.flags.description as string | undefined,
+      recipeIds: this.flags.recipeids as string[] | undefined
     });
     this.ux.log(messages.getMessage('createSuccess', [waveTemplateId]));
     return waveTemplateId;

@@ -38,6 +38,13 @@ export default class Update extends SfdxCommand {
       description: messages.getMessage('folderidFlagDescription'),
       longDescription: messages.getMessage('folderidFlagLongDescription')
     }),
+    // recipeids only work in 238+, they are silently ignored on the server in 236-
+    recipeids: flags.array({
+      char: 'r',
+      required: false,
+      description: messages.getMessage('recipeidsFlagDescription'),
+      longDescription: messages.getMessage('recipeidsFlagLongDescription')
+    }),
     assetversion: flags.integer({
       char: 'v',
       description: messages.getMessage('assetVersionFlagDescription'),
@@ -66,6 +73,7 @@ export default class Update extends SfdxCommand {
     }
     let folderid = this.flags.folderid as string | undefined;
     const assetversion = this.flags.assetversion as number | undefined;
+    const recipeIds = this.flags.recipeids as string[] | undefined;
 
     const template = new WaveTemplate(this.org as Org);
 
@@ -102,7 +110,7 @@ export default class Update extends SfdxCommand {
         return;
       }
     }
-    const result = await template.update(folderid, templateInput, assetversion);
+    const result = await template.update(folderid, templateInput, assetversion, recipeIds);
     this.ux.log(messages.getMessage('updateSuccess', [result?.name, result?.id, folderid]));
     return templateInput;
   }

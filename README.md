@@ -1149,13 +1149,13 @@ create Tableau CRM templates
 
 ```
 USAGE
-  $ sfdx analytics:template:create -f <id> [-l <string>] [--description <string>] [-u <string>] [--apiversion <string>]
+  $ sfdx analytics:template:create -f <id> [-l <string>] [-r <array>] [--description <string>] [-u <string>] [--apiversion <string>]
   [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
   -f, --folderid=folderid                                                           (required) folder ID
   -l, --label=label                                                                 template label
-
+  -r, --recipeids=recipeids                                                         comma-separated list of recipe IDs
   -u, --targetusername=targetusername                                               username or alias for the target
                                                                                     org; overrides default target org
 
@@ -1171,6 +1171,7 @@ OPTIONS
 
 EXAMPLE
   $ sfdx analytics:template:create -f folderid
+  $ sfdx analytics:template:create -f folderid -r "05vxx0000004CAeAAM, 05vxx0000004C92AAE"
 ```
 
 _See code: [src/commands/analytics/template/create.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.7/src/commands/analytics/template/create.ts)_
@@ -1282,12 +1283,13 @@ update Tableau CRM templates
 
 ```
 USAGE
-  $ sfdx analytics:template:update [-t <id> | -n <string>] [-f <id>] [-v <integer>] [-u <string>] [--apiversion
+  $ sfdx analytics:template:update [-t <id> | -n <string>] [-f <id>] [-r <array>] [-v <integer>] [-u <string>] [--apiversion
   <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
   -f, --folderid=folderid                                                           folder ID
   -n, --templatename=templatename                                                   template name
+  -r, --recipeids=recipeids                                                         comma-separated list of recipe IDs
   -t, --templateid=templateid                                                       template ID
 
   -u, --targetusername=targetusername                                               username or alias for the target
@@ -1307,6 +1309,7 @@ OPTIONS
 
 EXAMPLE
   $ sfdx analytics:template:update -t templateid -f folderid
+  $ sfdx analytics:template:update -t templateid -r "05vxx0000004CAeAAM, 05vxx0000004C92AAE"
 ```
 
 _See code: [src/commands/analytics/template/update.ts](https://github.com/salesforcecli/plugin-analytics/blob/v1.0.7/src/commands/analytics/template/update.ts)_

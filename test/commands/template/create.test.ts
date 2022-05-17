@@ -113,4 +113,33 @@ describe('analytics:template:create', () => {
         description: 'test description'
       });
     });
+
+  test
+    .withOrg({ username: 'test@org.com' }, true)
+    .withConnectionRequest(request => {
+      request = ensureJsonMap(request);
+      if (request.method === 'POST') {
+        saveOffRequestBody(ensureString(request.body));
+        return Promise.resolve({ id: templateId });
+      }
+      return Promise.reject();
+    })
+    .stdout()
+    .command([
+      'analytics:template:create',
+      '--folderid',
+      '00lxx000000000zCAA',
+      '-r',
+      '05vxx0000004CAeAAM, 05vxx0000004CAeAAM'
+    ])
+    .it(
+      'runs analytics:template:create --folderid 00lxx000000000zCAA, -r "05vxx0000004CAeAAM, 05vxx0000004CAeAAM"',
+      ctx => {
+        expect(ctx.stdout).to.contain(messages.getMessage('createSuccess', [templateId]));
+        expect(requestBody, 'requestBody').to.deep.equal({
+          folderSource: { id: '00lxx000000000zCAA' },
+          recipeIds: ['05vxx0000004CAeAAM', '05vxx0000004CAeAAM']
+        });
+      }
+    );
 });
