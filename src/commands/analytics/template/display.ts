@@ -64,7 +64,8 @@ export default class Display extends SfdxCommand {
         { key: 'Id', value: templateRep.id },
         { key: 'Template Type', value: templateRep.templateType },
         { key: 'Folder Source Id', value: templateRep.folderSource?.id },
-        { key: 'Asset Version', value: templateRep.assetVersion }
+        { key: 'Asset Version', value: templateRep.assetVersion },
+        { key: 'Template Version', value: templateRep.releaseInfo?.templateVersion }
       ],
       {
         columns: [

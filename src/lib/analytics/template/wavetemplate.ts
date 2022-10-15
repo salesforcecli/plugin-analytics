@@ -17,6 +17,9 @@ export type TemplateType = Record<string, unknown> & {
   folderSource?: Record<string, unknown> & {
     id?: string;
   };
+  releaseInfo?: Record<string, unknown> & {
+    templateVersion?: string;
+  };
   templateType?: string;
   assetVersion?: string;
   recipeIds?: string[];

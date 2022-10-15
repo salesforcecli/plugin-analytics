@@ -39,7 +39,15 @@ export default class List extends SfdxCommand {
   protected static requiresUsername = true;
   protected static requiresProject = false;
 
-  protected static tableColumnData = ['name', 'label', 'templateid', 'templatetype', 'folderid', 'namespace'];
+  protected static tableColumnData = [
+    'name',
+    'label',
+    'templateid',
+    'templatetype',
+    'folderid',
+    'namespace',
+    'templateversion'
+  ];
 
   public async run() {
     const wavetemplate = new WaveTemplate(this.org as Org);
@@ -51,7 +59,8 @@ export default class List extends SfdxCommand {
         templateid: template.id,
         templatetype: template.templateType,
         folderid: template.folderSource?.id ?? null,
-        namespace: template.namespace
+        namespace: template.namespace,
+        templateversion: template.releaseInfo?.templateVersion ?? null
       }));
     if (templates.length) {
       this.ux.styledHeader(messages.getMessage('templatesFound', [templates.length]));
