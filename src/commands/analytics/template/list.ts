@@ -44,9 +44,9 @@ export default class List extends SfdxCommand {
     'label',
     'templateid',
     'templatetype',
-    'templateversion',
     'folderid',
-    'namespace'
+    'namespace',
+    'templateversion'
   ];
 
   public async run() {
@@ -58,9 +58,9 @@ export default class List extends SfdxCommand {
         label: template.label,
         templateid: template.id,
         templatetype: template.templateType,
-        templateversion: template.releaseInfo?.templateVersion ?? null,
         folderid: template.folderSource?.id ?? null,
-        namespace: template.namespace
+        namespace: template.namespace,
+        templateversion: template.releaseInfo?.templateVersion ?? null
       }));
     if (templates.length) {
       this.ux.styledHeader(messages.getMessage('templatesFound', [templates.length]));
