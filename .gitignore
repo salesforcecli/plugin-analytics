@@ -9,10 +9,10 @@ package-lock.json
 # debug logs
 npm-error.log
 yarn-error.log
+lerna-debug.log
 
-
-# compile source
-lib
+# compiled source
+oclif.manifest.json
 
 # test artifacts
 *xunit.xml
@@ -36,8 +36,16 @@ node_modules
 # --
 # put files here you don't want cleaned with sf-clean
 
+# compiled source -- sf-clean doesn't like entries starting with / and we don't want to exclude
+# src/lib, so clean this manually
+/lib
+
+# sf-install will always create this file, which always takes precendent over .prettierrc.js, which
+# is the only way to extend/override a prettier configuration, so make sure it doesn't get checked in
+/.prettierrc.json
+
 # os specific files
 .DS_Store
 .idea
-
-oclif.manifest.json
+*.swp
+.sfdx
