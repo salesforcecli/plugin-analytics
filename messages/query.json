@@ -1,6 +1,6 @@
 {
-  "queryCommandDescription": "execute a Tableau CRM query",
-  "queryCommandLongDescription": "Execute a Tableau CRM query.",
+  "queryCommandDescription": "execute a CRM Analytics query",
+  "queryCommandLongDescription": "Execute a CRM Analytics query.",
   "missingRequiredField": "Missing Required Field: query or queryfile",
   "queryfileDescription": "path to the file containing the query to execute",
   "queryfileLongDescription": "Path to the file containing the query to execute.",

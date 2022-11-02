@@ -1,6 +1,6 @@
 {
   "name": "@salesforce/analytics",
-  "description": "Commands for working with Tableau CRM applications, assets, and services",
+  "description": "Commands for working with CRM Analytics applications, assets, and services",
   "version": "1.0.11",
   "author": "Salesforce",
   "bugs": "https://github.com/forcedotcom/analyticsdx-vscode/issues",
@@ -63,7 +63,8 @@
     "analytics",
     "analyticsdx",
     "tableau",
-    "tableaucrm",
+    "CRMA",
+    "CRM Analytics",
     "force",
     "salesforce",
     "sfdx",

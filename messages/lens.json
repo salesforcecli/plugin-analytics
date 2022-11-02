@@ -1,5 +1,5 @@
 {
-  "listCommandDescription": "list Tableau CRM lenses",
-  "listCommandLongDescription": "Lists Tableau CRM lenses in the specified target org.",
-  "lensesFound": "Found [%s] Tableau CRM lenses."
+  "listCommandDescription": "list CRM Analytics lenses",
+  "listCommandLongDescription": "Lists CRM Analytics lenses in the specified target org.",
+  "lensesFound": "Found [%s] CRM Analytics lenses."
 }

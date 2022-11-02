@@ -1,5 +1,5 @@
 {
-  "listCommandDescription": "list Tableau CRM dataflows",
-  "listCommandLongDescription": "Lists Tableau CRM dataflows in the specified target org.",
-  "dataflowsFound": "Found [%s] Tableau CRM dataflows."
+  "listCommandDescription": "list CRM Analytics dataflows",
+  "listCommandLongDescription": "Lists CRM Analytics dataflows in the specified target org.",
+  "dataflowsFound": "Found [%s] CRM Analytics dataflows."
 }

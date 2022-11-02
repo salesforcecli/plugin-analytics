@@ -1,9 +1,9 @@
 {
-  "listCommandDescription": "list Tableau CRM datasets",
-  "listCommandLongDescription": "Lists Tableau CRM datasets in the specified target org.",
-  "datasetsFound": "Found [%s] Tableau CRM datasets.",
-  "displayCommandDescription": "displays a Tableau CRM dataset's details",
-  "displayCommandLongDescription": "Displays a Tableau CRM dataset's details.",
+  "listCommandDescription": "list CRM Analytics datasets",
+  "listCommandLongDescription": "Lists CRM Analytics datasets in the specified target org.",
+  "datasetsFound": "Found [%s] CRM Analytics datasets.",
+  "displayCommandDescription": "displays a CRM Analytics dataset's details",
+  "displayCommandLongDescription": "Displays a CRM Analytics dataset's details.",
   "missingRequiredField": "Missing Required Field: datasetid or datasetname",
   "displayDetailHeader": "Dataset Details",
   "datasetidFlagDescription": "dataset ID",
@@ -11,6 +11,6 @@
   "datasetnameFlagDescription": "dataset api name",
   "datasetnameFlagLongDescription": "Dataset api name.",
   "displayDateFormat": "YYYY-MM-DD HH:mm:ss",
-  "rowsfetchCommandDescription": "fetch the rows of a Tableau CRM dataset",
-  "rowsfetchCommandLongDescription": "fetch the rows of a Tableau CRM dataset."
+  "rowsfetchCommandDescription": "fetch the rows of a CRM Analytics dataset",
+  "rowsfetchCommandLongDescription": "fetch the rows of a CRM Analytics dataset."
 }
