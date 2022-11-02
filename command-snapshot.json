@@ -238,7 +238,7 @@
   {
     "command": "analytics:template:create",
     "plugin": "@salesforce/analytics",
-    "flags": ["apiversion", "description", "folderid", "json", "label", "loglevel", "targetusername", "recipeids"]
+    "flags": ["apiversion", "description", "folderid", "json", "label", "loglevel", "recipeids", "targetusername"]
   },
   {
     "command": "analytics:template:delete",
@@ -271,10 +271,27 @@
       "folderid",
       "json",
       "loglevel",
+      "recipeids",
       "targetusername",
       "templateid",
-      "templatename",
-      "recipeids"
+      "templatename"
+    ]
+  },
+  {
+    "command": "analytics:template:validate",
+    "plugin": "@salesforce/analytics",
+    "flags": [
+      "flatoutput",
+      "fullpaths",
+      "includehints",
+      "includeinfos",
+      "json",
+      "loglevel",
+      "nocodeframes",
+      "nocolors",
+      "nojsonschema",
+      "sourcepath",
+      "strict"
     ]
   }
 ]

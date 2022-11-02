@@ -49,3 +49,7 @@ node_modules
 .idea
 *.swp
 .sfdx
+
+# allow these to be in git
+!/ext-modules/*.tgz
+
