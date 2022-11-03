@@ -1,5 +1,5 @@
 {
-  "listCommandDescription": "list CRM Analytics lenses",
-  "listCommandLongDescription": "Lists CRM Analytics lenses in the specified target org.",
-  "lensesFound": "Found [%s] CRM Analytics lenses."
+  "listCommandDescription": "list Analytics lenses",
+  "listCommandLongDescription": "Lists Analytics lenses in the specified target org.",
+  "lensesFound": "Found [%s] Analytics lenses."
 }

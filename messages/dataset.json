@@ -1,9 +1,9 @@
 {
-  "listCommandDescription": "list CRM Analytics datasets",
-  "listCommandLongDescription": "Lists CRM Analytics datasets in the specified target org.",
-  "datasetsFound": "Found [%s] CRM Analytics datasets.",
-  "displayCommandDescription": "displays a CRM Analytics dataset's details",
-  "displayCommandLongDescription": "Displays a CRM Analytics dataset's details.",
+  "listCommandDescription": "list Analytics datasets",
+  "listCommandLongDescription": "Lists Analytics datasets in the specified target org.",
+  "datasetsFound": "Found [%s] Analytics datasets.",
+  "displayCommandDescription": "displays a Analytics dataset's details",
+  "displayCommandLongDescription": "Displays a Analytics dataset's details.",
   "missingRequiredField": "Missing Required Field: datasetid or datasetname",
   "displayDetailHeader": "Dataset Details",
   "datasetidFlagDescription": "dataset ID",
@@ -11,6 +11,6 @@
   "datasetnameFlagDescription": "dataset api name",
   "datasetnameFlagLongDescription": "Dataset api name.",
   "displayDateFormat": "YYYY-MM-DD HH:mm:ss",
-  "rowsfetchCommandDescription": "fetch the rows of a CRM Analytics dataset",
-  "rowsfetchCommandLongDescription": "fetch the rows of a CRM Analytics dataset."
+  "rowsfetchCommandDescription": "fetch the rows of a Analytics dataset",
+  "rowsfetchCommandLongDescription": "fetch the rows of a Analytics dataset."
 }

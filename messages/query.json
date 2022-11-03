@@ -1,6 +1,6 @@
 {
-  "queryCommandDescription": "execute a CRM Analytics query",
-  "queryCommandLongDescription": "Execute a CRM Analytics query.",
+  "queryCommandDescription": "execute a Analytics query",
+  "queryCommandLongDescription": "Execute a Analytics query.",
   "missingRequiredField": "Missing Required Field: query or queryfile",
   "queryfileDescription": "path to the file containing the query to execute",
   "queryfileLongDescription": "Path to the file containing the query to execute.",

@@ -1,5 +1,5 @@
 {
-  "listCommandDescription": "list CRM Analytics dataflows",
-  "listCommandLongDescription": "Lists CRM Analytics dataflows in the specified target org.",
-  "dataflowsFound": "Found [%s] CRM Analytics dataflows."
+  "listCommandDescription": "list Analytics dataflows",
+  "listCommandLongDescription": "Lists Analytics dataflows in the specified target org.",
+  "dataflowsFound": "Found [%s] Analytics dataflows."
 }

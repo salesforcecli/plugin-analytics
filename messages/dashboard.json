@@ -1,7 +1,7 @@
 {
-  "listCommandDescription": "list CRM Analytics dashboards",
-  "listCommandLongDescription": "Lists CRM Analytics dashboards in the specified target org.",
-  "dashboardsFound": "Found [%s] CRM Analytics dashboards.",
+  "listCommandDescription": "list Analytics dashboards",
+  "listCommandLongDescription": "Lists Analytics dashboards in the specified target org.",
+  "dashboardsFound": "Found [%s] Analytics dashboards.",
   "dashboardIdFlagDescription": "Dashboard ID",
   "dahsboardIdFlagLongDescription": "Dashboard ID.",
   "currentHistoryIdFlagDescription": "Current History ID to display",
@@ -10,6 +10,6 @@
   "removeCurrentHistoryLongDescription": "Remove Current History ID from dashboard.",
   "updateSuccess": "Successfully updated dashboard current history ID to [%s]",
   "updateRemoveSuccess": "Successfully removed current history ID",
-  "updateCommandDescription": "updates a CRM Analytics dashboard",
-  "updateCommandLongDescription": "Updates a CRM Analytics dashboard."
+  "updateCommandDescription": "updates a Analytics dashboard",
+  "updateCommandLongDescription": "Updates a Analytics dashboard."
 }
