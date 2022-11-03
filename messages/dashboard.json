@@ -1,7 +1,7 @@
 {
-  "listCommandDescription": "list Tableau CRM dashboards",
-  "listCommandLongDescription": "Lists Tableau CRM dashboards in the specified target org.",
-  "dashboardsFound": "Found [%s] Tableau CRM dashboards.",
+  "listCommandDescription": "list Analytics dashboards",
+  "listCommandLongDescription": "Lists Analytics dashboards in the specified target org.",
+  "dashboardsFound": "Found [%s] Analytics dashboards.",
   "dashboardIdFlagDescription": "Dashboard ID",
   "dahsboardIdFlagLongDescription": "Dashboard ID.",
   "currentHistoryIdFlagDescription": "Current History ID to display",
@@ -10,6 +10,6 @@
   "removeCurrentHistoryLongDescription": "Remove Current History ID from dashboard.",
   "updateSuccess": "Successfully updated dashboard current history ID to [%s]",
   "updateRemoveSuccess": "Successfully removed current history ID",
-  "updateCommandDescription": "updates a Tableau CRM dashboard",
-  "updateCommandLongDescription": "Updates a Tableau CRM dashboard."
+  "updateCommandDescription": "updates a Analytics dashboard",
+  "updateCommandLongDescription": "Updates a Analytics dashboard."
 }

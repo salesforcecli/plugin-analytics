@@ -1,5 +1,5 @@
 {
-  "listCommandDescription": "list Tableau CRM recipes",
-  "listCommandLongDescription": "Lists Tableau CRM recipes in the specified target org.",
-  "recipesFound": "Found [%s] Tableau CRM recipes."
+  "listCommandDescription": "list Analytics recipes",
+  "listCommandLongDescription": "Lists Analytics recipes in the specified target org.",
+  "recipesFound": "Found [%s] Analytics recipes."
 }
