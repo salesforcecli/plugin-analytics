@@ -1,7 +1,7 @@
 {
   "name": "@salesforce/analytics",
   "description": "Commands for working with Salesforce Analytics applications, assets, and services",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "author": "Salesforce",
   "bugs": "https://github.com/forcedotcom/analyticsdx-vscode/issues",
   "dependencies": {
