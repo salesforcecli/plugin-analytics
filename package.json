@@ -21,7 +21,7 @@
     "@salesforce/plugin-command-reference": "^1.5.8",
     "@salesforce/prettier-config": "^0.0.2",
     "@salesforce/ts-sinon": "1.4.2",
-    "@typescript-eslint/eslint-plugin": "5.46.1",
+    "@typescript-eslint/eslint-plugin": "5.47.0",
     "@typescript-eslint/parser": "5.46.1",
     "chai": "^4.3.7",
     "cz-conventional-changelog": "^3.3.0",
