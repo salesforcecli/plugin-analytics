@@ -519,10 +519,10 @@
     is-wsl "^2.1.1"
     tslib "^2.3.1"
 
-"@oclif/core@^1.22.0":
-  version "1.22.0"
-  resolved "https://registry.yarnpkg.com/@oclif/core/-/core-1.22.0.tgz#dfdd76db6435cc1be2de7bbe25c23302332b9297"
-  integrity sha512-Bvyi6uFbmpkFl9XUATsGMlqEDGfqMKWL0Mu5VQTuPg7/NIyfygYkaburn11uGkOp0a8yG6fPpyVBfGmztjNPGA==
+"@oclif/core@^1.23.0", "@oclif/core@^1.23.1":
+  version "1.23.1"
+  resolved "https://registry.yarnpkg.com/@oclif/core/-/core-1.23.1.tgz#bebbbc4e02a4c1a4216d64165f892037f8a1e14a"
+  integrity sha512-nz7wVGesJ1Qg74p1KNKluZpQ3Z042mqdaRlczEI4Xwqj5s9jjdDBCDHNkiGzV4UAKzicVzipNj6qqhyUWKYnaA==
   dependencies:
     "@oclif/linewrap" "^1.0.0"
     "@oclif/screen" "^3.0.3"
@@ -713,13 +713,13 @@
   dependencies:
     fancy-test "^1.4.3"
 
-"@oclif/test@^2.2.16":
-  version "2.2.16"
-  resolved "https://registry.yarnpkg.com/@oclif/test/-/test-2.2.16.tgz#2241f79a8d779c3b6a28671f097fa903795fe001"
-  integrity sha512-N7w7NHn+klyHXAOWcA8Vgmy/eFfU9Niwp2P/rkvmNg9NfWDHB+RAgjqnVMYDYYdXIDu3/DXdS90NXrIIhvPcHA==
+"@oclif/test@^2.2.17":
+  version "2.2.19"
+  resolved "https://registry.yarnpkg.com/@oclif/test/-/test-2.2.19.tgz#6e60a2aff0ba514b479342b1bd5e27fe859a2947"
+  integrity sha512-hqxM8XHu/17fKop3AZkWtXjXnUcQDOz71De2fNPX533aYfADyVyG8mw4JtkLIUzbNxFm5km+zoYWe5YWKDOnyg==
   dependencies:
-    "@oclif/core" "^1.22.0"
-    fancy-test "^2.0.9"
+    "@oclif/core" "^1.23.1"
+    fancy-test "^2.0.10"
 
 "@salesforce/bunyan@^2.0.0":
   version "2.0.0"
@@ -763,13 +763,13 @@
     chalk "^2.4.2"
     cli-ux "^4.9.3"
 
-"@salesforce/command@^5.2.33":
-  version "5.2.35"
-  resolved "https://registry.yarnpkg.com/@salesforce/command/-/command-5.2.35.tgz#2f0e721c49aee0db4531b291722c8ebab5b68598"
-  integrity sha512-OMy4kASYFyIOrenJ2r0o9PvRECv+OwlAa45lf0Ip4M5UwvRQvQPay+AqVdvd4olPlqgyrHAEw4wTe5lMHK6cxA==
+"@salesforce/command@^5.2.35":
+  version "5.2.37"
+  resolved "https://registry.yarnpkg.com/@salesforce/command/-/command-5.2.37.tgz#e56fb991843261bb601d8836b3236d508021504c"
+  integrity sha512-v/yemTfiL9AQ8xiZD8xeJvsOfEFLocdFFVgA5nUbOlbEgN4RmJ19TiMdZPTQQ/l7kSFg4K5BUGmBVGqkHvc9Aw==
   dependencies:
-    "@oclif/core" "^1.22.0"
-    "@oclif/test" "^2.2.16"
+    "@oclif/core" "^1.23.0"
+    "@oclif/test" "^2.2.17"
     "@salesforce/core" "^3.32.12"
     "@salesforce/kit" "^1.8.0"
     "@salesforce/ts-types" "^1.7.1"
@@ -799,7 +799,7 @@
     semver "^7.3.5"
     ts-retry-promise "^0.6.0"
 
-"@salesforce/core@^3.32.11", "@salesforce/core@^3.32.12":
+"@salesforce/core@^3.32.12":
   version "3.32.12"
   resolved "https://registry.yarnpkg.com/@salesforce/core/-/core-3.32.12.tgz#853cc5b6a5f95d4896b2d34a40a6042ef9aa6d2c"
   integrity sha512-27rqSiQWul7b/OkJs19FYDv2M/S4oI4efiGv+6sR7UWv7D7CG1P+0XpgLS3d9xRYF30h98n6VQr4W2a+BWFRvA==
@@ -890,13 +890,13 @@
     shx "^0.3.3"
     tslib "^2.2.0"
 
-"@salesforce/plugin-command-reference@^1.5.8":
-  version "1.5.8"
-  resolved "https://registry.yarnpkg.com/@salesforce/plugin-command-reference/-/plugin-command-reference-1.5.8.tgz#326aae0912dc1fd16b6a42688e66261ccd586654"
-  integrity sha512-dc3krxAgVgZmmjF2FIxomA3/hss1f8BosDp9gNYwQUpLjUqk7i7UkuEq42h1DkMRP46u7QDKLdPT/IOkytLOPA==
+"@salesforce/plugin-command-reference@^1.5.10":
+  version "1.5.10"
+  resolved "https://registry.yarnpkg.com/@salesforce/plugin-command-reference/-/plugin-command-reference-1.5.10.tgz#d894a08d6ccad2dfcd11ad2d2a3a636ba383b7ae"
+  integrity sha512-I3AnZGzo7wJGOLBRLOsLMwH0mZTzhLF303d4crdB3ykDwzgRAAKdRTHmG5RAczs4DZNCaPC8fH75Yq8RbfMDlA==
   dependencies:
-    "@salesforce/command" "^5.2.33"
-    "@salesforce/core" "^3.32.11"
+    "@salesforce/command" "^5.2.35"
+    "@salesforce/core" "^3.32.12"
     "@types/lodash.uniqby" "^4.7.7"
     chalk "^3.0.0"
     handlebars "4.7.7"
@@ -3119,10 +3119,10 @@ fancy-test@^1.4.3:
     mock-stdin "^1.0.0"
     stdout-stderr "^0.1.9"
 
-fancy-test@^2.0.9:
-  version "2.0.10"
-  resolved "https://registry.yarnpkg.com/fancy-test/-/fancy-test-2.0.10.tgz#4c96b34cb15ad49693634fd1df9a28bb2086253f"
-  integrity sha512-gt2C/1DrFLyXNEkPHpltol0osCFEj5c3TFs3gu4EhIbnKEU9AW+lK0pWf1wRXhKs/FtcijnfODaO90d1HlTulQ==
+fancy-test@^2.0.10:
+  version "2.0.11"
+  resolved "https://registry.yarnpkg.com/fancy-test/-/fancy-test-2.0.11.tgz#27eb9fd5076114c609bd5ee6f5b9c8bd8ec67689"
+  integrity sha512-R98gMuHy/tsGUmChkehXvq4PmzdhUKl1SDyYkrvh4Vhc+8fjUUQWu2pts4Y4BStjkltPtQtccNYN63sjs/a3Xw==
   dependencies:
     "@types/chai" "*"
     "@types/lodash" "*"
