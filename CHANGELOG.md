@@ -1,3 +1,12 @@
+## [1.0.17](https://github.com/salesforcecli/plugin-analytics/compare/1.0.16...1.0.17) (2023-01-07)
+
+
+### Bug Fixes
+
+* **deps:** bump json5 from 1.0.1 to 1.0.2 ([#201](https://github.com/salesforcecli/plugin-analytics/issues/201)) ([1086796](https://github.com/salesforcecli/plugin-analytics/commit/1086796268284ef91b71357426ce0809cb25ecf7))
+
+
+
 ## [1.0.16](https://github.com/salesforcecli/plugin-analytics/compare/1.0.15...1.0.16) (2022-12-11)
 
 
