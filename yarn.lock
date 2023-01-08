@@ -713,13 +713,13 @@
   dependencies:
     fancy-test "^1.4.3"
 
-"@oclif/test@^2.2.17":
-  version "2.2.19"
-  resolved "https://registry.yarnpkg.com/@oclif/test/-/test-2.2.19.tgz#6e60a2aff0ba514b479342b1bd5e27fe859a2947"
-  integrity sha512-hqxM8XHu/17fKop3AZkWtXjXnUcQDOz71De2fNPX533aYfADyVyG8mw4JtkLIUzbNxFm5km+zoYWe5YWKDOnyg==
+"@oclif/test@^2.2.19":
+  version "2.2.20"
+  resolved "https://registry.yarnpkg.com/@oclif/test/-/test-2.2.20.tgz#c5c76f9ab3eeb6df3c1af81a95428c95fb0065e9"
+  integrity sha512-SaSMgeB9DKcfRRIvh461eK1eEkjgV/iYHWU5XhWli8psAnqKFgxar3ESpMfQKwYjVMxKdKSjOhEFHaHMOgPJOQ==
   dependencies:
     "@oclif/core" "^1.23.1"
-    fancy-test "^2.0.10"
+    fancy-test "^2.0.11"
 
 "@salesforce/bunyan@^2.0.0":
   version "2.0.0"
@@ -763,13 +763,13 @@
     chalk "^2.4.2"
     cli-ux "^4.9.3"
 
-"@salesforce/command@^5.2.35":
-  version "5.2.37"
-  resolved "https://registry.yarnpkg.com/@salesforce/command/-/command-5.2.37.tgz#e56fb991843261bb601d8836b3236d508021504c"
-  integrity sha512-v/yemTfiL9AQ8xiZD8xeJvsOfEFLocdFFVgA5nUbOlbEgN4RmJ19TiMdZPTQQ/l7kSFg4K5BUGmBVGqkHvc9Aw==
+"@salesforce/command@^5.2.39":
+  version "5.2.39"
+  resolved "https://registry.yarnpkg.com/@salesforce/command/-/command-5.2.39.tgz#1112c7f5f2cbe14fe4a67b2f8ef5b9c5131ac7a1"
+  integrity sha512-OahHmMWPWsV0DiDBhhB9hbeNLdsefWOUc+cQPHpeb5KYh/xcTneDRYm5nKrSt3C8KcCYcjiCRIEGOcLgoOBb6A==
   dependencies:
     "@oclif/core" "^1.23.0"
-    "@oclif/test" "^2.2.17"
+    "@oclif/test" "^2.2.19"
     "@salesforce/core" "^3.32.12"
     "@salesforce/kit" "^1.8.0"
     "@salesforce/ts-types" "^1.7.1"
@@ -890,12 +890,12 @@
     shx "^0.3.3"
     tslib "^2.2.0"
 
-"@salesforce/plugin-command-reference@^1.5.10":
-  version "1.5.10"
-  resolved "https://registry.yarnpkg.com/@salesforce/plugin-command-reference/-/plugin-command-reference-1.5.10.tgz#d894a08d6ccad2dfcd11ad2d2a3a636ba383b7ae"
-  integrity sha512-I3AnZGzo7wJGOLBRLOsLMwH0mZTzhLF303d4crdB3ykDwzgRAAKdRTHmG5RAczs4DZNCaPC8fH75Yq8RbfMDlA==
+"@salesforce/plugin-command-reference@^1.5.12":
+  version "1.5.12"
+  resolved "https://registry.yarnpkg.com/@salesforce/plugin-command-reference/-/plugin-command-reference-1.5.12.tgz#d0f67ad7a3125719fe2c1b47805ed2565a2d66da"
+  integrity sha512-A7fLtTISSkVFLPDiYB/ekS+Ea3HT6uC4/XuJ55BTfk4yxrAH2HIJH9SGftBt5axR7ZvCDJP2PCsv87K/S/M+jg==
   dependencies:
-    "@salesforce/command" "^5.2.35"
+    "@salesforce/command" "^5.2.39"
     "@salesforce/core" "^3.32.12"
     "@types/lodash.uniqby" "^4.7.7"
     chalk "^3.0.0"
@@ -3153,7 +3153,7 @@ fancy-test@^1.4.3:
     mock-stdin "^1.0.0"
     stdout-stderr "^0.1.9"
 
-fancy-test@^2.0.10:
+fancy-test@^2.0.11:
   version "2.0.11"
   resolved "https://registry.yarnpkg.com/fancy-test/-/fancy-test-2.0.11.tgz#27eb9fd5076114c609bd5ee6f5b9c8bd8ec67689"
   integrity sha512-R98gMuHy/tsGUmChkehXvq4PmzdhUKl1SDyYkrvh4Vhc+8fjUUQWu2pts4Y4BStjkltPtQtccNYN63sjs/a3Xw==
