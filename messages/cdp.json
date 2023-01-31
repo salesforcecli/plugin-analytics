@@ -1,0 +1,16 @@
+{
+  "listCommandDescription": "list tenant information on the CDP org",
+  "listCommandLongDescription": "List tenant information on the CDP org.",
+  "jwtCommandDescription": "creates Jwt token on CDP org which is valid for 90 seconds",
+  "jwtCommandLongDescription": "Creates Jwt token on CDP org which is valid for 90 seconds.",
+  "dataorgidFlagDescription": "id of the Data Org",
+  "dataorgidFlagLongDescription": "Id of the Data Org.",
+  "dataorginstanceFlagDescription": "instance of the data org.  For example na46, na45, etc",
+  "dataorginstanceFlagLongDescription": "Instance of the data org.  For example na46, na45, etc.",
+  "objectsCommandDescription": "creates connection object on CDP org once trust has been established with data org",
+  "objectsCommandLongDescription": "Creates connection object on CDP org once trust has been established with data org.",
+  "establishTrustCommandDescription": "establishes trust on Data org and CDP org using JWT token and tenant information",
+  "establishTrustCommandLongDescription": "Establishes trust on Data org and CDP org using JWT token and tenant information.",
+  "dataorgaliasFlagDescription": "alias or username of the data org",
+  "dataorgaliasFlagLongDescription": "Alias or username of the data org."
+}

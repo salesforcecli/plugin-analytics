@@ -124,6 +124,31 @@
     "flags": ["apiversion", "json", "loglevel", "targetusername"]
   },
   {
+    "command": "analytics:cdp:jwt:create",
+    "plugin": "@salesforce/analytics",
+    "flags": ["apiversion", "dataorgid", "dataorginstance", "json", "loglevel", "targetusername"]
+  },
+  {
+    "command": "analytics:cdp:list",
+    "plugin": "@salesforce/analytics",
+    "flags": ["apiversion", "json", "loglevel", "targetusername"]
+  },
+  {
+    "command": "analytics:cdp:objects:create",
+    "plugin": "@salesforce/analytics",
+    "flags": ["apiversion", "dataorgid", "dataorginstance", "json", "loglevel", "targetusername"]
+  },
+  {
+    "command": "analytics:cdp:setup:establish",
+    "plugin": "@salesforce/analytics",
+    "flags": ["apiversion", "dataorgalias", "json", "loglevel", "targetusername"]
+  },
+  {
+    "command": "analytics:cdp:trust:establish",
+    "plugin": "@salesforce/analytics",
+    "flags": ["apiversion", "dataorgalias", "json", "loglevel", "password", "targetusername", "tenant", "token"]
+  },
+  {
     "command": "analytics:dashboard:history:list",
     "plugin": "@salesforce/analytics",
     "flags": ["apiversion", "dashboardid", "json", "loglevel", "targetusername"]
@@ -238,7 +263,7 @@
   {
     "command": "analytics:template:create",
     "plugin": "@salesforce/analytics",
-    "flags": ["apiversion", "description", "folderid", "json", "label", "loglevel", "targetusername", "recipeids"]
+    "flags": ["apiversion", "description", "folderid", "json", "label", "loglevel", "recipeids", "targetusername"]
   },
   {
     "command": "analytics:template:delete",
@@ -271,10 +296,10 @@
       "folderid",
       "json",
       "loglevel",
+      "recipeids",
       "targetusername",
       "templateid",
-      "templatename",
-      "recipeids"
+      "templatename"
     ]
   }
 ]

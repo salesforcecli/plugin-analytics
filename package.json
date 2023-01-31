@@ -105,6 +105,23 @@
               }
             }
           },
+          "cdp": {
+            "description": "manage connections and authorization between CDP and data orgs in Genie",
+            "subtopics": {
+              "jwt": {
+                "description": "create jwt tokens on cdp org"
+              },
+              "objects": {
+                "description": "create objects on cdp org"
+              },
+              "trust": {
+                "description": "create trust on data org"
+              },
+              "setup": {
+                "description": "full setup of cdp and data org"
+              }
+            }
+          },
           "dashboard": {
             "description": "manage analytics dashboards",
             "subtopics": {
