@@ -1,3 +1,12 @@
+## [1.0.19](https://github.com/salesforcecli/plugin-analytics/compare/1.0.18...1.0.19) (2023-02-12)
+
+
+### Bug Fixes
+
+* **deps:** bump @oclif/config from 1.18.6 to 1.18.8 ([#226](https://github.com/salesforcecli/plugin-analytics/issues/226)) ([9074db1](https://github.com/salesforcecli/plugin-analytics/commit/9074db1ecdd239e83dadf0ee84cbbde4801f1ccc))
+
+
+
 ## [1.0.18](https://github.com/salesforcecli/plugin-analytics/compare/1.0.17...1.0.18) (2023-01-29)
 
 
