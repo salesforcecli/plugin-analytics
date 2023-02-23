@@ -15,10 +15,6 @@ import TemplateLint from '../../../lib/analytics/template/lint';
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.loadMessages('@salesforce/analytics', 'lint');
 
-function blue(s: string): string {
-  return process.platform !== 'win32' ? chalk.blue(s) : s;
-}
-
 export default class Lint extends SfdxCommand {
   public static description = messages.getMessage('lintCommandDescription');
   public static longDescription = messages.getMessage('lintCommandLongDescription');
@@ -59,7 +55,9 @@ export default class Lint extends SfdxCommand {
 
     const tasks = result.tasks || [];
     if (tasks.length > 0) {
-      this.ux.styledHeader(blue(messages.getMessage('tasksFound', [result.label, String(result.score)])));
+      this.ux.styledHeader(
+        colorize(messages.getMessage('tasksFound', [result.label, String(result.score)]), chalk.blue)
+      );
     }
 
     this.ux.table(

@@ -16,10 +16,6 @@ import TemplateValidate from '../../../lib/analytics/template/validate';
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.loadMessages('@salesforce/analytics', 'validate');
 
-function blue(s: string): string {
-  return process.platform !== 'win32' ? chalk.blue(s) : s;
-}
-
 export default class Validate extends SfdxCommand {
   public static description = messages.getMessage('validateCommandDescription');
   public static longDescription = messages.getMessage('validateCommandLongDescription');
@@ -81,7 +77,7 @@ export default class Validate extends SfdxCommand {
 
     const tasks = result.tasks || [];
     if (tasks.length > 0) {
-      this.ux.styledHeader(blue(messages.getMessage('tasksFound', [result.id])));
+      this.ux.styledHeader(colorize(messages.getMessage('tasksFound', [result.id]), chalk.blue));
     }
 
     this.ux.table(
