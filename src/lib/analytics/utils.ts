@@ -7,7 +7,8 @@
 
 import { SfdxError } from '@salesforce/core';
 import _ = require('lodash');
-import chalk, { Chalk } from 'chalk';
+import { Chalk } from 'chalk';
+import chalk from 'chalk';
 
 export function throwWithData(mesg: string, data: unknown): never {
   const e = new SfdxError(mesg);
