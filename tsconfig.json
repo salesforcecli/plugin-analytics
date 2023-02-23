@@ -10,6 +10,7 @@
     },
     "noImplicitAny": true,
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "skipLibCheck": true
   },
   "include": ["./src/**/*.ts"]
