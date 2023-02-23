@@ -1,3 +1,12 @@
+## [1.0.20](https://github.com/salesforcecli/plugin-analytics/compare/1.0.19...1.0.20) (2023-02-23)
+
+
+### Bug Fixes
+
+* add Lint and Validate commands ([#232](https://github.com/salesforcecli/plugin-analytics/issues/232)) ([3196f1a](https://github.com/salesforcecli/plugin-analytics/commit/3196f1a243e2038f4c6ad09da82486d76d51d76f))
+
+
+
 ## [1.0.19](https://github.com/salesforcecli/plugin-analytics/compare/1.0.18...1.0.19) (2023-02-12)
 
 
