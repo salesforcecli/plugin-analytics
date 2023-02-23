@@ -280,11 +280,11 @@
   {
     "command": "analytics:template:lint",
     "plugin": "@salesforce/analytics",
-    "flags": ["apiversion", "json", "templateid", "templatename"]
+    "flags": ["loglevel", "targetusername", "apiversion", "json", "templateid", "templatename"]
   },
   {
     "command": "analytics:template:validate",
     "plugin": "@salesforce/analytics",
-    "flags": ["apiversion", "json", "templateid", "templatename", "valuesfile"]
+    "flags": ["loglevel", "targetusername", "apiversion", "json", "templateid", "templatename", "valuesfile"]
   }
 ]
