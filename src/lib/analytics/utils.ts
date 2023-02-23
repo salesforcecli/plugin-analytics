@@ -7,8 +7,7 @@
 
 import { SfdxError } from '@salesforce/core';
 import _ = require('lodash');
-import { Chalk } from 'chalk';
-import chalk from 'chalk';
+import chalk = require('chalk');
 
 export function throwWithData(mesg: string, data: unknown): never {
   const e = new SfdxError(mesg);
@@ -27,7 +26,7 @@ export function throwError(response: unknown): never {
   throw new SfdxError(errMessage);
 }
 
-export function colorize(s: string, color: Chalk | undefined): string {
+export function colorize(s: string, color: chalk.Chalk | undefined): string {
   return color && process.platform !== 'win32' ? color(s) : s;
 }
 
@@ -50,7 +49,7 @@ export const COLORS = {
   // these seem to line up with what tsc (typescript compiler) does
   label: chalk.black,
   message: chalk.black,
-  readinessStatus: (s: string): Chalk | undefined => {
+  readinessStatus: (s: string): chalk.Chalk | undefined => {
     switch (s) {
       case 'Complete':
         return chalk.green;
