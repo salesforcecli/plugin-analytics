@@ -1,0 +1,11 @@
+{
+  "validateCommandDescription": "command for performing an org-readiness check for a single analytics template",
+  "validateCommandLongDescription": "Command for performing an org-readiness check for a single analytics template.",
+  "templateidFlagDescription": "template ID",
+  "templateidFlagLongDescription": "The ID of the Analytics template.",
+  "templatenameFlagDescription": "template name",
+  "templatenameFlagLongDescription": "The name of the Analytics template.",
+  "tasksFound": "Template [%s] validate retreived.",
+  "valuesfileFlagDescription": "org readiness variable values to override defaults",
+  "valuesfileFlagLongDescription": "Org readiness variable values to override defaults."
+}

@@ -1,0 +1,9 @@
+{
+  "lintCommandDescription": "command for performing a Lint check on a single analytics template",
+  "lintCommandLongDescription": "Command for performing a Lint check on a single analytics template.",
+  "templateidFlagDescription": "template ID",
+  "templateidFlagLongDescription": "The ID of the Analytics template.",
+  "templatenameFlagDescription": "template name",
+  "templatenameFlagLongDescription": "The name of the Analytics template.",
+  "tasksFound": "Template [%s] with an overall Lint score of [%s]."
+}

@@ -7,6 +7,7 @@
 
 import { SfdxError } from '@salesforce/core';
 import _ = require('lodash');
+import chalk = require('chalk');
 
 export function throwWithData(mesg: string, data: unknown): never {
   const e = new SfdxError(mesg);
@@ -24,6 +25,43 @@ export function throwError(response: unknown): never {
     'Unknown Error';
   throw new SfdxError(errMessage);
 }
+
+export function colorize(s: string, color: chalk.Chalk | undefined): string {
+  return color && process.platform !== 'win32' ? color(s) : s;
+}
+
+const warning = chalk.hex('#ff5f00');
+
+export function getStatusIcon(s: string): string {
+  switch (s) {
+    case 'Complete':
+      return chalk.green('✔');
+    case 'Warning':
+      return warning('△');
+    case 'Failed':
+      return chalk.red('✖');
+    default:
+      return '';
+  }
+}
+
+export const COLORS = {
+  // these seem to line up with what tsc (typescript compiler) does
+  label: chalk.black,
+  message: chalk.black,
+  readinessStatus: (s: string): chalk.Chalk | undefined => {
+    switch (s) {
+      case 'Complete':
+        return chalk.green;
+      case 'Warning':
+        return warning;
+      case 'Failed':
+        return chalk.red;
+      default:
+        return undefined;
+    }
+  }
+};
 
 /**
  * Wait for the specified function to match against the predicate
