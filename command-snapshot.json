@@ -276,5 +276,15 @@
       "templatename",
       "recipeids"
     ]
+  },
+  {
+    "command": "analytics:template:lint",
+    "plugin": "@salesforce/analytics",
+    "flags": ["apiversion", "json", "templateid", "templatename"]
+  },
+  {
+    "command": "analytics:template:validate",
+    "plugin": "@salesforce/analytics",
+    "flags": ["apiversion", "json", "templateid", "templatename", "valuesfile"]
   }
 ]

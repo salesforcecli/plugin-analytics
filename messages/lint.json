@@ -1,0 +1,11 @@
+{
+  "lintCommandDescription": "command for retrieving the lint value of a single analytics template",
+  "lintCommandLongDescription": "Command for retrieving the lint value of a single analytics template.",
+  "templateidFlagDescription": "template ID",
+  "templateidFlagLongDescription": "The ID of the Analytics template.",
+  "templatenameFlagDescription": "template name",
+  "templatenameFlagLongDescription": "The name of the Analytics template.",
+  "runlintFlagDescription": "run the lint process for this template",
+  "runlintFlagLongDescription": "Run the lint process for this template.",
+  "tasksFound": "Template [%s] retreived with a score of [%s]."
+}

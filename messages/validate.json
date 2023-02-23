@@ -1,0 +1,11 @@
+{
+  "validateCommandDescription": "command for retrieving the validate value of a single analytics template",
+  "validateCommandLongDescription": "Command for retrieving the validate value of a single analytics template.",
+  "templateidFlagDescription": "template ID",
+  "templateidFlagLongDescription": "The ID of the Analytics template.",
+  "templatenameFlagDescription": "template name",
+  "templatenameFlagLongDescription": "The name of the Analytics template.",
+  "tasksFound": "Template [%s] validate retreived.",
+  "valuesfileFlagDescription": "org readiness values file",
+  "valuesfileFlagLongDescription": "Org readiness values file.  Values will override anything specified in the templates org readiness definition file"
+}
