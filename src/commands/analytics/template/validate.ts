@@ -90,13 +90,13 @@ export default class Validate extends SfdxCommand {
       }),
       {
         columns: [
-          { key: 'label', label: 'Task', format: v => colorize(v, COLORS.label) },
+          { key: 'label', label: 'Task', format: v => v },
           {
             key: 'readinessStatus',
             label: 'Status',
             format: v => colorize(getStatusIcon(v) + ' ' + v, COLORS.readinessStatus(v))
           },
-          { key: 'message', label: 'Message', format: v => colorize(v, COLORS.message) }
+          { key: 'message', label: 'Message', format: v => v }
         ]
       }
     );

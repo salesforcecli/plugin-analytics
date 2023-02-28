@@ -47,8 +47,6 @@ export function getStatusIcon(s: string): string {
 
 export const COLORS = {
   // these seem to line up with what tsc (typescript compiler) does
-  label: chalk.black,
-  message: chalk.black,
   readinessStatus: (s: string): chalk.Chalk | undefined => {
     switch (s) {
       case 'Complete':
