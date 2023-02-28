@@ -1,3 +1,12 @@
+## [1.0.21](https://github.com/salesforcecli/plugin-analytics/compare/1.0.20...1.0.21) (2023-02-28)
+
+
+### Bug Fixes
+
+* update label colors for validate ([#235](https://github.com/salesforcecli/plugin-analytics/issues/235)) ([a9375d0](https://github.com/salesforcecli/plugin-analytics/commit/a9375d06f632a5d4fbd3fd310af7580ed593ac60))
+
+
+
 ## [1.0.20](https://github.com/salesforcecli/plugin-analytics/compare/1.0.19...1.0.20) (2023-02-23)
 
 
