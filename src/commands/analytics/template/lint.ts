@@ -63,9 +63,9 @@ export default class Lint extends SfdxCommand {
     this.ux.table(
       tasks.map(task => {
         return {
-          label: task.label,
-          readinessStatus: task.readinessStatus,
-          message: task.message
+          label: task.label || '',
+          readinessStatus: task.readinessStatus || '',
+          message: task.message || ''
         };
       }),
       {
