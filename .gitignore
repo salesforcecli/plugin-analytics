@@ -1,5 +1,9 @@
 # -- CLEAN
 tmp/
+
+# tsc will sometimes make these
+tsconfig.tsbuildinfo
+
 # use yarn by default, so ignore npm
 package-lock.json
 

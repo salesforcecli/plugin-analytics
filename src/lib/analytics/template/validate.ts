@@ -14,9 +14,9 @@ export type ValidateType = Record<string, unknown> & {
 };
 
 export type Tasks = {
-  label?: string;
-  message?: string;
-  readinessStatus?: string;
+  label?: string | null;
+  message?: string | null;
+  readinessStatus?: string | null;
 };
 
 export default class TemplateValidate {
