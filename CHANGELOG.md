@@ -1,3 +1,12 @@
+## [1.0.22](https://github.com/salesforcecli/plugin-analytics/compare/1.0.21...1.0.22) (2023-03-02)
+
+
+### Bug Fixes
+
+* handle null template validation messages ([#236](https://github.com/salesforcecli/plugin-analytics/issues/236)) ([db77824](https://github.com/salesforcecli/plugin-analytics/commit/db77824f98ee24feca7c52143640f5550879d4c4))
+
+
+
 ## [1.0.21](https://github.com/salesforcecli/plugin-analytics/compare/1.0.20...1.0.21) (2023-02-28)
 
 
