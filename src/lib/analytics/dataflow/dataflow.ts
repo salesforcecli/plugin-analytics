@@ -21,13 +21,24 @@ export type DataflowType = {
   label?: string;
   type?: string;
 };
+
+export type DataflowJob = {
+  dataflow?: DataflowType;
+  Date?: Date;
+  message?: string;
+  status?: string;
+  jobType?: string;
+};
+
 export default class Dataflow {
   private readonly connection: Connection;
   private readonly dataflowsUrl: string;
+  private readonly dataflowsJobsUrl: string;
 
   public constructor(organization: Org) {
     this.connection = organization.getConnection();
     this.dataflowsUrl = `${this.connection.baseUrl()}/wave/dataflows/`;
+    this.dataflowsJobsUrl = `${this.connection.baseUrl()}/wave/dataflowjobs/`;
   }
 
   public list(): Promise<DataflowType[]> {
@@ -58,6 +69,43 @@ export default class Dataflow {
 
     if (response) {
       return response.id;
+    } else {
+      throwError(response);
+    }
+  }
+
+  public async startDataflow(dataflowId: string): Promise<DataflowJob | undefined> {
+    const startDataflowUrl = this.dataflowsJobsUrl;
+    const command = 'start';
+    const response = await connectRequest<DataflowJob>(this.connection, {
+      method: 'POST',
+      url: startDataflowUrl,
+      body: JSON.stringify({
+        dataflowId,
+        command
+      })
+    });
+
+    if (response) {
+      return response;
+    } else {
+      throwError(response);
+    }
+  }
+
+  public async stopDataflow(dataflowId: string): Promise<DataflowJob | undefined> {
+    const stopDataflowUrl = this.dataflowsJobsUrl + encodeURIComponent(dataflowId);
+    const command = 'stop';
+    const response = await connectRequest<DataflowJob>(this.connection, {
+      method: 'PATCH',
+      url: stopDataflowUrl,
+      body: JSON.stringify({
+        command
+      })
+    });
+
+    if (response) {
+      return response;
     } else {
       throwError(response);
     }

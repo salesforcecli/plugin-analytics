@@ -1,5 +1,7 @@
 {
   "listCommandDescription": "list Analytics recipes",
   "listCommandLongDescription": "Lists Analytics recipes in the specified target org.",
+  "runCommandDescription": "Run Analytics recipes",
+  "runCommandLongDescription": "Run Analytics recipes in the specified target org.",
   "recipesFound": "Found [%s] Analytics recipes."
 }
