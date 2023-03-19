@@ -1,7 +1,11 @@
 {
   "listCommandDescription": "list Analytics recipes",
   "listCommandLongDescription": "Lists Analytics recipes in the specified target org.",
-  "runCommandDescription": "Run Analytics recipes",
-  "runCommandLongDescription": "Run Analytics recipes in the specified target org.",
-  "recipesFound": "Found [%s] Analytics recipes."
+  "startCommandDescription": "Start Analytics recipes",
+  "startCommandLongDescription": "Start Analytics recipes in the specified target org.",
+  "recipeidFlagDescription": "recipe ID",
+  "recipeidFlagLongDescription": "The ID of the recipe to update.",
+
+  "recipesFound": "Found [%s] Analytics recipes.",
+  "recipeJobUpdate": "Updated dataflow job(%s) status to (%s) in the Analytics App."
 }

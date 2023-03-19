@@ -1,8 +1,10 @@
 {
   "listCommandDescription": "list Analytics dataflows",
   "listCommandLongDescription": "Lists Analytics dataflows in the specified target org.",
-  "runCommandDescription": "Run Analytics dataflows",
-  "runCommandLongDescription": "Run Analytics dataflows in the specified target org.",
+  "startCommandDescription": "Start Analytics dataflows",
+  "startCommandLongDescription": "Start Analytics dataflows in the specified target org.",
+  "stopCommandDescription": "Start Analytics dataflows",
+  "stopCommandLongDescription": "Start Analytics dataflows in the specified target org.",
   "dataflowsFound": "Found [%s] Analytics dataflows.",
   "dataflowidFlagDescription": "dataflow ID",
   "dataflowidFlagLongDescription": "The ID of the dataflow to update.",

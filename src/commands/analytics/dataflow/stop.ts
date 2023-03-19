@@ -14,8 +14,8 @@ Messages.importMessagesDirectory(__dirname);
 const messages = Messages.loadMessages('@salesforce/analytics', 'dataflow');
 
 export default class Stop extends SfdxCommand {
-  public static description = messages.getMessage('runCommandDescription');
-  public static longDescription = messages.getMessage('runCommandLongDescription');
+  public static description = messages.getMessage('stopCommandDescription');
+  public static longDescription = messages.getMessage('stopCommandLongDescription');
 
   public static examples = ['$ sfdx analytics:dataflow:stop --dataflowjobid <dataflowjobid>'];
 

@@ -8,23 +8,23 @@
 import { flags, SfdxCommand } from '@salesforce/command';
 import { Messages, Org } from '@salesforce/core';
 
-import Dataflow from '../../../lib/analytics/dataflow/dataflow';
+import Recipe from '../../../lib/analytics/recipe/recipe';
 
 Messages.importMessagesDirectory(__dirname);
-const messages = Messages.loadMessages('@salesforce/analytics', 'dataflow');
+const messages = Messages.loadMessages('@salesforce/analytics', 'recipe');
 
 export default class Start extends SfdxCommand {
   public static description = messages.getMessage('startCommandDescription');
   public static longDescription = messages.getMessage('startCommandLongDescription');
 
-  public static examples = ['$ sfdx analytics:dataflow:start --dataflowid <dataflowid>'];
+  public static examples = ['$ sfdx analytics:recipe:start --recipeid <recipeid>'];
 
   protected static flagsConfig = {
-    dataflowid: flags.id({
+    recipeid: flags.id({
       char: 'i',
       required: true,
-      description: messages.getMessage('dataflowidFlagDescription'),
-      longDescription: messages.getMessage('dataflowidFlagLongDescription')
+      description: messages.getMessage('recipeidFlagDescription'),
+      longDescription: messages.getMessage('recipeidFlagLongDescription')
     })
   };
 
@@ -32,12 +32,12 @@ export default class Start extends SfdxCommand {
   protected static requiresProject = false;
 
   public async run() {
-    const dataflowId = this.flags.dataflowid as string;
-    const dataflow = new Dataflow(this.org as Org);
+    const recipeId = this.flags.recipeid as string;
+    const recipe = new Recipe(this.org as Org);
 
-    const dataflowJob = await dataflow.startDataflow(dataflowId);
-    const message = messages.getMessage('dataflowsJobUpdate', [dataflowJob?.dataflow?.id, dataflowJob?.status]);
+    const recipeJob = await recipe.startRecipe(recipeId);
+    const message = messages.getMessage('recipeJobUpdate', [recipeJob?.id, recipeJob?.status]);
     this.ux.log(message);
-    return dataflowJob;
+    return recipeJob;
   }
 }
