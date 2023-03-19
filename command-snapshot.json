@@ -167,6 +167,16 @@
     "flags": ["apiversion", "json", "loglevel", "targetusername"]
   },
   {
+    "command": "analytics:dataflow:start",
+    "plugin": "@salesforce/analytics",
+    "flags": ["apiversion", "dataflowid", "json", "loglevel", "targetusername"]
+  },
+  {
+    "command": "analytics:dataflow:stop",
+    "plugin": "@salesforce/analytics",
+    "flags": ["apiversion", "dataflowjobid", "json", "loglevel", "targetusername"]
+  },
+  {
     "command": "analytics:dataset:display",
     "plugin": "@salesforce/analytics",
     "flags": ["apiversion", "datasetid", "datasetname", "json", "loglevel", "targetusername"]
@@ -238,7 +248,7 @@
   {
     "command": "analytics:template:create",
     "plugin": "@salesforce/analytics",
-    "flags": ["apiversion", "description", "folderid", "json", "label", "loglevel", "targetusername", "recipeids"]
+    "flags": ["apiversion", "description", "folderid", "json", "label", "loglevel", "recipeids", "targetusername"]
   },
   {
     "command": "analytics:template:delete",
@@ -247,6 +257,11 @@
   },
   {
     "command": "analytics:template:display",
+    "plugin": "@salesforce/analytics",
+    "flags": ["apiversion", "json", "loglevel", "targetusername", "templateid", "templatename"]
+  },
+  {
+    "command": "analytics:template:lint",
     "plugin": "@salesforce/analytics",
     "flags": ["apiversion", "json", "loglevel", "targetusername", "templateid", "templatename"]
   },
@@ -271,20 +286,15 @@
       "folderid",
       "json",
       "loglevel",
+      "recipeids",
       "targetusername",
       "templateid",
-      "templatename",
-      "recipeids"
+      "templatename"
     ]
-  },
-  {
-    "command": "analytics:template:lint",
-    "plugin": "@salesforce/analytics",
-    "flags": ["loglevel", "targetusername", "apiversion", "json", "templateid", "templatename"]
   },
   {
     "command": "analytics:template:validate",
     "plugin": "@salesforce/analytics",
-    "flags": ["loglevel", "targetusername", "apiversion", "json", "templateid", "templatename", "valuesfile"]
+    "flags": ["apiversion", "json", "loglevel", "targetusername", "templateid", "templatename", "valuesfile"]
   }
 ]
