@@ -9,15 +9,32 @@ import { Connection, Org } from '@salesforce/core';
 import { connectRequest, fetchAllPages } from '../request';
 import { throwError } from '../utils';
 
-export type RecipeType = {
+export type RecipeType = Record<string, unknown> & {
+  conversionDetails: [];
+  createdBy?: { id?: string; name?: string; profilePhotoUrl?: string };
+  createdDate?: string;
+  dataflowLastUpdate?: string;
+  dataset?: { id?: string; name?: string; url?: string };
+  fileUrl?: string;
+  format?: string;
+  historiesUrl?: string;
   id?: string;
+  label?: string;
+  lastModifiedBy?: { id?: string; name?: string; profilePhotoUrl?: string };
+  lastModifiedDate?: string;
+  licenseAttributes?: { type?: string };
   name?: string;
-  namespace?: string;
+  publishingTarget?: string;
+  recipeDefinition?: { name?: string; nodes?: Record<string, unknown>; ui?: Record<string, unknown>; version?: string };
+  scheduleAttributes?: { assetId: string; frequency: string };
+  sourceRecipe?: string;
+  status?: string;
   targetDataflowId?: string;
   type?: string;
-  label?: string;
-  status?: string;
+  url?: string;
+  validationDetails: [];
 };
+
 export default class Recipe {
   private readonly connection: Connection;
   private readonly recipesUrl: string;

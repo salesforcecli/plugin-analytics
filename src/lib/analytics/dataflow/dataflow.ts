@@ -24,7 +24,7 @@ export type DataflowType = {
 
 export type DataflowJob = {
   dataflow?: DataflowType;
-  Date?: Date;
+  date?: string;
   message?: string;
   status?: string;
   jobType?: string;

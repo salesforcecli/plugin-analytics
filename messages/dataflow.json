@@ -1,15 +1,15 @@
 {
   "listCommandDescription": "list Analytics dataflows",
   "listCommandLongDescription": "Lists Analytics dataflows in the specified target org.",
-  "startCommandDescription": "Start Analytics dataflows",
+  "dataflowsFound": "Found [%s] Analytics dataflows.",
+  "startCommandDescription": "start Analytics dataflows",
   "startCommandLongDescription": "Start Analytics dataflows in the specified target org.",
   "stopCommandDescription": "Start Analytics dataflows",
   "stopCommandLongDescription": "Start Analytics dataflows in the specified target org.",
-  "dataflowsFound": "Found [%s] Analytics dataflows.",
   "dataflowidFlagDescription": "dataflow ID",
   "dataflowidFlagLongDescription": "The ID of the dataflow to update.",
   "dataflowjobIdFlagDescription": "dataflow Job ID",
   "dataflowjobIdFlagLongDescription": "The ID of the dataflow job to update.",
 
-  "dataflowsJobUpdate": "Updated dataflow job(%s) status to (%s) in the Analytics App."
+  "dataflowsJobUpdate": "Updated dataflow job(%s) status to (%s)."
 }
