@@ -26,7 +26,7 @@ export type DataflowJob = {
   dataflow?: DataflowType;
   date?: string;
   message?: string;
-  status?: string;
+  status?: 'Failure' | 'Queued' | 'Live' | 'Running' | 'Success' | 'Warning' | string;
   jobType?: string;
 };
 
@@ -75,11 +75,10 @@ export default class Dataflow {
   }
 
   public async startDataflow(dataflowId: string): Promise<DataflowJob | undefined> {
-    const startDataflowUrl = this.dataflowsJobsUrl;
     const command = 'start';
     const response = await connectRequest<DataflowJob>(this.connection, {
       method: 'POST',
-      url: startDataflowUrl,
+      url: this.dataflowsJobsUrl,
       body: JSON.stringify({
         dataflowId,
         command
@@ -94,11 +93,10 @@ export default class Dataflow {
   }
 
   public async stopDataflow(dataflowId: string): Promise<DataflowJob | undefined> {
-    const stopDataflowUrl = this.dataflowsJobsUrl + encodeURIComponent(dataflowId);
     const command = 'stop';
     const response = await connectRequest<DataflowJob>(this.connection, {
       method: 'PATCH',
-      url: stopDataflowUrl,
+      url: this.dataflowsJobsUrl + encodeURIComponent(dataflowId),
       body: JSON.stringify({
         command
       })
@@ -106,6 +104,21 @@ export default class Dataflow {
 
     if (response) {
       return response;
+    } else {
+      throwError(response);
+    }
+  }
+
+  public async uploadDataflow(dataflowId: string, inputBody: unknown): Promise<string | undefined> {
+    const response = await connectRequest<DataflowType>(this.connection, {
+      method: 'PATCH',
+      url: this.dataflowsUrl + encodeURIComponent(dataflowId),
+      body: JSON.stringify({
+        definition: inputBody
+      })
+    });
+    if (response) {
+      return response.name;
     } else {
       throwError(response);
     }
