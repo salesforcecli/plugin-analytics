@@ -177,6 +177,11 @@
     "flags": ["apiversion", "dataflowjobid", "json", "loglevel", "targetusername"]
   },
   {
+    "command": "analytics:dataflow:upload",
+    "plugin": "@salesforce/analytics",
+    "flags": ["apiversion", "dataflowfile", "dataflowid", "dataflowstr", "json", "loglevel", "targetusername"]
+  },
+  {
     "command": "analytics:dataset:display",
     "plugin": "@salesforce/analytics",
     "flags": ["apiversion", "datasetid", "datasetname", "json", "loglevel", "targetusername"]
