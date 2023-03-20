@@ -54,6 +54,7 @@ describe('analytics:template:validate failure', () => {
     .withConnectionRequest(() => Promise.resolve({ result: templateWithFailedReadiness }))
     .stdout()
     .command(['analytics:template:validate', '--templateid', ID])
+    // .exit(1)
     .it(`runs analytics:template:validate --templateid ${ID}`, ctx => {
       expect(ctx.stdout).to.contain('Command only available in api version 58.0 or later');
     });

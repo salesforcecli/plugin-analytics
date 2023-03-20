@@ -6,7 +6,7 @@
  */
 
 import { flags, SfdxCommand } from '@salesforce/command';
-import { Org, Messages } from '@salesforce/core';
+import { Org, Messages, SfdxError } from '@salesforce/core';
 import chalk from 'chalk';
 import { colorize, getStatusIcon, COLORS } from '../../../lib/analytics/utils';
 
@@ -60,12 +60,6 @@ export default class Lint extends SfdxCommand {
       );
     }
 
-    // check if there is any readiness failure
-    const didAnyReadinessTasksFail = tasks.some(task => task.readinessStatus === 'Failed');
-    if (didAnyReadinessTasksFail) {
-      process.exitCode = 1;
-    }
-
     this.ux.table(
       tasks.map(task => {
         return {
@@ -86,6 +80,12 @@ export default class Lint extends SfdxCommand {
         ]
       }
     );
+
+    // check if there is any readiness failure
+    const didAnyReadinessTasksFail = tasks.some(task => task.readinessStatus === 'Failed');
+    if (didAnyReadinessTasksFail) {
+      throw new SfdxError('Template lint failed', undefined, undefined, 1, undefined);
+    }
 
     return result;
   }
