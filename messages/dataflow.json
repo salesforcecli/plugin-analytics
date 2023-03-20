@@ -6,8 +6,9 @@
   "startCommandLongDescription": "Start Analytics dataflows in the specified target org.",
   "stopCommandDescription": "stop Analytics dataflows",
   "stopCommandLongDescription": "Stop Analytics dataflows in the specified target org.",
-  "updateCommandDescription": "update Analytics dataflow",
-  "updateCommandLongDescription": "Update Analytics dataflow in the specified target org.",
+  "updateCommandDescription": "upload Analytics dataflow",
+  "updateCommandLongDescription": "Upload Analytics dataflow in the specified target org.",
+
   "dataflowidFlagDescription": "dataflow ID",
   "dataflowidFlagLongDescription": "The ID of the dataflow to update.",
   "dataflowjobIdFlagDescription": "dataflow Job ID",
