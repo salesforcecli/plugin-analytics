@@ -80,6 +80,12 @@ export default class Validate extends SfdxCommand {
       this.ux.styledHeader(colorize(messages.getMessage('tasksFound', [result.id]), chalk.blue));
     }
 
+    // check if there is any readiness failure
+    const didAnyReadinessTasksFail = tasks.some(task => task.readinessStatus === 'Failed');
+    if (didAnyReadinessTasksFail) {
+      process.exitCode = 1;
+    }
+
     this.ux.table(
       tasks.map(task => {
         return {

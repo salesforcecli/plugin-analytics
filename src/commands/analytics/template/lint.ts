@@ -60,6 +60,12 @@ export default class Lint extends SfdxCommand {
       );
     }
 
+    // check if there is any readiness failure
+    const didAnyReadinessTasksFail = tasks.some(task => task.readinessStatus === 'Failed');
+    if (didAnyReadinessTasksFail) {
+      process.exitCode = 1;
+    }
+
     this.ux.table(
       tasks.map(task => {
         return {

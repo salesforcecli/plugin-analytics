@@ -35,3 +35,27 @@ describe('analytics:template:lint', () => {
       expect(ctx.stdout).to.contain('Command only available in api version 58.0 or later');
     });
 });
+
+const templateWithFailedReadiness = [
+  {
+    id: '0Nkxx000000000zCAA',
+    tasks: [
+      {
+        label: 'EvaluateTemplateRequirement',
+        message: "Expected number of accounts don't match. Expected: 100, Actual: 0",
+        readinessStatus: 'Failed'
+      }
+    ]
+  }
+];
+
+describe('analytics:template:lint failure', () => {
+  test
+    .withOrg({ username: 'test@org.com' }, true)
+    .withConnectionRequest(() => Promise.resolve({ result: templateWithFailedReadiness }))
+    .stdout()
+    .command(['analytics:template:validate', '--templateid', ID])
+    .it(`runs analytics:template:validate --templateid ${ID}`, ctx => {
+      expect(ctx.stdout).to.contain('Command only available in api version 58.0 or later');
+    });
+});
