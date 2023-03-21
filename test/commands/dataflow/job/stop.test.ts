@@ -13,13 +13,13 @@ const messages = core.Messages.loadMessages('@salesforce/analytics', 'dataflow')
 
 const dataflowjobId = '0FK9A0000008SDWWA2';
 const status = 'Failure';
-describe('analytics:dataflow:stop', () => {
+describe('analytics:dataflow:job:stop', () => {
   test
     .withOrg({ username: 'test@org.com' }, true)
     .withConnectionRequest(() => Promise.resolve({ dataflowjobId, status: 'Failure' }))
     .stdout()
-    .command(['analytics:dataflow:stop', '--dataflowjobid', dataflowjobId])
-    .it('runs analytics:dataflow:stop --dataflowjobid 0FK9A0000008SDWWA2', ctx => {
+    .command(['analytics:dataflow:job:stop', '--dataflowjobid', dataflowjobId])
+    .it('runs analytics:dataflow:job:stop --dataflowjobid 0FK9A0000008SDWWA2', ctx => {
       expect(ctx.stdout).to.contain(messages.getMessage('dataflowJobUpdate', [dataflowjobId, status]));
     });
 });

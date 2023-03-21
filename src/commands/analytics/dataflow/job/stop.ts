@@ -8,7 +8,7 @@
 import { flags, SfdxCommand } from '@salesforce/command';
 import { Messages, Org } from '@salesforce/core';
 
-import Dataflow from '../../../lib/analytics/dataflow/dataflow';
+import Dataflow from '../../../../lib/analytics/dataflow/dataflow';
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.loadMessages('@salesforce/analytics', 'dataflow');
@@ -17,7 +17,7 @@ export default class Stop extends SfdxCommand {
   public static description = messages.getMessage('stopCommandDescription');
   public static longDescription = messages.getMessage('stopCommandLongDescription');
 
-  public static examples = ['$ sfdx analytics:dataflow:stop --dataflowjobid <dataflowjobid>'];
+  public static examples = ['$ sfdx analytics:dataflow:job:stop --dataflowjobid <dataflowjobid>'];
 
   protected static flagsConfig = {
     dataflowjobid: flags.id({
