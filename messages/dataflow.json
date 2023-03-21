@@ -12,8 +12,8 @@
   "updateCommandLongDescription": "Upload Analytics dataflow in the specified target org.",
   "displayCommandDescription": "display status of Analytics dataflow",
   "displayCommandLongDescription": "Display status of Analytics dataflow in the specified target org.",
-  "listJobsCommandDescription": "jobs of Analytics dataflow",
-  "listJobsCommandLongDescription": "Jobs of Analytics dataflow in the specified target org.",
+  "listJobsCommandDescription": "list jobs of Analytics dataflow",
+  "listJobsCommandLongDescription": "List jobs of Analytics dataflow in the specified target org.",
 
   "dataflowidFlagDescription": "dataflow ID",
   "dataflowidFlagLongDescription": "The ID of the dataflow to update.",
