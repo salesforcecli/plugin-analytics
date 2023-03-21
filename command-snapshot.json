@@ -172,6 +172,11 @@
     "flags": ["apiversion", "dataflowid", "json", "loglevel", "targetusername"]
   },
   {
+    "command": "analytics:dataflow:job:stop",
+    "plugin": "@salesforce/analytics",
+    "flags": ["apiversion", "dataflowjobid", "json", "loglevel", "targetusername"]
+  },
+  {
     "command": "analytics:dataflow:list",
     "plugin": "@salesforce/analytics",
     "flags": ["apiversion", "json", "loglevel", "targetusername"]
@@ -180,11 +185,6 @@
     "command": "analytics:dataflow:start",
     "plugin": "@salesforce/analytics",
     "flags": ["apiversion", "dataflowid", "json", "loglevel", "targetusername"]
-  },
-  {
-    "command": "analytics:dataflow:stop",
-    "plugin": "@salesforce/analytics",
-    "flags": ["apiversion", "dataflowjobid", "json", "loglevel", "targetusername"]
   },
   {
     "command": "analytics:dataflow:update",
