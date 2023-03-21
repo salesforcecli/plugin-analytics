@@ -63,9 +63,9 @@ export default class Upload extends SfdxCommand {
     } else if (this.flags.dataflowstr) {
       json = JSON.parse(String(this.flags.dataflowstr));
     }
-    const dataflowName = await dataflow.uploadDataflow(dataflowId, json);
-    const message = messages.getMessage('uploadDataflowUpdate', [dataflowName, dataflowId]);
+    const dataflowResponse = await dataflow.uploadDataflow(dataflowId, json);
+    const message = messages.getMessage('uploadDataflowUpdate', [dataflowResponse?.name, dataflowId]);
     this.ux.log(message);
-    return dataflowName;
+    return dataflowResponse;
   }
 }
