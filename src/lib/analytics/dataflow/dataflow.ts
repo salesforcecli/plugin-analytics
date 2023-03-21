@@ -22,12 +22,32 @@ export type DataflowType = {
   type?: string;
 };
 
-export type DataflowJob = {
-  dataflow?: DataflowType;
+export type DataflowTriggerType = {
+  id?: string;
   date?: string;
   message?: string;
   status?: 'Failure' | 'Queued' | 'Live' | 'Running' | 'Success' | 'Warning' | string;
   jobType?: string;
+  nodesUrl?: string;
+  progress?: number;
+  retryCount?: number;
+  type?: string;
+  url?: string;
+};
+
+export type DataflowUpdateType = {
+  createdBy?: { id?: string; name?: string; profilePhotoUrl?: string };
+  createdDate?: string;
+  definition?: unknown;
+  emailNotificationLevel?: string;
+  historiesUrl?: string;
+  id?: string;
+  label?: string;
+  lastModifiedBy?: { id?: string; name?: string; profilePhotoUrl?: string };
+  lastModifiedDate?: string;
+  name?: string;
+  type?: string;
+  url?: string;
 };
 
 export default class Dataflow {
@@ -74,9 +94,9 @@ export default class Dataflow {
     }
   }
 
-  public async startDataflow(dataflowId: string): Promise<DataflowJob | undefined> {
+  public async startDataflow(dataflowId: string): Promise<DataflowTriggerType | undefined> {
     const command = 'start';
-    const response = await connectRequest<DataflowJob>(this.connection, {
+    const response = await connectRequest<DataflowTriggerType>(this.connection, {
       method: 'POST',
       url: this.dataflowsJobsUrl,
       body: JSON.stringify({
@@ -84,7 +104,6 @@ export default class Dataflow {
         command
       })
     });
-
     if (response) {
       return response;
     } else {
@@ -92,9 +111,9 @@ export default class Dataflow {
     }
   }
 
-  public async stopDataflow(dataflowId: string): Promise<DataflowJob | undefined> {
+  public async stopDataflow(dataflowId: string): Promise<DataflowTriggerType | undefined> {
     const command = 'stop';
-    const response = await connectRequest<DataflowJob>(this.connection, {
+    const response = await connectRequest<DataflowTriggerType>(this.connection, {
       method: 'PATCH',
       url: this.dataflowsJobsUrl + encodeURIComponent(dataflowId),
       body: JSON.stringify({
@@ -109,7 +128,7 @@ export default class Dataflow {
     }
   }
 
-  public async uploadDataflow(dataflowId: string, inputBody: unknown): Promise<string | undefined> {
+  public async uploadDataflow(dataflowId: string, inputBody: unknown): Promise<DataflowUpdateType | undefined> {
     const response = await connectRequest<DataflowType>(this.connection, {
       method: 'PATCH',
       url: this.dataflowsUrl + encodeURIComponent(dataflowId),
@@ -118,7 +137,7 @@ export default class Dataflow {
       })
     });
     if (response) {
-      return response.name;
+      return response;
     } else {
       throwError(response);
     }
