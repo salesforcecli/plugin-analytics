@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021, salesforce.com, inc.
+ * Copyright (c) 2023, salesforce.com, inc.
  * All rights reserved.
  * Licensed under the BSD 3-Clause license.
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -36,7 +36,7 @@ export default class Start extends SfdxCommand {
     const dataflow = new Dataflow(this.org as Org);
 
     const dataflowJob = await dataflow.startDataflow(dataflowId);
-    const message = messages.getMessage('dataflowsJobUpdate', [dataflowJob?.dataflow?.id, dataflowJob?.status]);
+    const message = messages.getMessage('dataflowsJobUpdate', [dataflowJob?.id, dataflowJob?.status]);
     this.ux.log(message);
     return dataflowJob;
   }
