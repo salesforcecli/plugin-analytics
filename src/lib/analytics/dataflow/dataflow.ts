@@ -20,6 +20,14 @@ export type DataflowType = {
   name?: string;
   label?: string;
   type?: string;
+  createdBy?: { id?: string; name?: string; profilePhotoUrl?: string };
+  createdDate?: string;
+  definition?: unknown;
+  emailNotificationLevel?: string;
+  historiesUrl?: string;
+  lastModifiedBy?: { id?: string; name?: string; profilePhotoUrl?: string };
+  lastModifiedDate?: string;
+  url?: string;
 };
 
 export type DataflowTriggerType = {
@@ -31,21 +39,6 @@ export type DataflowTriggerType = {
   nodesUrl?: string;
   progress?: number;
   retryCount?: number;
-  type?: string;
-  url?: string;
-};
-
-export type DataflowUpdateType = {
-  createdBy?: { id?: string; name?: string; profilePhotoUrl?: string };
-  createdDate?: string;
-  definition?: unknown;
-  emailNotificationLevel?: string;
-  historiesUrl?: string;
-  id?: string;
-  label?: string;
-  lastModifiedBy?: { id?: string; name?: string; profilePhotoUrl?: string };
-  lastModifiedDate?: string;
-  name?: string;
   type?: string;
   url?: string;
 };
@@ -128,7 +121,7 @@ export default class Dataflow {
     }
   }
 
-  public async updateDataflow(dataflowId: string, inputBody: unknown): Promise<DataflowUpdateType | undefined> {
+  public async updateDataflow(dataflowId: string, inputBody: unknown): Promise<DataflowType | undefined> {
     const response = await connectRequest<DataflowType>(this.connection, {
       method: 'PATCH',
       url: this.dataflowsUrl + encodeURIComponent(dataflowId),
