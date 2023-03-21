@@ -8,6 +8,10 @@
   "stopCommandLongDescription": "Stop Analytics dataflows in the specified target org.",
   "updateCommandDescription": "upload Analytics dataflow",
   "updateCommandLongDescription": "Upload Analytics dataflow in the specified target org.",
+  "statusCommandDescription": "status of Analytics dataflow",
+  "statusCommandLongDescription": "Status of Analytics dataflow in the specified target org.",
+  "jobsCommandDescription": "jobs of Analytics dataflow",
+  "jobsCommandLongDescription": "jobs of Analytics dataflow in the specified target org.",
 
   "dataflowidFlagDescription": "dataflow ID",
   "dataflowidFlagLongDescription": "The ID of the dataflow to update.",
@@ -18,6 +22,7 @@
   "dataflowJsonFlagDescription": "dataflow JSON string",
   "dataflowJsonFlagLongDescription": "The JSON string of the dataflow to update.",
 
-  "dataflowsJobUpdate": "Updated dataflow job(%s) status to (%s).",
+  "dataflowJobUpdate": "Updated dataflow job(%s) status to (%s).",
+  "dataflowJobStatus": "id: %s\nlabel: %s\nstatus: %s\nprogress: %s\nduration: %s\nretryCount: %s\nstartDate: %s\nwaitTime: %s",
   "updateDataflow": "Successfully updated %s(%s) "
 }

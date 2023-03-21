@@ -20,6 +20,6 @@ describe('analytics:dataflow:stop', () => {
     .stdout()
     .command(['analytics:dataflow:stop', '--dataflowjobid', dataflowjobId])
     .it('runs analytics:dataflow:stop --dataflowjobid 0FK9A0000008SDWWA2', ctx => {
-      expect(ctx.stdout).to.contain(messages.getMessage('dataflowsJobUpdate', [dataflowjobId, status]));
+      expect(ctx.stdout).to.contain(messages.getMessage('dataflowJobUpdate', [dataflowjobId, status]));
     });
 });

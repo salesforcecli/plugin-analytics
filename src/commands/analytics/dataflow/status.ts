@@ -7,17 +7,16 @@
 
 import { flags, SfdxCommand } from '@salesforce/command';
 import { Messages, Org } from '@salesforce/core';
-
 import Dataflow from '../../../lib/analytics/dataflow/dataflow';
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.loadMessages('@salesforce/analytics', 'dataflow');
 
-export default class Stop extends SfdxCommand {
-  public static description = messages.getMessage('stopCommandDescription');
-  public static longDescription = messages.getMessage('stopCommandLongDescription');
+export default class Status extends SfdxCommand {
+  public static description = messages.getMessage('statusCommandDescription');
+  public static longDescription = messages.getMessage('statusCommandLongDescription');
 
-  public static examples = ['$ sfdx analytics:dataflow:stop --dataflowjobid <dataflowjobid>'];
+  public static examples = ['$ sfdx analytics:dataflow:status --dataflowjobid <dataflowjobid>'];
 
   protected static flagsConfig = {
     dataflowjobid: flags.id({
@@ -35,8 +34,17 @@ export default class Stop extends SfdxCommand {
     const dataflowjobId = this.flags.dataflowjobid as string;
     const dataflow = new Dataflow(this.org as Org);
 
-    const dataflowJob = await dataflow.stopDataflow(dataflowjobId);
-    const message = messages.getMessage('dataflowJobUpdate', [dataflowjobId, dataflowJob?.status]);
+    const dataflowJob = await dataflow.getDataflowJobStatus(dataflowjobId);
+    const message = messages.getMessage('dataflowJobStatus', [
+      dataflowJob?.id,
+      dataflowJob?.label,
+      dataflowJob?.status,
+      dataflowJob?.progress,
+      dataflowJob?.duration,
+      dataflowJob?.retryCount,
+      dataflowJob?.startDate,
+      dataflowJob?.waitTime
+    ]);
     this.ux.log(message);
     return dataflowJob;
   }

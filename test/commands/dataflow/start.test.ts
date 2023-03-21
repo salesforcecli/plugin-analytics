@@ -21,6 +21,6 @@ describe('analytics:dataflow:start', () => {
     .stdout()
     .command(['analytics:dataflow:start', '--dataflowid', dataflowId])
     .it('runs analytics:dataflow:start --dataflowid 0FK9A0000008SDWWA2', ctx => {
-      expect(ctx.stdout).to.contain(messages.getMessage('dataflowsJobUpdate', [dataflowJobId, status]));
+      expect(ctx.stdout).to.contain(messages.getMessage('dataflowJobUpdate', [dataflowJobId, status]));
     });
 });

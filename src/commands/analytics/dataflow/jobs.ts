@@ -7,17 +7,16 @@
 
 import { flags, SfdxCommand } from '@salesforce/command';
 import { Messages, Org } from '@salesforce/core';
-
 import Dataflow from '../../../lib/analytics/dataflow/dataflow';
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.loadMessages('@salesforce/analytics', 'dataflow');
 
-export default class Start extends SfdxCommand {
-  public static description = messages.getMessage('startCommandDescription');
-  public static longDescription = messages.getMessage('startCommandLongDescription');
+export default class Jobs extends SfdxCommand {
+  public static description = messages.getMessage('jobsCommandDescription');
+  public static longDescription = messages.getMessage('jobsCommandLongDescription');
 
-  public static examples = ['$ sfdx analytics:dataflow:start --dataflowid <dataflowid>'];
+  public static examples = ['$ sfdx analytics:dataflow:jobs --dataflowid <dataflowid>'];
 
   protected static flagsConfig = {
     dataflowid: flags.id({
@@ -31,13 +30,22 @@ export default class Start extends SfdxCommand {
   protected static requiresUsername = true;
   protected static requiresProject = false;
 
-  public async run() {
-    const dataflowId = this.flags.dataflowid as string;
-    const dataflow = new Dataflow(this.org as Org);
+  protected static tableColumnData = ['id', 'label', 'status', 'waitTime', 'progress', 'retryCount', 'startDate'];
 
-    const dataflowJob = await dataflow.startDataflow(dataflowId);
-    const message = messages.getMessage('dataflowJobUpdate', [dataflowJob?.id, dataflowJob?.status]);
-    this.ux.log(message);
-    return dataflowJob;
+  public async run() {
+    const dataflow = new Dataflow(this.org as Org);
+    const dataflowJobs = ((await dataflow.getDataflowJobs(this.flags.dataflowid as string)) || []).map(job => ({
+      id: job.id,
+      label: job.label,
+      status: job.status,
+      waitTime: job.waitTime,
+      progress: job.progress,
+      retryCount: job.retryCount,
+      startDate: job.startDate
+    }));
+    if (dataflowJobs.length) {
+      this.ux.styledHeader(messages.getMessage('dataflowsFound', [dataflowJobs.length]));
+    }
+    return dataflowJobs;
   }
 }

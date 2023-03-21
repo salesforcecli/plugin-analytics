@@ -30,17 +30,22 @@ export type DataflowType = {
   url?: string;
 };
 
-export type DataflowTriggerType = {
+export type DataflowJobType = {
+  duration?: number;
   id?: string;
-  date?: string;
-  message?: string;
-  status?: 'Failure' | 'Queued' | 'Live' | 'Running' | 'Success' | 'Warning' | string;
   jobType?: string;
+  label?: string;
   nodesUrl?: string;
   progress?: number;
   retryCount?: number;
+  createdDate?: string;
+  executedDate?: string;
+  startDate?: string;
+  status?: 'Failure' | 'Queued' | 'Live' | 'Running' | 'Success' | 'Warning' | string;
+  syncDataflows?: [];
   type?: string;
   url?: string;
+  waitTime?: number;
 };
 
 export default class Dataflow {
@@ -54,7 +59,13 @@ export default class Dataflow {
     this.dataflowsJobsUrl = `${this.connection.baseUrl()}/wave/dataflowjobs/`;
   }
 
-  public list(): Promise<DataflowType[]> {
+  public async list(): Promise<DataflowType[]> {
+    const response = await connectRequest<DataflowType>(this.connection, {
+      method: 'GET',
+      url: this.dataflowsUrl
+    });
+    // eslint-disable-next-line no-console
+    console.log(response);
     return fetchAllPages<DataflowType>(this.connection, this.dataflowsUrl, 'dataflows');
   }
 
@@ -87,9 +98,9 @@ export default class Dataflow {
     }
   }
 
-  public async startDataflow(dataflowId: string): Promise<DataflowTriggerType | undefined> {
+  public async startDataflow(dataflowId: string): Promise<DataflowJobType | undefined> {
     const command = 'start';
-    const response = await connectRequest<DataflowTriggerType>(this.connection, {
+    const response = await connectRequest<DataflowJobType>(this.connection, {
       method: 'POST',
       url: this.dataflowsJobsUrl,
       body: JSON.stringify({
@@ -104,9 +115,9 @@ export default class Dataflow {
     }
   }
 
-  public async stopDataflow(dataflowId: string): Promise<DataflowTriggerType | undefined> {
+  public async stopDataflow(dataflowId: string): Promise<DataflowJobType | undefined> {
     const command = 'stop';
-    const response = await connectRequest<DataflowTriggerType>(this.connection, {
+    const response = await connectRequest<DataflowJobType>(this.connection, {
       method: 'PATCH',
       url: this.dataflowsJobsUrl + encodeURIComponent(dataflowId),
       body: JSON.stringify({
@@ -134,5 +145,22 @@ export default class Dataflow {
     } else {
       throwError(response);
     }
+  }
+
+  public async getDataflowJobStatus(dataflowJobId: string): Promise<DataflowJobType | undefined> {
+    const response = await connectRequest<DataflowJobType>(this.connection, {
+      method: 'GET',
+      url: this.dataflowsJobsUrl + encodeURIComponent(dataflowJobId)
+    });
+    if (response) {
+      return response;
+    } else {
+      throwError(response);
+    }
+  }
+
+  public async getDataflowJobs(dataflowId: string): Promise<DataflowJobType[]> {
+    const wtUrl = this.dataflowsJobsUrl + '?dataflowId=' + dataflowId;
+    return fetchAllPages<DataflowJobType>(this.connection, wtUrl, 'dataflowJobs');
   }
 }
