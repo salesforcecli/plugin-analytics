@@ -12,14 +12,15 @@ core.Messages.importMessagesDirectory(__dirname);
 const messages = core.Messages.loadMessages('@salesforce/analytics', 'dataflow');
 
 const dataflowId = '0FK9A0000008SDWWA2';
+const dataflowJobId = '030EE00000Cfj3uYAB';
 const status = 'Queued';
 describe('analytics:dataflow:start', () => {
   test
     .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve({ dataflow: { id: dataflowId }, status: 'Queued' }))
+    .withConnectionRequest(() => Promise.resolve({ id: dataflowJobId, status: 'Queued' }))
     .stdout()
     .command(['analytics:dataflow:start', '--dataflowid', dataflowId])
     .it('runs analytics:dataflow:start --dataflowid 0FK9A0000008SDWWA2', ctx => {
-      expect(ctx.stdout).to.contain(messages.getMessage('dataflowsJobUpdate', [dataflowId, status]));
+      expect(ctx.stdout).to.contain(messages.getMessage('dataflowsJobUpdate', [dataflowJobId, status]));
     });
 });
