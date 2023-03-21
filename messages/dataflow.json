@@ -19,5 +19,5 @@
   "dataflowJsonFlagLongDescription": "The JSON string of the dataflow to update.",
 
   "dataflowsJobUpdate": "Updated dataflow job(%s) status to (%s).",
-  "uploadDataflowUpdate": "Successfully updated %s(%s) "
+  "updateDataflow": "Successfully updated %s(%s) "
 }

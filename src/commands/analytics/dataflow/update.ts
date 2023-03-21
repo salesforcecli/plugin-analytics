@@ -12,12 +12,12 @@ import Dataflow from '../../../lib/analytics/dataflow/dataflow';
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.loadMessages('@salesforce/analytics', 'dataflow');
 
-export default class Upload extends SfdxCommand {
+export default class Update extends SfdxCommand {
   public static description = messages.getMessage('updateCommandDescription');
   public static longDescription = messages.getMessage('updateCommandLongDescription');
 
   public static examples = [
-    '$ sfdx analytics:dataflow:upload --dataflowid <dataflowid> [--dataflowfile <dataflow-file-path>] [--dataflowstr <dataflow-json-string>]'
+    '$ sfdx analytics:dataflow:update --dataflowid <dataflowid> [--dataflowfile <dataflow-file-path>] [--dataflowstr <dataflow-json-string>]'
   ];
 
   protected static flagsConfig = {
@@ -63,8 +63,8 @@ export default class Upload extends SfdxCommand {
     } else if (this.flags.dataflowstr) {
       json = JSON.parse(String(this.flags.dataflowstr));
     }
-    const dataflowResponse = await dataflow.uploadDataflow(dataflowId, json);
-    const message = messages.getMessage('uploadDataflowUpdate', [dataflowResponse?.name, dataflowId]);
+    const dataflowResponse = await dataflow.updateDataflow(dataflowId, json);
+    const message = messages.getMessage('updateDataflow', [dataflowResponse?.name, dataflowId]);
     this.ux.log(message);
     return dataflowResponse;
   }

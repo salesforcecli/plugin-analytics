@@ -128,7 +128,7 @@ export default class Dataflow {
     }
   }
 
-  public async uploadDataflow(dataflowId: string, inputBody: unknown): Promise<DataflowUpdateType | undefined> {
+  public async updateDataflow(dataflowId: string, inputBody: unknown): Promise<DataflowUpdateType | undefined> {
     const response = await connectRequest<DataflowType>(this.connection, {
       method: 'PATCH',
       url: this.dataflowsUrl + encodeURIComponent(dataflowId),

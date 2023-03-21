@@ -15,13 +15,13 @@ const dataflowId = '0FK9A0000008SDWWA2';
 const dataflowName = 'dataflow';
 const dataflowStr = JSON.stringify({ extract: { action: 'edgemart' } });
 
-describe('analytics:dataflow:upload', () => {
+describe('analytics:dataflow:update', () => {
   test
     .withOrg({ username: 'test@org.com' }, true)
     .withConnectionRequest(() => Promise.resolve({ dataflowId, name: dataflowName }))
     .stdout()
-    .command(['analytics:dataflow:upload', '--dataflowid', dataflowId, '--dataflowstr', dataflowStr])
-    .it('runs analytics:dataflow:upload --dataflowid 0FK9A0000008SDWWA2 --dataflowstr ' + dataflowStr, ctx => {
-      expect(ctx.stdout).to.contain(messages.getMessage('uploadDataflowUpdate', [dataflowName, dataflowId]));
+    .command(['analytics:dataflow:update', '--dataflowid', dataflowId, '--dataflowstr', dataflowStr])
+    .it('runs analytics:dataflow:update --dataflowid 0FK9A0000008SDWWA2 --dataflowstr ' + dataflowStr, ctx => {
+      expect(ctx.stdout).to.contain(messages.getMessage('updateDataflow', [dataflowName, dataflowId]));
     });
 });

@@ -177,7 +177,7 @@
     "flags": ["apiversion", "dataflowjobid", "json", "loglevel", "targetusername"]
   },
   {
-    "command": "analytics:dataflow:upload",
+    "command": "analytics:dataflow:update",
     "plugin": "@salesforce/analytics",
     "flags": ["apiversion", "dataflowfile", "dataflowid", "dataflowstr", "json", "loglevel", "targetusername"]
   },
