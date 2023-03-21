@@ -11,7 +11,7 @@
   "statusCommandDescription": "status of Analytics dataflow",
   "statusCommandLongDescription": "Status of Analytics dataflow in the specified target org.",
   "jobsCommandDescription": "jobs of Analytics dataflow",
-  "jobsCommandLongDescription": "jobs of Analytics dataflow in the specified target org.",
+  "jobsCommandLongDescription": "Jobs of Analytics dataflow in the specified target org.",
 
   "dataflowidFlagDescription": "dataflow ID",
   "dataflowidFlagLongDescription": "The ID of the dataflow to update.",
