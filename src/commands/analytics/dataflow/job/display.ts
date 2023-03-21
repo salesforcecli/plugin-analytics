@@ -7,16 +7,17 @@
 
 import { flags, SfdxCommand } from '@salesforce/command';
 import { Messages, Org } from '@salesforce/core';
-import Dataflow from '../../../lib/analytics/dataflow/dataflow';
+import { blue } from 'chalk';
+import Dataflow from '../../../../lib/analytics/dataflow/dataflow';
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.loadMessages('@salesforce/analytics', 'dataflow');
 
-export default class Status extends SfdxCommand {
-  public static description = messages.getMessage('statusCommandDescription');
-  public static longDescription = messages.getMessage('statusCommandLongDescription');
+export default class Display extends SfdxCommand {
+  public static description = messages.getMessage('displayCommandDescription');
+  public static longDescription = messages.getMessage('displayCommandLongDescription');
 
-  public static examples = ['$ sfdx analytics:dataflow:status --dataflowjobid <dataflowjobid>'];
+  public static examples = ['$ sfdx analytics:dataflow:job:display --dataflowjobid <dataflowjobid>'];
 
   protected static flagsConfig = {
     dataflowjobid: flags.id({
@@ -35,17 +36,24 @@ export default class Status extends SfdxCommand {
     const dataflow = new Dataflow(this.org as Org);
 
     const dataflowJob = await dataflow.getDataflowJobStatus(dataflowjobId);
-    const message = messages.getMessage('dataflowJobStatus', [
-      dataflowJob?.id,
-      dataflowJob?.label,
-      dataflowJob?.status,
-      dataflowJob?.progress,
-      dataflowJob?.duration,
-      dataflowJob?.retryCount,
-      dataflowJob?.startDate,
-      dataflowJob?.waitTime
-    ]);
-    this.ux.log(message);
+    this.ux.styledHeader(blue(messages.getMessage('displayDetailHeader')));
+    this.ux.table(
+      [
+        { key: 'Id', value: dataflowJob.id },
+        { key: 'Label', value: dataflowJob.label },
+        { key: 'Status', value: dataflowJob.status },
+        { key: 'Wait Time', value: dataflowJob.waitTime },
+        { key: 'Progress', value: dataflowJob.progress },
+        { key: 'Retry Count', value: dataflowJob.retryCount },
+        { key: 'Start Date', value: dataflowJob.startDate }
+      ],
+      {
+        columns: [
+          { key: 'key', label: 'Key' },
+          { key: 'value', label: 'Value' }
+        ]
+      }
+    );
     return dataflowJob;
   }
 }

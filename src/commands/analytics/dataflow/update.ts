@@ -62,9 +62,11 @@ export default class Update extends SfdxCommand {
       }
     } else if (this.flags.dataflowstr) {
       json = JSON.parse(String(this.flags.dataflowstr));
+    } else {
+      throw new SfdxError(messages.getMessage('missingRequiredField'));
     }
     const dataflowResponse = await dataflow.updateDataflow(dataflowId, json);
-    const message = messages.getMessage('updateDataflow', [dataflowResponse?.name, dataflowId]);
+    const message = messages.getMessage('updateDataflow', [dataflowResponse.name, dataflowId]);
     this.ux.log(message);
     return dataflowResponse;
   }

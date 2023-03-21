@@ -7,16 +7,16 @@
 
 import { flags, SfdxCommand } from '@salesforce/command';
 import { Messages, Org } from '@salesforce/core';
-import Dataflow from '../../../lib/analytics/dataflow/dataflow';
+import Dataflow from '../../../../lib/analytics/dataflow/dataflow';
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.loadMessages('@salesforce/analytics', 'dataflow');
 
-export default class Jobs extends SfdxCommand {
-  public static description = messages.getMessage('jobsCommandDescription');
-  public static longDescription = messages.getMessage('jobsCommandLongDescription');
+export default class List extends SfdxCommand {
+  public static description = messages.getMessage('listJobsCommandDescription');
+  public static longDescription = messages.getMessage('listJobsCommandLongDescription');
 
-  public static examples = ['$ sfdx analytics:dataflow:jobs --dataflowid <dataflowid>'];
+  public static examples = ['$ sfdx analytics:dataflow:job:list --dataflowid <dataflowid>'];
 
   protected static flagsConfig = {
     dataflowid: flags.id({

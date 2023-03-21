@@ -14,23 +14,31 @@ export type DataflowHistoryType = {
   label?: string;
 };
 
-export type DataflowType = {
+export type DataflowType = Record<string, unknown> & {
   id?: string;
   namespace?: string;
   name?: string;
   label?: string;
   type?: string;
-  createdBy?: { id?: string; name?: string; profilePhotoUrl?: string };
+  createdBy?: Record<string, unknown> & {
+    id?: string;
+    name?: string;
+    profilePhotoUrl?: string;
+  };
   createdDate?: string;
   definition?: unknown;
   emailNotificationLevel?: string;
   historiesUrl?: string;
-  lastModifiedBy?: { id?: string; name?: string; profilePhotoUrl?: string };
+  lastModifiedBy?: Record<string, unknown> & {
+    id?: string;
+    name?: string;
+    profilePhotoUrl?: string;
+  };
   lastModifiedDate?: string;
   url?: string;
 };
 
-export type DataflowJobType = {
+export type DataflowJobType = Record<string, unknown> & {
   duration?: number;
   id?: string;
   jobType?: string;
@@ -98,7 +106,7 @@ export default class Dataflow {
     }
   }
 
-  public async startDataflow(dataflowId: string): Promise<DataflowJobType | undefined> {
+  public async startDataflow(dataflowId: string): Promise<DataflowJobType> {
     const command = 'start';
     const response = await connectRequest<DataflowJobType>(this.connection, {
       method: 'POST',
@@ -115,7 +123,7 @@ export default class Dataflow {
     }
   }
 
-  public async stopDataflow(dataflowId: string): Promise<DataflowJobType | undefined> {
+  public async stopDataflow(dataflowId: string): Promise<DataflowJobType> {
     const command = 'stop';
     const response = await connectRequest<DataflowJobType>(this.connection, {
       method: 'PATCH',
@@ -132,7 +140,7 @@ export default class Dataflow {
     }
   }
 
-  public async updateDataflow(dataflowId: string, inputBody: unknown): Promise<DataflowType | undefined> {
+  public async updateDataflow(dataflowId: string, inputBody: unknown): Promise<DataflowType> {
     const response = await connectRequest<DataflowType>(this.connection, {
       method: 'PATCH',
       url: this.dataflowsUrl + encodeURIComponent(dataflowId),
@@ -147,7 +155,7 @@ export default class Dataflow {
     }
   }
 
-  public async getDataflowJobStatus(dataflowJobId: string): Promise<DataflowJobType | undefined> {
+  public async getDataflowJobStatus(dataflowJobId: string): Promise<DataflowJobType> {
     const response = await connectRequest<DataflowJobType>(this.connection, {
       method: 'GET',
       url: this.dataflowsJobsUrl + encodeURIComponent(dataflowJobId)

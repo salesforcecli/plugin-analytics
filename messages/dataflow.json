@@ -1,4 +1,6 @@
 {
+  "missingRequiredField": "Missing Required Field: dataflowfile or dataflowstr",
+
   "listCommandDescription": "list Analytics dataflows",
   "listCommandLongDescription": "Lists Analytics dataflows in the specified target org.",
   "dataflowsFound": "Found [%s] Analytics dataflows.",
@@ -8,10 +10,10 @@
   "stopCommandLongDescription": "Stop Analytics dataflows in the specified target org.",
   "updateCommandDescription": "upload Analytics dataflow",
   "updateCommandLongDescription": "Upload Analytics dataflow in the specified target org.",
-  "statusCommandDescription": "status of Analytics dataflow",
-  "statusCommandLongDescription": "Status of Analytics dataflow in the specified target org.",
-  "jobsCommandDescription": "jobs of Analytics dataflow",
-  "jobsCommandLongDescription": "Jobs of Analytics dataflow in the specified target org.",
+  "displayCommandDescription": "display status of Analytics dataflow",
+  "displayCommandLongDescription": "Display status of Analytics dataflow in the specified target org.",
+  "listJobsCommandDescription": "jobs of Analytics dataflow",
+  "listJobsCommandLongDescription": "Jobs of Analytics dataflow in the specified target org.",
 
   "dataflowidFlagDescription": "dataflow ID",
   "dataflowidFlagLongDescription": "The ID of the dataflow to update.",
@@ -23,6 +25,6 @@
   "dataflowJsonFlagLongDescription": "The JSON string of the dataflow to update.",
 
   "dataflowJobUpdate": "Updated dataflow job(%s) status to (%s).",
-  "dataflowJobStatus": "id: %s\nlabel: %s\nstatus: %s\nprogress: %s\nduration: %s\nretryCount: %s\nstartDate: %s\nwaitTime: %s",
+  "displayDetailHeader": "Dataflow Details",
   "updateDataflow": "Successfully updated %s(%s) "
 }

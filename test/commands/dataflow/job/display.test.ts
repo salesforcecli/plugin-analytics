@@ -23,24 +23,13 @@ const dataflowJob = {
   startDate: '2023-03-21T05:47:24.000Z'
 };
 
-describe('analytics:dataflow:status', () => {
+describe('analytics:dataflow:job:display', () => {
   test
     .withOrg({ username: 'test@org.com' }, true)
     .withConnectionRequest(() => Promise.resolve(dataflowJob))
     .stdout()
-    .command(['analytics:dataflow:status', '--dataflowjobid', dataflowJobId])
-    .it('runs analytics:dataflow:status --dataflowjobid ' + dataflowJobId, ctx => {
-      expect(ctx.stdout).to.contain(
-        messages.getMessage('dataflowJobStatus', [
-          dataflowJob.id,
-          dataflowJob.label,
-          dataflowJob.status,
-          dataflowJob.progress,
-          dataflowJob.duration,
-          dataflowJob.retryCount,
-          dataflowJob.startDate,
-          dataflowJob.waitTime
-        ])
-      );
+    .command(['analytics:dataflow:job:display', '--dataflowjobid', dataflowJobId])
+    .it('runs analytics:dataflow:job:display --dataflowjobid ' + dataflowJobId, ctx => {
+      expect(ctx.stdout).to.contain(messages.getMessage('displayDetailHeader'));
     });
 });

@@ -24,13 +24,13 @@ const dataflowValues = [
   }
 ];
 
-describe('analytics:dataflow:jobs', () => {
+describe('analytics:dataflow:job:list', () => {
   test
     .withOrg({ username: 'test@org.com' }, true)
     .withConnectionRequest(() => Promise.resolve({ dataflowJobs: dataflowValues }))
     .stdout()
-    .command(['analytics:dataflow:jobs', '--dataflowid', dataflowId])
-    .it('runs analytics:dataflow:jobs --dataflowid ' + dataflowId, ctx => {
+    .command(['analytics:dataflow:job:list', '--dataflowid', dataflowId])
+    .it('runs analytics:dataflow:job:list --dataflowid ' + dataflowId, ctx => {
       expect(ctx.stdout).to.contain(messages.getMessage('dataflowsFound', [1]));
     });
 
@@ -38,8 +38,8 @@ describe('analytics:dataflow:jobs', () => {
     .withOrg({ username: 'test@org.com' }, true)
     .withConnectionRequest(() => Promise.resolve({ dataflows: [] }))
     .stdout()
-    .command(['analytics:dataflow:jobs', '--dataflowid', dataflowId])
-    .it('runs analytics:dataflow:jobs --dataflowid ' + dataflowId, ctx => {
+    .command(['analytics:dataflow:job:list', '--dataflowid', dataflowId])
+    .it('runs analytics:dataflow:job:list --dataflowid ' + dataflowId, ctx => {
       expect(ctx.stdout).to.contain('No results found.');
     });
 });

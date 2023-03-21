@@ -36,7 +36,7 @@ export default class Start extends SfdxCommand {
     const dataflow = new Dataflow(this.org as Org);
 
     const dataflowJob = await dataflow.startDataflow(dataflowId);
-    const message = messages.getMessage('dataflowJobUpdate', [dataflowJob?.id, dataflowJob?.status]);
+    const message = messages.getMessage('dataflowJobUpdate', [dataflowJob.id, dataflowJob.status]);
     this.ux.log(message);
     return dataflowJob;
   }

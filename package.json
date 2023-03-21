@@ -118,6 +118,9 @@
             "subtopics": {
               "history": {
                 "description": "view and manage dataflow history"
+              },
+              "job": {
+                "description": "view dataflow job history and status"
               }
             }
           },

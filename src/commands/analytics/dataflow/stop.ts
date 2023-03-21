@@ -36,7 +36,7 @@ export default class Stop extends SfdxCommand {
     const dataflow = new Dataflow(this.org as Org);
 
     const dataflowJob = await dataflow.stopDataflow(dataflowjobId);
-    const message = messages.getMessage('dataflowJobUpdate', [dataflowjobId, dataflowJob?.status]);
+    const message = messages.getMessage('dataflowJobUpdate', [dataflowjobId, dataflowJob.status]);
     this.ux.log(message);
     return dataflowJob;
   }
