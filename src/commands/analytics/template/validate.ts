@@ -104,7 +104,7 @@ export default class Validate extends SfdxCommand {
     // check if there is any readiness failure
     const didAnyReadinessTasksFail = tasks.some(task => task.readinessStatus === 'Failed');
     if (didAnyReadinessTasksFail) {
-      process.exitCode = 1;
+      throw new SfdxError('Template validation failed', undefined, undefined, 1, undefined);
     }
 
     return result;

@@ -11,19 +11,17 @@ import { expect, test } from '@salesforce/command/lib/test';
 core.Messages.importMessagesDirectory(__dirname);
 // const messages = core.Messages.loadMessages('@salesforce/analytics', 'lint');
 const ID = '0Nkxx000000000zCAA';
-const templateValues = [
-  {
-    label: 'sfdc_internal__Sales_Analytics_Flex',
-    score: 85.6,
-    tasks: [
-      {
-        label: 'TemplateAssociationTask',
-        message: 'Certification for sfdc_internal__Sales_Analytics_Flex template.',
-        readinessStatus: 'Complete'
-      }
-    ]
-  }
-];
+const templateValues = {
+  label: 'sfdc_internal__Sales_Analytics_Flex',
+  score: 85.6,
+  tasks: [
+    {
+      label: 'TemplateAssociationTask',
+      message: 'Certification for sfdc_internal__Sales_Analytics_Flex template.',
+      readinessStatus: 'Complete'
+    }
+  ]
+};
 
 describe('analytics:template:lint', () => {
   test
