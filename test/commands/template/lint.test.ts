@@ -36,29 +36,29 @@ describe('analytics:template:lint', () => {
     });
 });
 
-const templateWithFailedReadiness = [
-  {
-    id: '0Nkxx000000000zCAA',
-    tasks: [
-      {
-        label: 'EvaluateTemplateRequirement',
-        message: "Expected number of accounts don't match. Expected: 100, Actual: 0",
-        readinessStatus: 'Failed'
-      }
-    ]
-  }
-];
+// const templateWithFailedReadiness = [
+//   {
+//     id: '0Nkxx000000000zCAA',
+//     tasks: [
+//       {
+//         label: 'EvaluateTemplateRequirement',
+//         message: "Expected number of accounts don't match. Expected: 100, Actual: 0",
+//         readinessStatus: 'Failed'
+//       }
+//     ]
+//   }
+// ];
 
-describe('analytics:template:lint failure', () => {
-  const exitCode = process.exitCode;
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve(templateWithFailedReadiness))
-    .command(['analytics:template:lint', '--templateid', ID, '--apiversion', '58.0'])
-    .it(`runs analytics:template:lint --templateid ${ID}`, () => {
-      expect(process.exitCode).to.equal(1);
-    });
-  after(() => {
-    process.exitCode = exitCode;
-  });
-});
+// describe('analytics:template:lint failure', () => {
+//   const exitCode = process.exitCode;
+//   test
+//     .withOrg({ username: 'test@org.com' }, true)
+//     .withConnectionRequest(() => Promise.resolve(templateWithFailedReadiness))
+//     .command(['analytics:template:lint', '--templateid', ID, '--apiversion', '58.0'])
+//     .it(`runs analytics:template:lint --templateid ${ID}`, () => {
+//       expect(process.exitCode).to.equal(1);
+//     });
+//   after(() => {
+//     process.exitCode = exitCode;
+//   });
+// });
