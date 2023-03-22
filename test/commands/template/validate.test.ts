@@ -49,13 +49,16 @@ const templateWithFailedReadiness = [
 ];
 
 describe('analytics:template:validate failure', () => {
+  const exitCode = process.exitCode;
   test
     .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve({ result: templateWithFailedReadiness }))
-    .stdout()
-    .command(['analytics:template:validate', '--templateid', ID])
-    // .exit(1)
-    .it(`runs analytics:template:validate --templateid ${ID}`, ctx => {
-      expect(ctx.stdout).to.contain('Command only available in api version 58.0 or later');
+    .withConnectionRequest(() => Promise.resolve(templateWithFailedReadiness))
+    .command(['analytics:template:validate', '--templateid', ID, '--apiversion', '58.0'])
+    .it(`runs analytics:template:validate --templateid ${ID}`, () => {
+      expect(process.exitCode).to.equal(1);
     });
+
+  after(() => {
+    process.exitCode = exitCode;
+  });
 });
