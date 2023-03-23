@@ -7,5 +7,5 @@
   "recipeidFlagLongDescription": "The ID of the recipe to update.",
 
   "recipesFound": "Found [%s] Analytics recipes.",
-  "recipeJobUpdate": "Updated recipe job(%s) status to (%s)."
+  "recipeJobUpdate": "Updated recipe job (%s) status to (%s)."
 }
