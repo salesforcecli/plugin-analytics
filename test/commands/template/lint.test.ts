@@ -40,7 +40,7 @@ const templateWithFailedReadiness = {
   tasks: [
     {
       label: 'EvaluateTemplateRequirement',
-      message: "Expected number of accounts don't match. Expected: 100, Actual: 0",
+      message: 'Certification for sfdc_internal__Sales_Analytics_Flex template.',
       readinessStatus: 'Failed'
     }
   ]

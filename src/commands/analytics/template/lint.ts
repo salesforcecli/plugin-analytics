@@ -84,7 +84,7 @@ export default class Lint extends SfdxCommand {
     // check if there is any readiness failure
     const didAnyReadinessTasksFail = tasks.some(task => task.readinessStatus === 'Failed');
     if (didAnyReadinessTasksFail) {
-      throw new SfdxError('Template linting failed', undefined, undefined, 1, undefined);
+      throw new SfdxError('Template linting failed', undefined, undefined, 1, undefined).setData(result);
     }
 
     return result;
