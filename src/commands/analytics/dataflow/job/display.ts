@@ -35,7 +35,7 @@ export default class Display extends SfdxCommand {
     const dataflowjobId = this.flags.dataflowjobid as string;
     const dataflow = new Dataflow(this.org as Org);
 
-    const dataflowJob = await dataflow.getDataflowJobStatus(dataflowjobId);
+    const dataflowJob = await dataflow.getDataflowJob(dataflowjobId);
     this.ux.styledHeader(blue(messages.getMessage('displayDetailHeader')));
     this.ux.table(
       [

@@ -17,7 +17,7 @@ export default class Update extends SfdxCommand {
   public static longDescription = messages.getMessage('updateCommandLongDescription');
 
   public static examples = [
-    '$ sfdx analytics:dataflow:update --dataflowid <dataflowid> --dataflowfile dataflow-file.json
+    '$ sfdx analytics:dataflow:update --dataflowid <dataflowid> --dataflowfile dataflow-file.json'
   ];
 
   protected static flagsConfig = {

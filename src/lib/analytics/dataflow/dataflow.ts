@@ -117,11 +117,11 @@ export default class Dataflow {
     }
   }
 
-  public async stopDataflow(dataflowId: string): Promise<DataflowJobType> {
+  public async stopDataflowJob(dataflowJobId: string): Promise<DataflowJobType> {
     const command = 'stop';
     const response = await connectRequest<DataflowJobType>(this.connection, {
       method: 'PATCH',
-      url: this.dataflowsJobsUrl + encodeURIComponent(dataflowId),
+      url: this.dataflowsJobsUrl + encodeURIComponent(dataflowJobId),
       body: JSON.stringify({
         command
       })
@@ -149,7 +149,7 @@ export default class Dataflow {
     }
   }
 
-  public async getDataflowJobStatus(dataflowJobId: string): Promise<DataflowJobType> {
+  public async getDataflowJob(dataflowJobId: string): Promise<DataflowJobType> {
     const response = await connectRequest<DataflowJobType>(this.connection, {
       method: 'GET',
       url: this.dataflowsJobsUrl + encodeURIComponent(dataflowJobId)
