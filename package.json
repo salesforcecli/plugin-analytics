@@ -120,7 +120,7 @@
                 "description": "view and manage dataflow history"
               },
               "job": {
-                "description": "view and manage dataflow job"
+                "description": "view and manage dataflow jobs"
               }
             }
           },
