@@ -9,7 +9,7 @@ import { UX } from '@salesforce/command';
 import * as core from '@salesforce/core';
 import { expect, test } from '@salesforce/command/lib/test';
 import { SfdxError } from '@salesforce/core';
-import { JsonMap } from '@salesforce/ts-types';
+import { AnyJson, ensureJsonMap, ensureString, JsonMap } from '@salesforce/ts-types';
 import { AutoInstallRequestType, AutoInstallStatus } from '../../../../src/lib/analytics/autoinstall/autoinstall';
 
 core.Messages.importMessagesDirectory(__dirname);
@@ -32,10 +32,21 @@ function stubTimeout(callback?: () => unknown) {
 }
 
 describe('analytics:autoinstall:app:create', () => {
+  let requestBody: AnyJson | undefined;
+  function saveOffRequestBody(json: string | undefined) {
+    requestBody = undefined;
+    try {
+      requestBody = json && (JSON.parse(json) as AnyJson);
+    } catch (e) {
+      expect.fail('Error parsing request body: ' + (e instanceof Error ? e.message : String(e)));
+    }
+  }
+
   // use this so we can have return different values from withConnectionRequest() to simulate polling
   let requestNum: number;
   beforeEach(() => {
     requestNum = 0;
+    requestBody = undefined;
   });
 
   test
@@ -260,5 +271,33 @@ describe('analytics:autoinstall:app:create', () => {
     .command(['analytics:autoinstall:app:create', '-n', 'abc'])
     .it('runs analytics:autoinstall:app:create with error during polling', ctx => {
       expect(ctx.stderr).to.contain('expected error in polling');
+    });
+
+  // Test that --appname and --appdescription values appear in the request body
+  test
+    .withOrg({ username: 'test@org.com' }, true)
+    .withConnectionRequest(async request => {
+      request = ensureJsonMap(request);
+      saveOffRequestBody(ensureString(request.body));
+      return requestWithStatus('New');
+    })
+    .stdout()
+    .command([
+      'analytics:autoinstall:app:create',
+      '--async',
+      '-n',
+      'abc',
+      '--appname',
+      'customname',
+      '--appdescription',
+      'customdesc'
+    ])
+    .it('runs analytics:autoinstall:app:create --async --appname customname --appdescription customdesc', ctx => {
+      expect(ctx.stdout).to.contain(messages.getMessage('appCreateRequestSuccess', ['0UZxx0000004FzkGAE']));
+      expect(requestBody, 'requestBody').to.have.nested.include({
+        'configuration.appConfiguration.appLabel': 'customname',
+        'configuration.appConfiguration.appName': 'customname',
+        'configuration.appConfiguration.appDescription': 'customdesc'
+      });
     });
 });

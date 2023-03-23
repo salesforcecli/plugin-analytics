@@ -183,6 +183,49 @@ describe('analytics:app:create', () => {
     .withOrg({ username: 'test@org.com' }, true)
     .withConnectionRequest(request => {
       request = ensureJsonMap(request);
+      if (request.method === 'GET') {
+        // call for all templates
+        return Promise.resolve({
+          templates: [testTemplateJson, sustainabilityTemplateJson]
+        });
+      }
+      if (request.method === 'POST') {
+        saveOffRequestBody(request.body as string);
+        return Promise.resolve({ id: appId });
+      }
+      return Promise.reject();
+    })
+    .stdout()
+    .command([
+      'analytics:app:create',
+      '--templatename',
+      'Sustainability',
+      '--appname',
+      'customname',
+      '--appdescription',
+      'customdesc',
+      '--async'
+    ])
+    .it(
+      'runs analytics:app:create --templatename Sustainability --appname customname --appdescription customdesc --async',
+      ctx => {
+        expect(ctx.stdout).to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
+        expect(requestBody, 'requestBody').to.not.be.undefined;
+        expect(requestBody, 'requestBody').to.include({
+          // request body should have values from the templates GET
+          templateSourceId: sustainabilityTemplateJson.id,
+          // but name and label should come from the cli arg
+          label: 'customname',
+          name: 'customname',
+          description: 'customdesc'
+        });
+      }
+    );
+
+  test
+    .withOrg({ username: 'test@org.com' }, true)
+    .withConnectionRequest(request => {
+      request = ensureJsonMap(request);
       if (request.method === 'POST') {
         saveOffRequestBody(request.body as string);
         return Promise.resolve({ id: appId });
