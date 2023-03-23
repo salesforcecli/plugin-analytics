@@ -26,5 +26,5 @@
 
   "dataflowJobUpdate": "Updated dataflow job (%s) status to (%s).",
   "displayDetailHeader": "Dataflow Details",
-  "updateDataflow": "Successfully updated %s(%s) "
+  "updateDataflow": "Successfully updated %s (%s) "
 }
