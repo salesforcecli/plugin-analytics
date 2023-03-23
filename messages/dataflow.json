@@ -24,7 +24,7 @@
   "dataflowJsonFlagDescription": "dataflow JSON string",
   "dataflowJsonFlagLongDescription": "The JSON string of the dataflow to update.",
 
-  "dataflowJobUpdate": "Updated dataflow job(%s) status to (%s).",
+  "dataflowJobUpdate": "Updated dataflow job (%s) status to (%s).",
   "displayDetailHeader": "Dataflow Details",
   "updateDataflow": "Successfully updated %s(%s) "
 }
