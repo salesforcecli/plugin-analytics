@@ -67,13 +67,7 @@ export default class Dataflow {
     this.dataflowsJobsUrl = `${this.connection.baseUrl()}/wave/dataflowjobs/`;
   }
 
-  public async list(): Promise<DataflowType[]> {
-    const response = await connectRequest<DataflowType>(this.connection, {
-      method: 'GET',
-      url: this.dataflowsUrl
-    });
-    // eslint-disable-next-line no-console
-    console.log(response);
+  public list(): Promise<DataflowType[]> {
     return fetchAllPages<DataflowType>(this.connection, this.dataflowsUrl, 'dataflows');
   }
 
