@@ -9,7 +9,7 @@
   "stopCommandDescription": "stop Analytics dataflows",
   "stopCommandLongDescription": "Stop Analytics dataflows in the specified target org.",
   "updateCommandDescription": "update Analytics dataflow",
-  "updateCommandLongDescription": "Upload Analytics dataflow in the specified target org.",
+  "updateCommandLongDescription": "Update Analytics dataflow in the specified target org.",
   "displayCommandDescription": "display status of Analytics dataflow",
   "displayCommandLongDescription": "Display status of Analytics dataflow in the specified target org.",
   "listJobsCommandDescription": "list jobs of Analytics dataflow",
