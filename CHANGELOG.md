@@ -1,3 +1,12 @@
+# [1.1.0](https://github.com/salesforcecli/plugin-analytics/compare/1.0.23...1.1.0) (2023-03-24)
+
+
+### Features
+
+* update app:create to take an --appdescription flags ([#249](https://github.com/salesforcecli/plugin-analytics/issues/249)) ([d6746cd](https://github.com/salesforcecli/plugin-analytics/commit/d6746cda12b6bfc3e06097d2919e680949401cc3))
+
+
+
 ## [1.0.23](https://github.com/salesforcecli/plugin-analytics/compare/1.0.22...1.0.23) (2023-03-23)
 
 
