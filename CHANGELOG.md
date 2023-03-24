@@ -1,3 +1,12 @@
+## [1.0.23](https://github.com/salesforcecli/plugin-analytics/compare/1.0.22...1.0.23) (2023-03-23)
+
+
+### Bug Fixes
+
+* set exitcode to 1 for analytics template validate/lint failures ([#248](https://github.com/salesforcecli/plugin-analytics/issues/248)) ([c43f666](https://github.com/salesforcecli/plugin-analytics/commit/c43f6661e13c469bace91c0ee47e19c08f636eca))
+
+
+
 ## [1.0.22](https://github.com/salesforcecli/plugin-analytics/compare/1.0.21...1.0.22) (2023-03-02)
 
 
