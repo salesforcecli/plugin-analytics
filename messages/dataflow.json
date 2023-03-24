@@ -8,7 +8,7 @@
   "startCommandLongDescription": "Start Analytics dataflows in the specified target org.",
   "stopCommandDescription": "stop Analytics dataflows",
   "stopCommandLongDescription": "Stop Analytics dataflows in the specified target org.",
-  "updateCommandDescription": "upload Analytics dataflow",
+  "updateCommandDescription": "update Analytics dataflow",
   "updateCommandLongDescription": "Upload Analytics dataflow in the specified target org.",
   "displayCommandDescription": "display status of Analytics dataflow",
   "displayCommandLongDescription": "Display status of Analytics dataflow in the specified target org.",

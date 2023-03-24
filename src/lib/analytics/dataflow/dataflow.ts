@@ -134,13 +134,11 @@ export default class Dataflow {
     }
   }
 
-  public async updateDataflow(dataflowId: string, inputBody: unknown): Promise<DataflowType> {
+  public async updateDataflow(dataflowId: string, definition: unknown): Promise<DataflowType> {
     const response = await connectRequest<DataflowType>(this.connection, {
       method: 'PATCH',
       url: this.dataflowsUrl + encodeURIComponent(dataflowId),
-      body: JSON.stringify({
-        definition: inputBody
-      })
+      body: JSON.stringify({ definition })
     });
     if (response) {
       return response;
