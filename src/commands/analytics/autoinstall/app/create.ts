@@ -7,7 +7,7 @@
 import { flags, SfdxCommand } from '@salesforce/command';
 import { Messages, Org, SfdxError } from '@salesforce/core';
 
-import AutoInstall from '../../../../lib/analytics/autoinstall/autoinstall';
+import AutoInstall, { AutoInstallCreateAppConfigurationBody } from '../../../../lib/analytics/autoinstall/autoinstall';
 import {
   DEF_APP_CREATE_UPDATE_TIMEOUT,
   DEF_POLLING_INTERVAL,
@@ -39,6 +39,14 @@ export default class Create extends SfdxCommand {
       description: messages.getMessage('templatenameFlagDescription'),
       longDescription: messages.getMessage('templatenameFlagLongDescription'),
       exclusive: ['templateid']
+    }),
+    appname: flags.string({
+      description: messages.getMessage('appnameFlagDescription'),
+      longDescription: messages.getMessage('appnameFlagLongDescription')
+    }),
+    appdescription: flags.string({
+      description: messages.getMessage('appdescriptionFlagDescription'),
+      longDescription: messages.getMessage('appdescriptionFlagLongDescription')
     }),
     noenqueue: flags.boolean({
       description: messages.getMessage('noenqueueFlagDescription'),
@@ -75,8 +83,17 @@ export default class Create extends SfdxCommand {
     if (!templateInput) {
       throw new SfdxError(messages.getMessage('missingRequiredField'));
     }
+
     const autoinstall = new AutoInstall(this.org as Org);
-    const autoInstallId = await autoinstall.create(templateInput, !this.flags.noenqueue);
+
+    const appConfiguration: AutoInstallCreateAppConfigurationBody = {
+      appName: this.flags.appname as string,
+      appLabel: this.flags.appname as string,
+      appDescription: this.flags.appdescription as string
+    };
+
+    const autoInstallId = await autoinstall.create(templateInput, appConfiguration, !this.flags.noenqueue);
+
     // they did't enqueue or said they don't want to wait, so just return now
     if (this.flags.noenqueue || this.flags.async || this.flags.wait <= 0) {
       this.ux.log(messages.getMessage('appCreateRequestSuccess', [autoInstallId]));

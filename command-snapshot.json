@@ -10,6 +10,7 @@
     "flags": [
       "allevents",
       "apiversion",
+      "appdescription",
       "appname",
       "async",
       "definitionfile",
@@ -81,6 +82,8 @@
     "plugin": "@salesforce/analytics",
     "flags": [
       "apiversion",
+      "appdescription",
+      "appname",
       "async",
       "json",
       "loglevel",
