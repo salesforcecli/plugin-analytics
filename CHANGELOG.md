@@ -1,3 +1,12 @@
+# [1.2.0](https://github.com/salesforcecli/plugin-analytics/compare/1.1.0...1.2.0) (2023-03-27)
+
+
+### Features
+
+* view and manage dataflow, dataflow jobs and recipes ([#247](https://github.com/salesforcecli/plugin-analytics/issues/247)) ([df8509f](https://github.com/salesforcecli/plugin-analytics/commit/df8509f05ed7a6094e33fd182eecd1b2e824d324))
+
+
+
 # [1.1.0](https://github.com/salesforcecli/plugin-analytics/compare/1.0.23...1.1.0) (2023-03-24)
 
 
