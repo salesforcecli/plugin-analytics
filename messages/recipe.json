@@ -1,5 +1,11 @@
 {
   "listCommandDescription": "list Analytics recipes",
   "listCommandLongDescription": "Lists Analytics recipes in the specified target org.",
-  "recipesFound": "Found [%s] Analytics recipes."
+  "startCommandDescription": "start Analytics recipes",
+  "startCommandLongDescription": "Start Analytics recipes in the specified target org.",
+  "recipeidFlagDescription": "recipe ID",
+  "recipeidFlagLongDescription": "The ID of the recipe to update.",
+
+  "recipesFound": "Found [%s] Analytics recipes.",
+  "recipeJobUpdate": "Updated recipe job (%s) status to (%s)."
 }
