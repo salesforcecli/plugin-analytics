@@ -59,6 +59,7 @@ const enqueuedStatus = 'Enqueued';
 const createType = 'WaveAppCreate';
 const updateType = 'WaveAppUpdate';
 const deleteType = 'WaveAppDelete';
+const cancelType = 'Cancelled';
 
 export default class AutoInstall {
   public readonly serverVersion: number;
@@ -160,6 +161,23 @@ export default class AutoInstall {
       requestType: 'WaveEnable'
     });
     return this.performPost(body);
+  }
+
+  public async cancel(autoinstallid: string): Promise<string | undefined> {
+    const body = JSON.stringify({
+      requestStatus: cancelType
+    });
+
+    const response = await connectRequest<AutoInstallRequestType>(this.connection, {
+      method: 'PATCH',
+      url: this.autoInstallUrl + encodeURIComponent(autoinstallid),
+      body
+    });
+    if (response) {
+      return response.id;
+    } else {
+      throwError(response);
+    }
   }
 
   private async performPost(body: string): Promise<string | undefined> {
