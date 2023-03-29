@@ -65,7 +65,7 @@ const enqueuedStatus = 'Enqueued';
 const createType = 'WaveAppCreate';
 const updateType = 'WaveAppUpdate';
 const deleteType = 'WaveAppDelete';
-const cancelType = 'Cancelled';
+const cancelStatusType = 'Cancelled';
 
 export default class AutoInstall {
   public readonly serverVersion: number;
@@ -178,7 +178,7 @@ export default class AutoInstall {
 
   public async cancel(autoinstallid: string): Promise<string | undefined> {
     const body = JSON.stringify({
-      requestStatus: cancelType
+      requestStatus: cancelStatusType
     });
 
     const response = await connectRequest<AutoInstallRequestType>(this.connection, {
