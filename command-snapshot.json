@@ -78,6 +78,11 @@
     "flags": ["apiversion", "assetid", "json", "loglevel", "targetusername"]
   },
   {
+    "command": "analytics:autoinstall:app:cancel",
+    "plugin": "@salesforce/analytics",
+    "flags": ["apiversion", "autoinstallid", "json", "loglevel", "targetusername"]
+  },
+  {
     "command": "analytics:autoinstall:app:create",
     "plugin": "@salesforce/analytics",
     "flags": [

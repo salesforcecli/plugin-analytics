@@ -45,6 +45,7 @@
   "enableAsyncLongDescription": "Enable asynchronously.",
   "enableSuccess": "Successfully enabled Analytics from auto-install request [%s]",
   "enableFailed": "Failure during Analytics enable from auto-install request [%s]",
+  "appAutoInstallCancelRequestSuccess": "Successfully created app auto-install cancel request [%s]",
   "appCreateAsyncDescription": "create app asynchronously",
   "appCreateAsyncLongDescription": "Create app asynchronously.",
   "appCreateRequestSuccess": "Successfully created app auto-install request to create Analytics app [%s]",
@@ -59,5 +60,7 @@
   "appDeleteAsyncLongDescription": "Delete app asynchronously.",
   "appDeleteRequestSuccess": "Successfully created app auto-install request to delete Analytics app [%s]",
   "appDeleteSuccess": "Successfully deleted Analytics app [%s] from auto-install request [%s]",
-  "appDeleteFailed": "Failure during Analytics app delete from auto-install request [%s]"
+  "appDeleteFailed": "Failure during Analytics app delete from auto-install request [%s]",
+  "cancelAutoinstallCommandDescription": "cancels app-auto install request",
+  "cancelAutoinstallCommandLongDescription": "Cancels app-auto install request"
 }
