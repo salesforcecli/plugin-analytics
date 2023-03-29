@@ -1,3 +1,12 @@
+# [1.3.0](https://github.com/salesforcecli/plugin-analytics/compare/1.2.0...1.3.0) (2023-03-29)
+
+
+### Features
+
+* add analytics:autoinstall:app:cancel command ([#256](https://github.com/salesforcecli/plugin-analytics/issues/256)) ([4c8abc4](https://github.com/salesforcecli/plugin-analytics/commit/4c8abc41b16eedd7d027004929a26349a37273d9))
+
+
+
 # [1.2.0](https://github.com/salesforcecli/plugin-analytics/compare/1.1.0...1.2.0) (2023-03-27)
 
 
