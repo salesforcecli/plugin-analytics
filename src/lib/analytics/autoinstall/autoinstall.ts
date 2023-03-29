@@ -49,6 +49,12 @@ export type AutoInstallRequestType = Record<string, unknown> & {
   };
 };
 
+export type AutoInstallCreateAppConfigurationBody = {
+  appName?: string;
+  appLabel?: string;
+  appDescription?: string;
+};
+
 function isFinishedRequest(r: AutoInstallRequestType): boolean {
   const status = r.requestStatus?.toLocaleLowerCase();
   return status === 'cancelled' || status === 'success' || status === 'failed';
@@ -127,11 +133,18 @@ export default class AutoInstall {
     return fetchAllPages<AutoInstallRequestType>(this.connection, this.autoInstallUrl + '?pageSize=200', 'requests');
   }
 
-  public create(templateApiName: string, enqueue = true): Promise<string | undefined> {
+  public create(
+    templateApiName: string,
+    appConfiguration: AutoInstallCreateAppConfigurationBody,
+    enqueue = true
+  ): Promise<string | undefined> {
     const body = JSON.stringify({
       templateApiName,
       requestStatus: enqueue ? enqueuedStatus : newStatus,
-      requestType: createType
+      requestType: createType,
+      configuration: {
+        appConfiguration
+      }
     });
     return this.performPost(body);
   }

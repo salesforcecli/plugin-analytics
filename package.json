@@ -1,7 +1,7 @@
 {
   "name": "@salesforce/analytics",
   "description": "Commands for working with Salesforce Analytics applications, assets, and services",
-  "version": "1.0.22",
+  "version": "1.2.0",
   "author": "Salesforce",
   "bugs": "https://github.com/forcedotcom/analyticsdx-vscode/issues",
   "dependencies": {
@@ -18,15 +18,15 @@
     "@salesforce/cli-plugins-testkit": "^1.1.5",
     "@salesforce/dev-config": "^3.1.0",
     "@salesforce/dev-scripts": "^2.0.3",
-    "@salesforce/plugin-command-reference": "^1.6.6",
+    "@salesforce/plugin-command-reference": "^1.6.8",
     "@salesforce/prettier-config": "^0.0.2",
     "@salesforce/ts-sinon": "1.4.6",
-    "@typescript-eslint/eslint-plugin": "5.55.0",
-    "@typescript-eslint/parser": "5.55.0",
+    "@typescript-eslint/eslint-plugin": "5.56.0",
+    "@typescript-eslint/parser": "5.56.0",
     "chai": "^4.3.7",
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^7.32.0",
-    "eslint-config-prettier": "^8.7.0",
+    "eslint-config-prettier": "^8.8.0",
     "eslint-config-salesforce": "^0.1.6",
     "eslint-config-salesforce-license": "^0.2.0",
     "eslint-config-salesforce-typescript": "^0.2.8",
@@ -38,7 +38,7 @@
     "lint-staged": "^11.0.0",
     "mocha": "^9.1.3",
     "nyc": "^15.1.0",
-    "prettier": "^2.8.4",
+    "prettier": "^2.8.7",
     "pretty-quick": "^3.1.0",
     "shx": "0.3.4",
     "sinon": "^11.1.2",
@@ -118,6 +118,9 @@
             "subtopics": {
               "history": {
                 "description": "view and manage dataflow history"
+              },
+              "job": {
+                "description": "view and manage dataflow jobs"
               }
             }
           },

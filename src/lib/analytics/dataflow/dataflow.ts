@@ -14,20 +14,57 @@ export type DataflowHistoryType = {
   label?: string;
 };
 
-export type DataflowType = {
+export type DataflowType = Record<string, unknown> & {
   id?: string;
   namespace?: string;
   name?: string;
   label?: string;
   type?: string;
+  createdBy?: Record<string, unknown> & {
+    id?: string;
+    name?: string;
+    profilePhotoUrl?: string;
+  };
+  createdDate?: string;
+  definition?: unknown;
+  emailNotificationLevel?: string;
+  historiesUrl?: string;
+  lastModifiedBy?: Record<string, unknown> & {
+    id?: string;
+    name?: string;
+    profilePhotoUrl?: string;
+  };
+  lastModifiedDate?: string;
+  url?: string;
 };
+
+export type DataflowJobType = Record<string, unknown> & {
+  duration?: number;
+  id?: string;
+  jobType?: string;
+  label?: string;
+  nodesUrl?: string;
+  progress?: number;
+  retryCount?: number;
+  createdDate?: string;
+  executedDate?: string;
+  startDate?: string;
+  status?: 'Failure' | 'Queued' | 'Live' | 'Running' | 'Success' | 'Warning' | string;
+  syncDataflows?: [];
+  type?: string;
+  url?: string;
+  waitTime?: number;
+};
+
 export default class Dataflow {
   private readonly connection: Connection;
   private readonly dataflowsUrl: string;
+  private readonly dataflowsJobsUrl: string;
 
   public constructor(organization: Org) {
     this.connection = organization.getConnection();
     this.dataflowsUrl = `${this.connection.baseUrl()}/wave/dataflows/`;
+    this.dataflowsJobsUrl = `${this.connection.baseUrl()}/wave/dataflowjobs/`;
   }
 
   public list(): Promise<DataflowType[]> {
@@ -61,5 +98,69 @@ export default class Dataflow {
     } else {
       throwError(response);
     }
+  }
+
+  public async startDataflow(dataflowId: string): Promise<DataflowJobType> {
+    const command = 'start';
+    const response = await connectRequest<DataflowJobType>(this.connection, {
+      method: 'POST',
+      url: this.dataflowsJobsUrl,
+      body: JSON.stringify({
+        dataflowId,
+        command
+      })
+    });
+    if (response) {
+      return response;
+    } else {
+      throwError(response);
+    }
+  }
+
+  public async stopDataflowJob(dataflowJobId: string): Promise<DataflowJobType> {
+    const command = 'stop';
+    const response = await connectRequest<DataflowJobType>(this.connection, {
+      method: 'PATCH',
+      url: this.dataflowsJobsUrl + encodeURIComponent(dataflowJobId),
+      body: JSON.stringify({
+        command
+      })
+    });
+
+    if (response) {
+      return response;
+    } else {
+      throwError(response);
+    }
+  }
+
+  public async updateDataflow(dataflowId: string, definition: unknown): Promise<DataflowType> {
+    const response = await connectRequest<DataflowType>(this.connection, {
+      method: 'PATCH',
+      url: this.dataflowsUrl + encodeURIComponent(dataflowId),
+      body: JSON.stringify({ definition })
+    });
+    if (response) {
+      return response;
+    } else {
+      throwError(response);
+    }
+  }
+
+  public async getDataflowJob(dataflowJobId: string): Promise<DataflowJobType> {
+    const response = await connectRequest<DataflowJobType>(this.connection, {
+      method: 'GET',
+      url: this.dataflowsJobsUrl + encodeURIComponent(dataflowJobId)
+    });
+    if (response) {
+      return response;
+    } else {
+      throwError(response);
+    }
+  }
+
+  public async getDataflowJobs(dataflowId: string): Promise<DataflowJobType[]> {
+    const wtUrl = this.dataflowsJobsUrl + '?dataflowId=' + dataflowId;
+    return fetchAllPages<DataflowJobType>(this.connection, wtUrl, 'dataflowJobs');
   }
 }

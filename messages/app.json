@@ -21,6 +21,8 @@
   "templatenameFlagLongDescription": "The name of the Analytics template.",
   "appnameFlagDescription": "app name",
   "appnameFlagLongDescription": "The name of the created app.",
+  "appdescriptionFlagDescription": "app description",
+  "appdescriptionFlagLongDescription": "The description of the created app.",
   "applogFlagDescription": "specify to include app creation log details",
   "applogFlagLongDescription": "Specify to include app creation log details.",
   "appCreateAsyncDescription": "create app asynchronously",

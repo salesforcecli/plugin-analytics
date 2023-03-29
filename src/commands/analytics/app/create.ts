@@ -51,6 +51,10 @@ export default class Create extends SfdxCommand {
       description: messages.getMessage('appnameFlagDescription'),
       longDescription: messages.getMessage('appnameFlagLongDescription')
     }),
+    appdescription: flags.string({
+      description: messages.getMessage('appdescriptionFlagDescription'),
+      longDescription: messages.getMessage('appdescriptionFlagLongDescription')
+    }),
     async: flags.boolean({
       char: 'a',
       description: messages.getMessage('appCreateAsyncDescription'),
@@ -108,7 +112,7 @@ export default class Create extends SfdxCommand {
         throw new SfdxError(`Template '${this.flags.templateid || this.flags.templatename}' not found.`);
       }
       return {
-        description: matchedTemplate.description,
+        description: (this.flags.appdescription || matchedTemplate.description) as string,
         label: (this.flags.appname || matchedTemplate.label) as string,
         templateSourceId: matchedTemplate.id,
         assetIcon: '16.png',
@@ -138,6 +142,7 @@ export default class Create extends SfdxCommand {
         body.name = (body.name || this.flags.appname) as string;
         body.label = (body.label || this.flags.appname) as string;
       }
+      body.description = (body.description ?? this.flags.appdescription) as string;
       return body;
     } else {
       throw new SfdxError(

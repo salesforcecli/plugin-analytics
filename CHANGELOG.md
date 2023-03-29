@@ -1,3 +1,30 @@
+# [1.2.0](https://github.com/salesforcecli/plugin-analytics/compare/1.1.0...1.2.0) (2023-03-27)
+
+
+### Features
+
+* view and manage dataflow, dataflow jobs and recipes ([#247](https://github.com/salesforcecli/plugin-analytics/issues/247)) ([df8509f](https://github.com/salesforcecli/plugin-analytics/commit/df8509f05ed7a6094e33fd182eecd1b2e824d324))
+
+
+
+# [1.1.0](https://github.com/salesforcecli/plugin-analytics/compare/1.0.23...1.1.0) (2023-03-24)
+
+
+### Features
+
+* update app:create to take an --appdescription flags ([#249](https://github.com/salesforcecli/plugin-analytics/issues/249)) ([d6746cd](https://github.com/salesforcecli/plugin-analytics/commit/d6746cda12b6bfc3e06097d2919e680949401cc3))
+
+
+
+## [1.0.23](https://github.com/salesforcecli/plugin-analytics/compare/1.0.22...1.0.23) (2023-03-23)
+
+
+### Bug Fixes
+
+* set exitcode to 1 for analytics template validate/lint failures ([#248](https://github.com/salesforcecli/plugin-analytics/issues/248)) ([c43f666](https://github.com/salesforcecli/plugin-analytics/commit/c43f6661e13c469bace91c0ee47e19c08f636eca))
+
+
+
 ## [1.0.22](https://github.com/salesforcecli/plugin-analytics/compare/1.0.21...1.0.22) (2023-03-02)
 
 

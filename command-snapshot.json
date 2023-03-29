@@ -10,6 +10,7 @@
     "flags": [
       "allevents",
       "apiversion",
+      "appdescription",
       "appname",
       "async",
       "definitionfile",
@@ -86,6 +87,8 @@
     "plugin": "@salesforce/analytics",
     "flags": [
       "apiversion",
+      "appdescription",
+      "appname",
       "async",
       "json",
       "loglevel",
@@ -167,9 +170,34 @@
     "flags": ["apiversion", "dataflowid", "historyid", "json", "label", "loglevel", "targetusername"]
   },
   {
+    "command": "analytics:dataflow:job:display",
+    "plugin": "@salesforce/analytics",
+    "flags": ["apiversion", "dataflowjobid", "json", "loglevel", "targetusername"]
+  },
+  {
+    "command": "analytics:dataflow:job:list",
+    "plugin": "@salesforce/analytics",
+    "flags": ["apiversion", "dataflowid", "json", "loglevel", "targetusername"]
+  },
+  {
+    "command": "analytics:dataflow:job:stop",
+    "plugin": "@salesforce/analytics",
+    "flags": ["apiversion", "dataflowjobid", "json", "loglevel", "targetusername"]
+  },
+  {
     "command": "analytics:dataflow:list",
     "plugin": "@salesforce/analytics",
     "flags": ["apiversion", "json", "loglevel", "targetusername"]
+  },
+  {
+    "command": "analytics:dataflow:start",
+    "plugin": "@salesforce/analytics",
+    "flags": ["apiversion", "dataflowid", "json", "loglevel", "targetusername"]
+  },
+  {
+    "command": "analytics:dataflow:update",
+    "plugin": "@salesforce/analytics",
+    "flags": ["apiversion", "dataflowfile", "dataflowid", "dataflowstr", "json", "loglevel", "targetusername"]
   },
   {
     "command": "analytics:dataset:display",
@@ -239,6 +267,11 @@
     "command": "analytics:recipe:list",
     "plugin": "@salesforce/analytics",
     "flags": ["apiversion", "json", "loglevel", "targetusername"]
+  },
+  {
+    "command": "analytics:recipe:start",
+    "plugin": "@salesforce/analytics",
+    "flags": ["apiversion", "json", "loglevel", "recipeid", "targetusername"]
   },
   {
     "command": "analytics:template:create",
