@@ -1,11 +1,11 @@
 {
-  "listCommandDescription": "list Analytics recipes",
-  "listCommandLongDescription": "Lists Analytics recipes in the specified target org.",
-  "startCommandDescription": "start Analytics recipes",
-  "startCommandLongDescription": "Start Analytics recipes in the specified target org.",
+  "listCommandDescription": "list Data Prep recipes",
+  "listCommandLongDescription": "Lists Data Prep recipes in the specified target org.",
+  "startCommandDescription": "start Data Prep recipes",
+  "startCommandLongDescription": "Start a Data Prep recipe in the specified target org.",
   "recipeidFlagDescription": "recipe ID",
   "recipeidFlagLongDescription": "The ID of the recipe to update.",
 
-  "recipesFound": "Found [%s] Analytics recipes.",
+  "recipesFound": "Found [%s] Data Prep recipes.",
   "recipeJobUpdate": "Updated recipe job (%s) status to (%s)."
 }

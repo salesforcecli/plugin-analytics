@@ -1,6 +1,6 @@
 {
-  "lintCommandDescription": "command for performing a Lint check on a single analytics template",
-  "lintCommandLongDescription": "Command for performing a Lint check on a single analytics template.",
+  "lintCommandDescription": "performs a Lint check on an Analytics template",
+  "lintCommandLongDescription": "Performs a Lint check on an Analytics template.",
   "templateidFlagDescription": "template ID",
   "templateidFlagLongDescription": "The ID of the Analytics template.",
   "templatenameFlagDescription": "template name",
