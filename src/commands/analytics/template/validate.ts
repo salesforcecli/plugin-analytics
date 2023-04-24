@@ -22,7 +22,7 @@ export default class Validate extends SfdxCommand {
 
   public static examples = [
     '$ sfdx analytics:template:validate -t templateId',
-    'sfdx analytics:template:validate -n templateAiName'
+    'sfdx analytics:template:validate -n templateApiName'
   ];
 
   protected static flagsConfig = {
