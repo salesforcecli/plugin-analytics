@@ -21,7 +21,7 @@ export default class Lint extends SfdxCommand {
 
   public static examples = [
     '$ sfdx analytics:template:lint -t templateId',
-    'sfdx analytics:template:lint -n templateAiName'
+    'sfdx analytics:template:lint -n templateApiName'
   ];
 
   protected static flagsConfig = {
