@@ -1,6 +1,6 @@
 {
-  "validateCommandDescription": "command for performing an org-readiness check for a single analytics template",
-  "validateCommandLongDescription": "Command for performing an org-readiness check for a single analytics template.",
+  "validateCommandDescription": "performs an org-readiness check for an Analytics template",
+  "validateCommandLongDescription": "Performs an org-readiness check for an Analytics template.",
   "templateidFlagDescription": "template ID",
   "templateidFlagLongDescription": "The ID of the Analytics template.",
   "templatenameFlagDescription": "template name",
