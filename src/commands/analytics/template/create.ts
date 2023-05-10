@@ -20,7 +20,7 @@ export default class Create extends SfdxCommand {
   public static examples = [
     '$ sfdx analytics:template:create -f folderid',
     '$ sfdx analytics:template:create -f folderid -r "recipeid1, recipeid2"',
-    '$ sfdx analytics:template:create -f folderid -r "datatransformid1, datatransformid2"'
+    '$ sfdx analytics:template:create -f folderid -d "datatransformid1, datatransformid2"'
   ];
 
   protected static flagsConfig = {
