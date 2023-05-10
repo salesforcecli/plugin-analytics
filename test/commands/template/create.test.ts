@@ -142,4 +142,33 @@ describe('analytics:template:create', () => {
         });
       }
     );
+
+  test
+    .withOrg({ username: 'test@org.com' }, true)
+    .withConnectionRequest(request => {
+      request = ensureJsonMap(request);
+      if (request.method === 'POST') {
+        saveOffRequestBody(ensureString(request.body));
+        return Promise.resolve({ id: templateId });
+      }
+      return Promise.reject();
+    })
+    .stdout()
+    .command([
+      'analytics:template:create',
+      '--folderid',
+      '00lxx000000000zCAA',
+      '-d',
+      'datatransformId1, datatransformId2'
+    ])
+    .it(
+      'runs analytics:template:create --folderid 00lxx000000000zCAA, -d "datatransformId1, datatransformId2"',
+      ctx => {
+        expect(ctx.stdout).to.contain(messages.getMessage('createSuccess', [templateId]));
+        expect(requestBody, 'requestBody').to.deep.equal({
+          folderSource: { id: '00lxx000000000zCAA' },
+          datatransformIds: ['datatransformId1', 'datatransformId2']
+        });
+      }
+    );
 });

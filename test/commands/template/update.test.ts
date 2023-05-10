@@ -174,4 +174,36 @@ describe('analytics:template:update', () => {
         });
       }
     );
+
+  test
+    .withOrg({ username: 'test@org.com' }, true)
+    .withConnectionRequest(request => {
+      request = ensureJsonMap(request);
+      if (request.method === 'PUT') {
+        saveOffRequestBody(ensureString(request.body));
+        return Promise.resolve({ name: templateName, id: templateId });
+      }
+      return Promise.reject();
+    })
+    .stdout()
+    .command([
+      'analytics:template:update',
+      '--folderid',
+      '00lxx000000000zCAA',
+      '--templateid',
+      '0Nkxx000000000zCAA',
+      '-d',
+      'datatransformId1, datatransformId2'
+    ])
+    .it(
+      'runs analytics:template:update --templateid 0Nkxx000000000zCAA --folderid 00lxx000000000zCAA  -d "datatransformId1, datatransformId2"',
+      ctx => {
+        expect(ctx.stdout).to.contain(
+          messages.getMessage('updateSuccess', [templateName, templateId, '00lxx000000000zCAA'])
+        );
+        expect(requestBody, 'requestBody').to.deep.equal({
+          folderSource: { id: '00lxx000000000zCAA' }
+        });
+      }
+    );
 });
