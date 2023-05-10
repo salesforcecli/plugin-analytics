@@ -48,6 +48,13 @@ export default class Update extends SfdxCommand {
       description: messages.getMessage('recipeidsFlagDescription'),
       longDescription: messages.getMessage('recipeidsFlagLongDescription')
     }),
+    // datatransformids only work in 246+, they are silently ignored on the server in 244-
+    datatransformids: flags.array({
+      char: 'd',
+      required: false,
+      description: messages.getMessage('datatransformidsFlagDescription'),
+      longDescription: messages.getMessage('datatransformidsFlagLongDescription')
+    }),
     assetversion: flags.integer({
       char: 'v',
       description: messages.getMessage('assetVersionFlagDescription'),
@@ -77,6 +84,7 @@ export default class Update extends SfdxCommand {
     let folderid = this.flags.folderid as string | undefined;
     const assetversion = this.flags.assetversion as number | undefined;
     const recipeIds = this.flags.recipeids as string[] | undefined;
+    const datatransformIds = this.flags.datatransformids as string[] | undefined;
 
     const template = new WaveTemplate(this.org as Org);
 
@@ -113,7 +121,7 @@ export default class Update extends SfdxCommand {
         return;
       }
     }
-    const result = await template.update(folderid, templateInput, assetversion, recipeIds);
+    const result = await template.update(folderid, templateInput, assetversion, recipeIds, datatransformIds);
     this.ux.log(messages.getMessage('updateSuccess', [result?.name, result?.id, folderid]));
     return templateInput;
   }

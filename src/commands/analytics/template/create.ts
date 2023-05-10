@@ -19,7 +19,8 @@ export default class Create extends SfdxCommand {
 
   public static examples = [
     '$ sfdx analytics:template:create -f folderid',
-    '$ sfdx analytics:template:create -f folderid -r "recipeid1, recipeid2"'
+    '$ sfdx analytics:template:create -f folderid -r "recipeid1, recipeid2"',
+    '$ sfdx analytics:template:create -f folderid -r "datatransformid1, datatransformid2"'
   ];
 
   protected static flagsConfig = {
@@ -35,6 +36,13 @@ export default class Create extends SfdxCommand {
       required: false,
       description: messages.getMessage('recipeidsFlagDescription'),
       longDescription: messages.getMessage('recipeidsFlagLongDescription')
+    }),
+    // datatransformids only work in 246+, they are silently ignored on the server in 244-
+    datatransformids: flags.array({
+      char: 'd',
+      required: false,
+      description: messages.getMessage('datatransformidsFlagDescription'),
+      longDescription: messages.getMessage('datatransformidsFlagLongDescription')
     }),
     // label & description only work in 232+, they are silently ignored on the server in 230
     label: flags.string({
@@ -57,7 +65,8 @@ export default class Create extends SfdxCommand {
     const waveTemplateId = await template.create(this.flags.folderid as string, {
       label: this.flags.label as string | undefined,
       description: this.flags.description as string | undefined,
-      recipeIds: this.flags.recipeids as string[] | undefined
+      recipeIds: this.flags.recipeids as string[] | undefined,
+      datatransformIds: this.flags.datatransformids as string[] | undefined
     });
     this.ux.log(messages.getMessage('createSuccess', [waveTemplateId]));
     return waveTemplateId;
