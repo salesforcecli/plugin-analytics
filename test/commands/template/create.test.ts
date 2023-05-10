@@ -142,4 +142,62 @@ describe('analytics:template:create', () => {
         });
       }
     );
+
+  test
+    .withOrg({ username: 'test@org.com' }, true)
+    .withConnectionRequest(request => {
+      request = ensureJsonMap(request);
+      if (request.method === 'POST') {
+        saveOffRequestBody(ensureString(request.body));
+        return Promise.resolve({ id: templateId });
+      }
+      return Promise.reject();
+    })
+    .stdout()
+    .command([
+      'analytics:template:create',
+      '--folderid',
+      '00lxx000000000zCAA',
+      '-d',
+      '1dtxxx000000001, 1dtxxx000000002'
+    ])
+    .it('runs analytics:template:create --folderid 00lxx000000000zCAA, -d "1dtxxx000000001, 1dtxxx000000002"', ctx => {
+      expect(ctx.stdout).to.contain(messages.getMessage('createSuccess', [templateId]));
+      expect(requestBody, 'requestBody').to.deep.equal({
+        folderSource: { id: '00lxx000000000zCAA' },
+        datatransformIds: ['1dtxxx000000001', '1dtxxx000000002']
+      });
+    });
+
+  test
+    .withOrg({ username: 'test@org.com' }, true)
+    .withConnectionRequest(request => {
+      request = ensureJsonMap(request);
+      if (request.method === 'POST') {
+        saveOffRequestBody(ensureString(request.body));
+        return Promise.resolve({ id: templateId });
+      }
+      return Promise.reject();
+    })
+    .stdout()
+    .command([
+      'analytics:template:create',
+      '--folderid',
+      '00lxx000000000zCAA',
+      '-r',
+      '05vxx0000004CAeAAM, 05vxx0000004CAeAAM',
+      '-d',
+      '1dtxxx000000001, 1dtxxx000000002'
+    ])
+    .it(
+      'runs analytics:template:create --folderid 00lxx000000000zCAA, -r "05vxx0000004CAeAAM, 05vxx0000004CAeAAM", -d "1dtxxx000000001, 1dtxxx000000002"',
+      ctx => {
+        expect(ctx.stdout).to.contain(messages.getMessage('createSuccess', [templateId]));
+        expect(requestBody, 'requestBody').to.deep.equal({
+          folderSource: { id: '00lxx000000000zCAA' },
+          recipeIds: ['05vxx0000004CAeAAM', '05vxx0000004CAeAAM'],
+          datatransformIds: ['1dtxxx000000001', '1dtxxx000000002']
+        });
+      }
+    );
 });
