@@ -85,7 +85,7 @@ export default class WaveTemplate {
     if (recipeIds && this.serverVersion >= 55.0) {
       opts.recipeIds = recipeIds;
     }
-    if (datatransformIds && this.serverVersion >= 58.0) {
+    if (datatransformIds && this.serverVersion >= 59.0) {
       opts.datatransformIds = datatransformIds;
     }
 
