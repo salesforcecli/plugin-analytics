@@ -21,7 +21,7 @@ export default class Update extends SfdxCommand {
   public static examples = [
     '$ sfdx analytics:template:update -t templateid -f folderid',
     '$ sfdx analytics:template:update -t templateid -f folderid -r "recipeid1, recipeid2"',
-    '$ sfdx analytics:template:update -f templateid -f folderid -r "datatransformid1, datatransformid2"'
+    '$ sfdx analytics:template:update -f templateid -f folderid -d "datatransformid1, datatransformid2"'
   ];
 
   protected static flagsConfig = {
