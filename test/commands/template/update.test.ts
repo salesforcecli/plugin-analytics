@@ -161,16 +161,19 @@ describe('analytics:template:update', () => {
       '--templateid',
       '0Nkxx000000000zCAA',
       '-r',
-      '05vxx0000004CAeAAM, 05vxx0000004CAeAAM'
+      '05vxx0000004CAeAAM, 05vxx0000004CAeAAM',
+      '--apiversion',
+      '55.0'
     ])
     .it(
-      'runs analytics:template:update --templateid 0Nkxx000000000zCAA --folderid 00lxx000000000zCAA  -r "05vxx0000004CAeAAM, 05vxx0000004CAeAAM"',
+      'runs analytics:template:update --templateid 0Nkxx000000000zCAA --folderid 00lxx000000000zCAA  -r "05vxx0000004CAeAAM, 05vxx0000004CAeAAM" --apiversion 55.0',
       ctx => {
         expect(ctx.stdout).to.contain(
           messages.getMessage('updateSuccess', [templateName, templateId, '00lxx000000000zCAA'])
         );
         expect(requestBody, 'requestBody').to.deep.equal({
-          folderSource: { id: '00lxx000000000zCAA' }
+          folderSource: { id: '00lxx000000000zCAA' },
+          recipeIds: ['05vxx0000004CAeAAM', '05vxx0000004CAeAAM']
         });
       }
     );
@@ -193,16 +196,19 @@ describe('analytics:template:update', () => {
       '--templateid',
       '0Nkxx000000000zCAA',
       '-d',
-      '1dtxxx000000001, 1dtxxx000000002'
+      '1dtxxx000000001, 1dtxxx000000002',
+      '--apiversion',
+      '59.0'
     ])
     .it(
-      'runs analytics:template:update --templateid 0Nkxx000000000zCAA --folderid 00lxx000000000zCAA  -d "1dtxxx000000001, 1dtxxx000000002"',
+      'runs analytics:template:update --templateid 0Nkxx000000000zCAA --folderid 00lxx000000000zCAA  -d "1dtxxx000000001, 1dtxxx000000002" --apiversion 59.0',
       ctx => {
         expect(ctx.stdout).to.contain(
           messages.getMessage('updateSuccess', [templateName, templateId, '00lxx000000000zCAA'])
         );
         expect(requestBody, 'requestBody').to.deep.equal({
-          folderSource: { id: '00lxx000000000zCAA' }
+          folderSource: { id: '00lxx000000000zCAA' },
+          datatransformIds: ['1dtxxx000000001', '1dtxxx000000002']
         });
       }
     );
@@ -227,16 +233,20 @@ describe('analytics:template:update', () => {
       '-r',
       '05vxx0000004CAeAAM, 05vxx0000004CAeAAM',
       '-d',
-      '1dtxxx000000001, 1dtxxx000000002'
+      '1dtxxx000000001, 1dtxxx000000002',
+      '--apiversion',
+      '59.0'
     ])
     .it(
-      'runs analytics:template:update --templateid 0Nkxx000000000zCAA --folderid 00lxx000000000zCAA -r "05vxx0000004CAeAAM, 05vxx0000004CAeAAM" -d "1dtxxx000000001, 1dtxxx000000002"',
+      'runs analytics:template:update --templateid 0Nkxx000000000zCAA --folderid 00lxx000000000zCAA -r "05vxx0000004CAeAAM, 05vxx0000004CAeAAM" -d "1dtxxx000000001, 1dtxxx000000002" --apiversion 59.0',
       ctx => {
         expect(ctx.stdout).to.contain(
           messages.getMessage('updateSuccess', [templateName, templateId, '00lxx000000000zCAA'])
         );
         expect(requestBody, 'requestBody').to.deep.equal({
-          folderSource: { id: '00lxx000000000zCAA' }
+          folderSource: { id: '00lxx000000000zCAA' },
+          recipeIds: ['05vxx0000004CAeAAM', '05vxx0000004CAeAAM'],
+          datatransformIds: ['1dtxxx000000001', '1dtxxx000000002']
         });
       }
     );

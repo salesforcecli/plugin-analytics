@@ -58,7 +58,12 @@ export default class WaveTemplate {
       datatransformIds
     }: { label?: string; description?: string; recipeIds?: string[]; datatransformIds?: string[] } = {}
   ): Promise<string | undefined> {
-    const body = JSON.stringify({ folderSource: { id: folderid }, label, description, recipeIds, datatransformIds });
+    const opts: Record<string, unknown> = { folderSource: { id: folderid }, label, description, recipeIds };
+    if (datatransformIds && this.serverVersion >= 59.0) {
+      opts.datatransformIds = datatransformIds;
+    }
+
+    const body = JSON.stringify(opts);
     const response = await connectRequest<TemplateType>(this.connection, {
       method: 'POST',
       url: this.templatesUrl,
