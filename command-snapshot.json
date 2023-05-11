@@ -276,7 +276,17 @@
   {
     "command": "analytics:template:create",
     "plugin": "@salesforce/analytics",
-    "flags": ["apiversion", "description", "folderid", "json", "label", "loglevel", "recipeids", "targetusername"]
+    "flags": [
+      "apiversion",
+      "description",
+      "folderid",
+      "json",
+      "label",
+      "loglevel",
+      "recipeids",
+      "datatransformids",
+      "targetusername"
+    ]
   },
   {
     "command": "analytics:template:delete",
@@ -315,6 +325,7 @@
       "json",
       "loglevel",
       "recipeids",
+      "datatransformids",
       "targetusername",
       "templateid",
       "templatename"

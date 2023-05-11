@@ -23,6 +23,7 @@ export type TemplateType = Record<string, unknown> & {
   templateType?: string;
   assetVersion?: string;
   recipeIds?: string[];
+  datatransformIds?: string[];
 };
 
 export default class WaveTemplate {
@@ -50,9 +51,19 @@ export default class WaveTemplate {
 
   public async create(
     folderid: string,
-    { label, description, recipeIds }: { label?: string; description?: string; recipeIds?: string[] } = {}
+    {
+      label,
+      description,
+      recipeIds,
+      datatransformIds
+    }: { label?: string; description?: string; recipeIds?: string[]; datatransformIds?: string[] } = {}
   ): Promise<string | undefined> {
-    const body = JSON.stringify({ folderSource: { id: folderid }, label, description, recipeIds });
+    const opts: Record<string, unknown> = { folderSource: { id: folderid }, label, description, recipeIds };
+    if (datatransformIds && this.serverVersion >= 59.0) {
+      opts.datatransformIds = datatransformIds;
+    }
+
+    const body = JSON.stringify(opts);
     const response = await connectRequest<TemplateType>(this.connection, {
       method: 'POST',
       url: this.templatesUrl,
@@ -69,7 +80,8 @@ export default class WaveTemplate {
     folderid: string,
     templateIdOrName: string,
     templateAssetVersion: number | unknown,
-    recipeIds: string[] | unknown
+    recipeIds: string[] | unknown,
+    datatransformIds: string[] | unknown
   ): Promise<{ id: string | undefined; name: string | undefined } | undefined> {
     const opts: Record<string, unknown> = { folderSource: { id: folderid } };
     if (templateAssetVersion && this.serverVersion >= 54.0) {
@@ -77,6 +89,9 @@ export default class WaveTemplate {
     }
     if (recipeIds && this.serverVersion >= 55.0) {
       opts.recipeIds = recipeIds;
+    }
+    if (datatransformIds && this.serverVersion >= 59.0) {
+      opts.datatransformIds = datatransformIds;
     }
 
     const body = JSON.stringify(opts);
