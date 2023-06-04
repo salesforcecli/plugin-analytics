@@ -1,3 +1,12 @@
+## [1.3.3](https://github.com/salesforcecli/plugin-analytics/compare/1.3.2...1.3.3) (2023-06-04)
+
+
+### Bug Fixes
+
+* **deps:** bump tslib from 2.5.2 to 2.5.3 ([#293](https://github.com/salesforcecli/plugin-analytics/issues/293)) ([08eb405](https://github.com/salesforcecli/plugin-analytics/commit/08eb40550111766afd7aec38b48056052cf01e5b))
+
+
+
 ## [1.3.2](https://github.com/salesforcecli/plugin-analytics/compare/1.3.1...1.3.2) (2023-05-28)
 
 
