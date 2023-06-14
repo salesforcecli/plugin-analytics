@@ -53,6 +53,23 @@ export type AutoInstallCreateAppConfigurationBody = {
   appName?: string;
   appLabel?: string;
   appDescription?: string;
+  dynamicOptions?: Map<string, object>;
+  values?: Map<string, object>;
+  failOnDuplicateNames?: boolean;
+  autoShareWithLicensedUsers?: boolean;
+  autoShareWithOriginator?: boolean;
+  deleteAppOnConstructionFailure?: boolean;
+  dataRefreshSchedule?: {
+    daysOfWeek?: [];
+    frequency?: string;
+    time?: {
+      hour?: number;
+      minute?: number;
+      timezone?: {
+        zoneId?: string;
+      };
+    };
+  };
 };
 
 function isFinishedRequest(r: AutoInstallRequestType): boolean {

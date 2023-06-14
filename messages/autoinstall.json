@@ -62,5 +62,7 @@
   "appDeleteSuccess": "Successfully deleted Analytics app [%s] from auto-install request [%s]",
   "appDeleteFailed": "Failure during Analytics app delete from auto-install request [%s]",
   "cancelAutoinstallCommandDescription": "cancels app-auto install request",
-  "cancelAutoinstallCommandLongDescription": "Cancels app-auto install request"
+  "cancelAutoinstallCommandLongDescription": "Cancels app-auto install request",
+  "appConfigFileFlagDescription": "Analytics auto-install app configuration file, for more details see: https://developer.salesforce.com/docs/atlas.en-us.bi_dev_guide_rest.meta/bi_dev_guide_rest/bi_requests_auto_install_app_config_input.htm",
+  "appConfigFileFlagLongDescription": "Analytics auto-install app configuration file."
 }

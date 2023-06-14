@@ -5,6 +5,7 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
+import { promises as fs } from 'fs';
 import { UX } from '@salesforce/command';
 import * as core from '@salesforce/core';
 import { expect, test } from '@salesforce/command/lib/test';
@@ -14,6 +15,27 @@ import { AutoInstallRequestType, AutoInstallStatus } from '../../../../src/lib/a
 
 core.Messages.importMessagesDirectory(__dirname);
 const messages = core.Messages.loadMessages('@salesforce/analytics', 'autoinstall');
+
+const testAppConfigJson = {
+  appName: 'foo',
+  appLabel: 'foo label',
+  appDescription: 'foo description',
+  failOnDuplicateNames: false,
+  autoShareWithLicensedUsers: false,
+  autoShareWithOriginator: false,
+  deleteAppOnConstructionFailure: false,
+  dataRefreshSchedule: {
+    time: {
+      hour: 2,
+      minute: 35,
+      timezone: {
+        zoneId: 'PST'
+      }
+    },
+    daysOfWeek: ['monday'],
+    frequency: 'weekly'
+  }
+};
 
 function requestWithStatus(status: AutoInstallStatus): AutoInstallRequestType & JsonMap {
   return {
@@ -299,5 +321,20 @@ describe('analytics:autoinstall:app:create', () => {
         'configuration.appConfiguration.appName': 'customname',
         'configuration.appConfiguration.appDescription': 'customdesc'
       });
+    });
+
+  test
+    .withOrg({ username: 'test@org.com' }, true)
+    .withConnectionRequest(async request => {
+      request = ensureJsonMap(request);
+      saveOffRequestBody(ensureString(request.body));
+      return requestWithStatus('New');
+    })
+    .stub(fs, 'readFile', () => Promise.resolve(JSON.stringify(testAppConfigJson)))
+    .stdout()
+    .command(['analytics:autoinstall:app:create', '--appconfiguration', 'config/foo.json', '--async', '-n', 'abc'])
+    .it('runs analytics:app:create --appconfiguration config/foo.json --async', ctx => {
+      expect(ctx.stdout).to.contain(messages.getMessage('appCreateRequestSuccess', ['0UZxx0000004FzkGAE']));
+      expect(requestBody, 'requestBody').to.not.be.undefined;
     });
 });
