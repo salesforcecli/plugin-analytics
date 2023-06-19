@@ -1,3 +1,12 @@
+## [1.3.5](https://github.com/salesforcecli/plugin-analytics/compare/1.3.4...1.3.5) (2023-06-19)
+
+
+### Bug Fixes
+
+* adding configuration file to autoinstall app create ([#299](https://github.com/salesforcecli/plugin-analytics/issues/299)) ([beb3eb6](https://github.com/salesforcecli/plugin-analytics/commit/beb3eb66694306e9371a1cd46b551579af9bc0b2))
+
+
+
 ## [1.3.4](https://github.com/salesforcecli/plugin-analytics/compare/1.3.3...1.3.4) (2023-06-11)
 
 
