@@ -4,6 +4,7 @@
  * Licensed under the BSD 3-Clause license.
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
+import { promises as fs } from 'fs';
 import { flags, SfdxCommand } from '@salesforce/command';
 import { Messages, Org, SfdxError } from '@salesforce/core';
 
@@ -48,6 +49,12 @@ export default class Create extends SfdxCommand {
       description: messages.getMessage('appdescriptionFlagDescription'),
       longDescription: messages.getMessage('appdescriptionFlagLongDescription')
     }),
+    appconfiguration: flags.filepath({
+      char: 'c',
+      description: messages.getMessage('appConfigFileFlagDescription'),
+      longDescription: messages.getMessage('appConfigFileFlagLongDescription'),
+      exclusive: ['appname', 'appdescription']
+    }),
     noenqueue: flags.boolean({
       description: messages.getMessage('noenqueueFlagDescription'),
       longDescription: messages.getMessage('noenqueueFlagLongDescription'),
@@ -86,13 +93,40 @@ export default class Create extends SfdxCommand {
 
     const autoinstall = new AutoInstall(this.org as Org);
 
-    const appConfiguration: AutoInstallCreateAppConfigurationBody = {
+    const defaultAppConfiguration: AutoInstallCreateAppConfigurationBody = {
       appName: this.flags.appname as string,
       appLabel: this.flags.appname as string,
       appDescription: this.flags.appdescription as string
     };
 
-    const autoInstallId = await autoinstall.create(templateInput, appConfiguration, !this.flags.noenqueue);
+    let json: unknown;
+    let fileAppConfiguration: unknown;
+    if (this.flags.appconfiguration) {
+      const path = String(this.flags.appconfiguration);
+      try {
+        json = JSON.parse(await fs.readFile(path, 'utf8'));
+      } catch (e) {
+        throw new SfdxError(
+          `Error parsing ${path}`,
+          undefined,
+          undefined,
+          undefined,
+          e instanceof Error ? e : new Error(e ? String(e) : '<unknown>')
+        );
+      }
+      if (typeof json !== 'object') {
+        throw new SfdxError(`Invalid json in ${path}, expected an object, found a ${typeof json}`);
+      }
+    }
+    if (json) {
+      fileAppConfiguration = json as AutoInstallCreateAppConfigurationBody | unknown;
+    }
+
+    const autoInstallId = await autoinstall.create(
+      templateInput,
+      fileAppConfiguration ? fileAppConfiguration : defaultAppConfiguration,
+      !this.flags.noenqueue
+    );
 
     // they did't enqueue or said they don't want to wait, so just return now
     if (this.flags.noenqueue || this.flags.async || this.flags.wait <= 0) {

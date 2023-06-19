@@ -89,6 +89,7 @@
       "apiversion",
       "appdescription",
       "appname",
+      "appconfiguration",
       "async",
       "json",
       "loglevel",
