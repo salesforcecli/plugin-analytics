@@ -64,5 +64,5 @@
   "cancelAutoinstallCommandDescription": "cancels app-auto install request",
   "cancelAutoinstallCommandLongDescription": "Cancels app-auto install request",
   "appConfigFileFlagDescription": "Analytics auto-install app configuration file, for more details see: https://developer.salesforce.com/docs/atlas.en-us.bi_dev_guide_rest.meta/bi_dev_guide_rest/bi_requests_auto_install_app_config_input.htm",
-  "appConfigFileFlagLongDescription": "Analytics auto-install app configuration file."
+  "appConfigFileFlagLongDescription": "Analytics auto-install app configuration file. For more details see: https://developer.salesforce.com/docs/atlas.en-us.bi_dev_guide_rest.meta/bi_dev_guide_rest/bi_requests_auto_install_app_config_input.htm"
 }

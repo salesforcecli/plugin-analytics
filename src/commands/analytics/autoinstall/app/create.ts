@@ -93,13 +93,14 @@ export default class Create extends SfdxCommand {
 
     const autoinstall = new AutoInstall(this.org as Org);
 
-    const appConfiguration: AutoInstallCreateAppConfigurationBody = {
+    const defaultAppConfiguration: AutoInstallCreateAppConfigurationBody = {
       appName: this.flags.appname as string,
       appLabel: this.flags.appname as string,
       appDescription: this.flags.appdescription as string
     };
 
     let json: unknown;
+    let fileAppConfiguration: unknown;
     if (this.flags.appconfiguration) {
       const path = String(this.flags.appconfiguration);
       try {
@@ -117,10 +118,13 @@ export default class Create extends SfdxCommand {
         throw new SfdxError(`Invalid json in ${path}, expected an object, found a ${typeof json}`);
       }
     }
-    const appConfig = json as AutoInstallCreateAppConfigurationBody;
+    if (json) {
+      fileAppConfiguration = json as AutoInstallCreateAppConfigurationBody | unknown;
+    }
+
     const autoInstallId = await autoinstall.create(
       templateInput,
-      appConfig ? appConfig : appConfiguration,
+      fileAppConfiguration ? fileAppConfiguration : defaultAppConfiguration,
       !this.flags.noenqueue
     );
 
