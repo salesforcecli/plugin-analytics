@@ -1,3 +1,12 @@
+## [1.3.8](https://github.com/salesforcecli/plugin-analytics/compare/1.3.7...1.3.8) (2023-07-11)
+
+
+### Bug Fixes
+
+* **deps:** bump semver from 5.7.1 to 5.7.2 ([#311](https://github.com/salesforcecli/plugin-analytics/issues/311)) ([b838cb3](https://github.com/salesforcecli/plugin-analytics/commit/b838cb3ec3f2bf67d673981d4e524680e0432f81))
+
+
+
 ## [1.3.7](https://github.com/salesforcecli/plugin-analytics/compare/1.3.6...1.3.7) (2023-07-09)
 
 
