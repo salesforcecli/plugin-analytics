@@ -520,12 +520,12 @@
     tslib "^2.0.0"
 
 "@oclif/config@^1", "@oclif/config@^1.18.2":
-  version "1.18.11"
-  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.18.11.tgz#293e58f3848f3d6f07424fe3c966a5c361b25b3b"
-  integrity sha512-qr9i5ekCX/z3EfKNaQEeTy0C6uPFxpLBdShh3EKK7ZknFfBbYYaw7K29W53eqddqXYHPaOKa1lkjn7zv9HAhYg==
+  version "1.18.13"
+  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.18.13.tgz#b06eafee8e9e8977a40a01ffed8edfa7924f06c4"
+  integrity sha512-Ja0KJvRBYm6xwgJpdn9oZ1DofE7MZ2wB320dblHDOdVQcpKRHnX64R0BlEqXsU6jJO7w95iy1geeKFxIVmfuWA==
   dependencies:
     "@oclif/errors" "^1.3.6"
-    "@oclif/parser" "^3.8.13"
+    "@oclif/parser" "^3.8.14"
     debug "^4.3.4"
     globby "^11.1.0"
     is-wsl "^2.1.1"
@@ -670,10 +670,10 @@
     chalk "^4.1.0"
     tslib "^2.0.0"
 
-"@oclif/parser@^3.8.0", "@oclif/parser@^3.8.13", "@oclif/parser@^3.8.6":
-  version "3.8.13"
-  resolved "https://registry.yarnpkg.com/@oclif/parser/-/parser-3.8.13.tgz#339bbf6cf06b99fe45f453f188740a64929bf512"
-  integrity sha512-M4RAB4VB5DuPF3ZoVJlXyemyxhflYBKrvP0cBI/ZJVelrfR7Z1fB/iUSrw7SyFvywI13mHmtEQ8Xz0bSUs7g8A==
+"@oclif/parser@^3.8.0", "@oclif/parser@^3.8.14", "@oclif/parser@^3.8.6":
+  version "3.8.14"
+  resolved "https://registry.yarnpkg.com/@oclif/parser/-/parser-3.8.14.tgz#9ac2db5622400dddf4010c9efe14dd9c825d22ec"
+  integrity sha512-dGF3/Db+YZTxlR2f5cUbFcUXhrGxeVu9aT+Y/J7Wt6KMRiBJ6igIBChDHvRjjQVujR00OpdkS6fyLgBFI5meWQ==
   dependencies:
     "@oclif/errors" "^1.3.6"
     "@oclif/linewrap" "^1.0.0"
