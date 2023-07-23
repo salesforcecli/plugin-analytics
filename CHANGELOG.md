@@ -1,3 +1,12 @@
+## [1.3.10](https://github.com/salesforcecli/plugin-analytics/compare/1.3.9...1.3.10) (2023-07-23)
+
+
+### Bug Fixes
+
+* **deps:** bump word-wrap from 1.2.3 to 1.2.5 ([#319](https://github.com/salesforcecli/plugin-analytics/issues/319)) ([d3a894d](https://github.com/salesforcecli/plugin-analytics/commit/d3a894dae7222392d3066d6919d3b64316a07534))
+
+
+
 ## [1.3.9](https://github.com/salesforcecli/plugin-analytics/compare/1.3.8...1.3.9) (2023-07-16)
 
 
