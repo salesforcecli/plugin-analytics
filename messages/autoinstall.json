@@ -40,6 +40,7 @@
   "startRequestPolling": "Waiting for auto-install request [%s] to finish",
   "requestPollingTimeout": "Timeout occurred waiting for auto-install request [%s] to finish [current status: %s], try increasing --wait",
   "requestCancelled": "Auto-install request [%s] was cancelled.",
+  "requestSkipped": "Auto-install request [%s] was skipped.",
   "enableRequestSuccess": "Successfully created auto-install request [%s] to enable Analytics",
   "enableAsyncDescription": "enable asynchronously",
   "enableAsyncLongDescription": "Enable asynchronously.",

@@ -32,7 +32,7 @@ function formatDate(s: string | undefined): string | undefined {
 
 function colorStatus(s: AutoInstallStatus | undefined): string | undefined {
   if (s && process.platform !== 'win32') {
-    if (s === 'Failed' || s === 'Cancelled') {
+    if (s === 'Failed' || s === 'Cancelled' || s === 'Skipped') {
       return chalk.red(s);
     } else if (s === 'Success' || s === 'New') {
       return chalk.green(s);

@@ -148,6 +148,8 @@ export default class Create extends SfdxCommand {
         return finalRequest;
       } else if (status === 'cancelled') {
         throwWithData(messages.getMessage('requestCancelled', [autoInstallId]), finalRequest);
+      } else if (status === 'skipped') {
+        throwWithData(messages.getMessage('requestSkipped', [autoInstallId]), finalRequest);
       } else {
         throwWithData(messages.getMessage('appCreateFailed', [autoInstallId]), finalRequest);
       }

@@ -262,6 +262,28 @@ describe('analytics:autoinstall:app:create', () => {
       if (requestNum === 1) {
         return Promise.resolve(requestWithStatus('New'));
       }
+      if (requestNum === 3) {
+        return Promise.resolve(requestWithStatus('Skipped'));
+      }
+      return Promise.resolve(requestWithStatus('InProgress'));
+    })
+    .stub(UX.prototype, 'startSpinner', () => {})
+    .stub(UX.prototype, 'stopSpinner', () => {})
+    .stub(global, 'setTimeout', stubTimeout)
+    .stdout()
+    .stderr()
+    .command(['analytics:autoinstall:app:create', '-n', 'abc'])
+    .it('runs analytics:autoinstall:app:create with Skipped status', ctx => {
+      expect(ctx.stderr).to.contain(messages.getMessage('requestSkipped', ['0UZxx0000004FzkGAE']));
+    });
+
+  test
+    .withOrg({ username: 'test@org.com' }, true)
+    .withConnectionRequest(() => {
+      requestNum++;
+      if (requestNum === 1) {
+        return Promise.resolve(requestWithStatus('New'));
+      }
       return Promise.resolve(requestWithStatus('InProgress'));
     })
     .stub(UX.prototype, 'startSpinner', () => {})

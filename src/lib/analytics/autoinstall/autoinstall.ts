@@ -13,6 +13,7 @@ export type AutoInstallStatus =
   | 'New'
   | 'Enqueued'
   | 'Cancelled'
+  | 'Skipped'
   | 'InProgress'
   | 'AppInProgress'
   | 'Success'
@@ -74,7 +75,7 @@ export type AutoInstallCreateAppConfigurationBody = {
 
 function isFinishedRequest(r: AutoInstallRequestType): boolean {
   const status = r.requestStatus?.toLocaleLowerCase();
-  return status === 'cancelled' || status === 'success' || status === 'failed';
+  return status === 'cancelled' || status === 'success' || status === 'failed' || status === 'skipped';
 }
 
 const newStatus = 'New';
