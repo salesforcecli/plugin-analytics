@@ -1,3 +1,12 @@
+## [1.3.14](https://github.com/salesforcecli/plugin-analytics/compare/1.3.13...1.3.14) (2023-08-11)
+
+
+### Bug Fixes
+
+* handle Skipped auto-install request status ([#327](https://github.com/salesforcecli/plugin-analytics/issues/327)) ([0a6af8c](https://github.com/salesforcecli/plugin-analytics/commit/0a6af8cb26d33f2b590aecfc1674983d1f6b72db))
+
+
+
 ## [1.3.13](https://github.com/salesforcecli/plugin-analytics/compare/1.3.12...1.3.13) (2023-08-06)
 
 
