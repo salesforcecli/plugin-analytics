@@ -1,3 +1,12 @@
+## [1.3.17](https://github.com/salesforcecli/plugin-analytics/compare/1.3.16...1.3.17) (2023-09-28)
+
+
+### Bug Fixes
+
+* **deps:** bump get-func-name from 2.0.0 to 2.0.2 ([#334](https://github.com/salesforcecli/plugin-analytics/issues/334)) ([77e174c](https://github.com/salesforcecli/plugin-analytics/commit/77e174c90bd759475dd8049dbf32a53c762f8def))
+
+
+
 ## [1.3.16](https://github.com/salesforcecli/plugin-analytics/compare/1.3.15...1.3.16) (2023-08-27)
 
 
