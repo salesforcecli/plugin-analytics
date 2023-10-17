@@ -1,3 +1,12 @@
+## [1.3.18](https://github.com/salesforcecli/plugin-analytics/compare/1.3.17...1.3.18) (2023-10-17)
+
+
+### Bug Fixes
+
+* **deps:** bump @babel/traverse from 7.11.0 to 7.23.2 ([#338](https://github.com/salesforcecli/plugin-analytics/issues/338)) ([5e7c814](https://github.com/salesforcecli/plugin-analytics/commit/5e7c814f48eab54906e94fc4e8beb164388a8b93))
+
+
+
 ## [1.3.17](https://github.com/salesforcecli/plugin-analytics/compare/1.3.16...1.3.17) (2023-09-28)
 
 
