@@ -60,7 +60,7 @@ export default class WaveTemplate {
   ): Promise<string | undefined> {
     const opts: Record<string, unknown> = { folderSource: { id: folderid }, label, description, recipeIds };
     if (datatransformIds && this.serverVersion >= 59.0) {
-      opts.datatransformIds = datatransformIds;
+      opts.dataTransformIds = datatransformIds;
     }
 
     const body = JSON.stringify(opts);
@@ -91,7 +91,7 @@ export default class WaveTemplate {
       opts.recipeIds = recipeIds;
     }
     if (datatransformIds && this.serverVersion >= 59.0) {
-      opts.datatransformIds = datatransformIds;
+      opts.dataTransformIds = datatransformIds;
     }
 
     const body = JSON.stringify(opts);

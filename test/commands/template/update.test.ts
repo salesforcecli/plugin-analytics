@@ -208,7 +208,7 @@ describe('analytics:template:update', () => {
         );
         expect(requestBody, 'requestBody').to.deep.equal({
           folderSource: { id: '00lxx000000000zCAA' },
-          datatransformIds: ['1dtxxx000000001', '1dtxxx000000002']
+          dataTransformIds: ['1dtxxx000000001', '1dtxxx000000002']
         });
       }
     );
@@ -246,7 +246,7 @@ describe('analytics:template:update', () => {
         expect(requestBody, 'requestBody').to.deep.equal({
           folderSource: { id: '00lxx000000000zCAA' },
           recipeIds: ['05vxx0000004CAeAAM', '05vxx0000004CAeAAM'],
-          datatransformIds: ['1dtxxx000000001', '1dtxxx000000002']
+          dataTransformIds: ['1dtxxx000000001', '1dtxxx000000002']
         });
       }
     );
