@@ -1,3 +1,12 @@
+## [1.3.19](https://github.com/salesforcecli/plugin-analytics/compare/1.3.18...1.3.19) (2023-11-02)
+
+
+### Bug Fixes
+
+* updating datatransformId to dataTransformId in rest call ([#342](https://github.com/salesforcecli/plugin-analytics/issues/342)) ([ef23a03](https://github.com/salesforcecli/plugin-analytics/commit/ef23a036bf35b853119ee7ca0c0625b320e9f92c))
+
+
+
 ## [1.3.18](https://github.com/salesforcecli/plugin-analytics/compare/1.3.17...1.3.18) (2023-10-17)
 
 
