@@ -5,45 +5,23 @@
   "author": "Salesforce",
   "bugs": "https://github.com/forcedotcom/analyticsdx-vscode/issues",
   "dependencies": {
-    "@oclif/config": "^1",
-    "@oclif/plugin-help": "^3.3.1",
-    "@salesforce/command": "^4.2.2",
-    "@salesforce/core": "^2.36.0",
-    "moment": "^2.24.0",
-    "tslib": "^2"
+    "@oclif/core": "^3.18.0",
+    "@oclif/plugin-help": "^6.0.10",
+    "@salesforce/sf-plugins-core": "^7.1.0",
+    "chalk": "^5.3.0",
+    "moment": "^2.30.1"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1",
-    "@oclif/plugin-command-snapshot": "^2.2.2",
-    "@salesforce/cli-plugins-testkit": "^1.1.5",
-    "@salesforce/dev-config": "^3.1.0",
-    "@salesforce/dev-scripts": "^2.0.3",
-    "@salesforce/plugin-command-reference": "^1.6.18",
-    "@salesforce/prettier-config": "^0.0.3",
+    "@oclif/plugin-command-snapshot": "^5.0.6",
+    "@salesforce/cli-plugins-testkit": "^5.1.4",
+    "@salesforce/dev-scripts": "^8.2.0",
+    "@salesforce/plugin-command-reference": "^3.0.61",
     "@salesforce/ts-sinon": "1.4.19",
-    "@typescript-eslint/eslint-plugin": "5.62.0",
-    "@typescript-eslint/parser": "5.62.0",
-    "chai": "^4.3.10",
-    "cz-conventional-changelog": "^3.3.0",
-    "eslint": "^7.32.0",
-    "eslint-config-prettier": "^8.10.0",
-    "eslint-config-salesforce": "^0.1.6",
-    "eslint-config-salesforce-license": "^0.2.0",
-    "eslint-config-salesforce-typescript": "^0.2.8",
-    "eslint-plugin-header": "^3.1.1",
-    "eslint-plugin-import": "2.29.0",
-    "eslint-plugin-jsdoc": "^35.5.1",
-    "eslint-plugin-prettier": "^3.4.1",
-    "husky": "^7.0.4",
-    "lint-staged": "^11.0.0",
-    "mocha": "^9.1.3",
-    "nyc": "^15.1.0",
-    "prettier": "^2.8.8",
-    "pretty-quick": "^3.1.0",
+    "eslint-plugin-sf-plugin": "^1.17.1",
+    "oclif": "^4",
     "shx": "0.3.4",
-    "sinon": "^11.1.2",
-    "ts-node": "^10.9.1",
-    "typescript": "4.9.5"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
   },
   "config": {
     "commitizen": {
@@ -51,13 +29,15 @@
     }
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=18.0.0"
   },
   "files": [
     "/lib",
     "/messages",
-    "/oclif.manifest.json"
+    "/oclif.manifest.json",
+    "/oclif.lock"
   ],
+  "exports": "./lib/index.js",
   "homepage": "https://github.com/salesforcecli/plugin-analytics",
   "keywords": [
     "analytics",
@@ -152,29 +132,141 @@
   },
   "repository": "salesforcecli/plugin-analytics",
   "scripts": {
-    "build": "sf-build",
+    "build": "wireit",
     "clean": "sf-clean",
     "clean-all": "sf-clean all",
-    "clean:extras": "shx rm -rf lib && shx rm -f .prettierrc.json",
-    "clean:lib": "shx rm -rf lib && shx rm -rf coverage && shx rm -rf .nyc_output && shx rm -f oclif.manifest.json",
-    "compile": "sf-compile",
+    "clean:lib": "shx rm -rf lib && shx rm -rf coverage && shx rm -rf .nyc_output && shx rm -f oclif.manifest.json oclif.lock",
+    "compile": "wireit",
     "docs": "sf-docs",
-    "format": "sf-format",
-    "lint": "sf-lint",
-    "postclean": "yarn run clean:extras",
-    "postclean-all": "yarn run clean:extras",
-    "postpack": "shx rm -f oclif.manifest.json",
-    "posttest": "yarn lint && yarn test:deprecation-policy && yarn test:command-reference",
+    "format": "wireit",
+    "link-check": "wireit",
+    "lint": "wireit",
+    "lint-check": "wireit",
+    "postpack": "shx rm -f oclif.manifest.json oclif.lock",
     "prepack": "sf-prepack",
-    "prepare": "sf-install && shx rm -f .prettierrc.json",
-    "pretest": "sf-compile-test",
-    "test": "sf-test",
-    "test:command-reference": "./bin/run commandreference:generate --erroronwarnings",
-    "test:deprecation-policy": "./bin/run snapshot:compare",
+    "prepare": "sf-install",
+    "test": "wireit",
     "test:nuts": "nyc mocha \"**/*.nut.ts\" --slow 4500 --timeout 600000 --parallel",
-    "version": "oclif-dev readme"
+    "test:only": "wireit",
+    "version": "oclif readme"
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "wireit": {
+    "build": {
+      "dependencies": [
+        "compile",
+        "lint"
+      ]
+    },
+    "compile": {
+      "command": "tsc -p . --pretty --incremental",
+      "files": [
+        "src/**/*.ts",
+        "**/tsconfig.json",
+        "messages/**"
+      ],
+      "output": [
+        "lib/**",
+        "*.tsbuildinfo"
+      ],
+      "clean": "if-file-deleted"
+    },
+    "format": {
+      "command": "prettier --write \"+(src|test|schemas)/**/*.+(ts|js|json)|command-snapshot.json\"",
+      "files": [
+        "src/**/*.ts",
+        "test/**/*.ts",
+        "schemas/**/*.json",
+        "command-snapshot.json",
+        ".prettier*"
+      ],
+      "output": []
+    },
+    "lint": {
+      "command": "eslint src test --color --cache --cache-location .eslintcache",
+      "files": [
+        "src/**/*.ts",
+        "test/**/*.ts",
+        "messages/**",
+        "**/.eslint*",
+        "**/tsconfig.json"
+      ],
+      "output": []
+    },
+    "test:compile": {
+      "command": "tsc -p \"./test\" --pretty",
+      "files": [
+        "test/**/*.ts",
+        "**/tsconfig.json"
+      ],
+      "output": []
+    },
+    "test": {
+      "dependencies": [
+        "test:compile",
+        "test:only",
+        "test:command-reference",
+        "test:deprecation-policy",
+        "lint",
+        "test:json-schema",
+        "link-check"
+      ]
+    },
+    "test:only": {
+      "command": "nyc mocha \"test/**/*.test.ts\"",
+      "env": {
+        "FORCE_COLOR": "2"
+      },
+      "files": [
+        "test/**/*.ts",
+        "src/**/*.ts",
+        "**/tsconfig.json",
+        ".mocha*",
+        "!*.nut.ts",
+        ".nycrc"
+      ],
+      "output": []
+    },
+    "test:command-reference": {
+      "command": "\"./bin/dev\" commandreference:generate --erroronwarnings",
+      "files": [
+        "src/**/*.ts",
+        "messages/**",
+        "package.json"
+      ],
+      "output": [
+        "tmp/root"
+      ]
+    },
+    "test:deprecation-policy": {
+      "command": "\"./bin/dev\" snapshot:compare",
+      "files": [
+        "src/**/*.ts"
+      ],
+      "output": [],
+      "dependencies": [
+        "compile"
+      ]
+    },
+    "test:json-schema": {
+      "command": "\"./bin/dev\" schema:compare",
+      "files": [
+        "src/**/*.ts",
+        "schemas"
+      ],
+      "output": []
+    },
+    "link-check": {
+      "command": "node -e \"process.exit(process.env.CI ? 0 : 1)\" || linkinator \"**/*.md\" --skip \"CHANGELOG.md|node_modules|test/|confluence.internal.salesforce.com|my.salesforce.com|%s\" --markdown --retry --directory-listing --verbosity error",
+      "files": [
+        "./*.md",
+        "./!(CHANGELOG).md",
+        "messages/**/*.md"
+      ],
+      "output": []
+    }
+  },
+  "type": "module"
 }

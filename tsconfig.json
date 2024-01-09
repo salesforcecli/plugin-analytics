@@ -1,13 +1,8 @@
 {
-  "extends": "@salesforce/dev-config/tsconfig-strict",
+  "extends": "@salesforce/dev-config/tsconfig-strict-esm",
   "compilerOptions": {
-    "target": "ES2019",
     "outDir": "lib",
     "rootDir": "src",
-    "baseUrl": ".",
-    "paths": {
-      "@salesforce/core": ["node_modules/@salesforce/core"]
-    },
     "noImplicitAny": true,
     "esModuleInterop": true,
     "skipLibCheck": true
