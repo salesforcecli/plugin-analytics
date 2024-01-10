@@ -5,70 +5,71 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { flags, SfdxCommand } from '@salesforce/command';
-import { Messages, Org } from '@salesforce/core';
+import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import { Messages } from '@salesforce/core';
 
-import WaveTemplate from '../../../lib/analytics/template/wavetemplate';
+import WaveTemplate from '../../../lib/analytics/template/wavetemplate.js';
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.loadMessages('@salesforce/analytics', 'template');
 
-export default class Create extends SfdxCommand {
-  public static description = messages.getMessage('createCommandDescription');
-  public static longDescription = messages.getMessage('createCommandLongDescription');
+export default class Create extends SfCommand<string | undefined> {
+  public static readonly summary = messages.getMessage('createCommandDescription');
+  public static readonly description = messages.getMessage('createCommandLongDescription');
 
-  public static examples = [
+  public static readonly examples = [
     '$ sfdx analytics:template:create -f folderid',
     '$ sfdx analytics:template:create -f folderid -r "recipeid1, recipeid2"',
-    '$ sfdx analytics:template:create -f folderid -d "datatransformid1, datatransformid2"'
+    '$ sfdx analytics:template:create -f folderid -d "datatransformid1, datatransformid2"',
   ];
 
-  protected static flagsConfig = {
-    folderid: flags.id({
+  public static readonly flags = {
+    targetOrg: requiredOrgFlagWithDeprecations,
+    folderid: Flags.salesforceId({
       char: 'f',
       required: true,
-      description: messages.getMessage('folderidFlagDescription'),
-      longDescription: messages.getMessage('folderidFlagLongDescription')
+      summary: messages.getMessage('folderidFlagDescription'),
+      description: messages.getMessage('folderidFlagLongDescription'),
     }),
     // recipeids only work in 238+, they are silently ignored on the server in 236-
-    recipeids: flags.array({
+    recipeids: Flags.string({
       char: 'r',
       required: false,
-      description: messages.getMessage('recipeidsFlagDescription'),
-      longDescription: messages.getMessage('recipeidsFlagLongDescription')
+      multiple: true,
+      summary: messages.getMessage('recipeidsFlagDescription'),
+      description: messages.getMessage('recipeidsFlagLongDescription'),
     }),
     // datatransformids only work in 246+, they are silently ignored on the server in 244-
-    datatransformids: flags.array({
+    datatransformids: Flags.string({
       char: 'd',
       required: false,
-      description: messages.getMessage('datatransformidsFlagDescription'),
-      longDescription: messages.getMessage('datatransformidsFlagLongDescription')
+      multiple: true,
+      summary: messages.getMessage('datatransformidsFlagDescription'),
+      description: messages.getMessage('datatransformidsFlagLongDescription'),
     }),
     // label & description only work in 232+, they are silently ignored on the server in 230
-    label: flags.string({
+    label: Flags.string({
       char: 'l',
-      description: messages.getMessage('templateLabelFlagDescription'),
-      longDescription: messages.getMessage('templateLabelFlagLongDescription')
+      summary: messages.getMessage('templateLabelFlagDescription'),
+      description: messages.getMessage('templateLabelFlagLongDescription'),
     }),
-    description: flags.string({
-      description: messages.getMessage('templateDescriptionFlagDescription'),
-      longDescription: messages.getMessage('templateDescriptionFlagLongDescription')
-    })
+    description: Flags.string({
+      summary: messages.getMessage('templateDescriptionFlagDescription'),
+      description: messages.getMessage('templateDescriptionFlagLongDescription'),
+    }),
   };
 
-  protected static requiresUsername = true;
-  protected static requiresProject = false;
-
   public async run() {
-    const template = new WaveTemplate(this.org as Org);
+    const { flags } = await this.parse(Create);
+    const template = new WaveTemplate(flags.targetOrg);
     // Create the wave template from an app/folder id
-    const waveTemplateId = await template.create(this.flags.folderid as string, {
-      label: this.flags.label as string | undefined,
-      description: this.flags.description as string | undefined,
-      recipeIds: this.flags.recipeids as string[] | undefined,
-      datatransformIds: this.flags.datatransformids as string[] | undefined
+    const waveTemplateId = await template.create(flags.folderid, {
+      label: flags.label,
+      description: flags.description,
+      recipeIds: flags.recipeids,
+      datatransformIds: flags.datatransformids,
     });
-    this.ux.log(messages.getMessage('createSuccess', [waveTemplateId]));
+    this.log(messages.getMessage('createSuccess', [waveTemplateId]));
     return waveTemplateId;
   }
 }

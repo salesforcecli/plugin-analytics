@@ -5,8 +5,8 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import { Connection, Org } from '@salesforce/core';
-import { connectRequest, fetchAllPages } from '../request';
-import { throwError } from '../utils';
+import { connectRequest, fetchAllPages } from '../request.js';
+import { throwError } from '../utils.js';
 
 export type DataflowHistoryType = {
   id?: string;
@@ -49,6 +49,7 @@ export type DataflowJobType = Record<string, unknown> & {
   createdDate?: string;
   executedDate?: string;
   startDate?: string;
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   status?: 'Failure' | 'Queued' | 'Live' | 'Running' | 'Success' | 'Warning' | string;
   syncDataflows?: [];
   type?: string;
@@ -89,8 +90,8 @@ export default class Dataflow {
       url: revertUrl,
       body: JSON.stringify({
         historyId,
-        historyLabel
-      })
+        historyLabel,
+      }),
     });
 
     if (response) {
@@ -107,8 +108,8 @@ export default class Dataflow {
       url: this.dataflowsJobsUrl,
       body: JSON.stringify({
         dataflowId,
-        command
-      })
+        command,
+      }),
     });
     if (response) {
       return response;
@@ -123,8 +124,8 @@ export default class Dataflow {
       method: 'PATCH',
       url: this.dataflowsJobsUrl + encodeURIComponent(dataflowJobId),
       body: JSON.stringify({
-        command
-      })
+        command,
+      }),
     });
 
     if (response) {
@@ -138,7 +139,7 @@ export default class Dataflow {
     const response = await connectRequest<DataflowType>(this.connection, {
       method: 'PATCH',
       url: this.dataflowsUrl + encodeURIComponent(dataflowId),
-      body: JSON.stringify({ definition })
+      body: JSON.stringify({ definition }),
     });
     if (response) {
       return response;
@@ -150,7 +151,7 @@ export default class Dataflow {
   public async getDataflowJob(dataflowJobId: string): Promise<DataflowJobType> {
     const response = await connectRequest<DataflowJobType>(this.connection, {
       method: 'GET',
-      url: this.dataflowsJobsUrl + encodeURIComponent(dataflowJobId)
+      url: this.dataflowsJobsUrl + encodeURIComponent(dataflowJobId),
     });
     if (response) {
       return response;

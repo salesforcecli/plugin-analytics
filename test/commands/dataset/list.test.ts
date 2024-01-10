@@ -6,7 +6,7 @@
  */
 
 import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/command/lib/test';
+import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
 
 core.Messages.importMessagesDirectory(__dirname);
 const messages = core.Messages.loadMessages('@salesforce/analytics', 'dataset');
@@ -15,7 +15,7 @@ const datasetJson = {
   createdBy: {
     id: '005xx000001XCD7AAO',
     name: 'User User',
-    profilePhotoUrl: '/profilephoto/005/T'
+    profilePhotoUrl: '/profilephoto/005/T',
   },
   createdDate: '2021-01-20T20:07:19.000Z',
   currentVersionId: '0Fcxx0000004CsCCAU',
@@ -24,7 +24,7 @@ const datasetJson = {
   datasetType: 'default',
   folder: {
     id: '005xx000001XCD7AAO',
-    label: 'User User'
+    label: 'User User',
   },
   id: '0Fbxx0000004CyeCAE',
   label: 'ABCWidgetSales2017',
@@ -32,7 +32,7 @@ const datasetJson = {
   lastModifiedBy: {
     id: '005xx000001XCGLAA4',
     name: 'Integration User',
-    profilePhotoUrl: '/profilephoto/005/T'
+    profilePhotoUrl: '/profilephoto/005/T',
   },
   lastModifiedDate: '2021-01-20T20:08:34.000Z',
   lastQueriedDate: '2021-03-06T03:18:57.000Z',
@@ -41,11 +41,11 @@ const datasetJson = {
     create: true,
     manage: true,
     modify: true,
-    view: true
+    view: true,
   },
   type: 'dataset',
   url: '/services/data/v52.0/wave/datasets/0Fbxx0000004CyeCAE',
-  userXmd: {}
+  userXmd: {},
 };
 
 const nsDatasetJson = {
@@ -53,7 +53,7 @@ const nsDatasetJson = {
   createdBy: {
     id: '005R0000000vpWGIAY',
     name: 'Automated Process',
-    profilePhotoUrl: 'https://coffee-beans-1986-dev-ed--c.stmpa.stm.documentforce.com/profilephoto/005/T'
+    profilePhotoUrl: 'https://coffee-beans-1986-dev-ed--c.stmpa.stm.documentforce.com/profilephoto/005/T',
   },
   createdDate: '2021-04-29T15:28:49.000Z',
   currentVersionId: '0FcR0000000MFtXKAW',
@@ -65,7 +65,7 @@ const nsDatasetJson = {
     label: 'TrendFinder',
     name: 'TrendFinder',
     namespace: 'AnlyTxHack',
-    url: '/services/data/v53.0/wave/folders/00lR0000000VSUmIAO'
+    url: '/services/data/v53.0/wave/folders/00lR0000000VSUmIAO',
   },
   id: '0FbR000000057SlKAI',
   label: 'cestabasica',
@@ -73,12 +73,12 @@ const nsDatasetJson = {
   lastModifiedBy: {
     id: '005R0000000vpWGIAY',
     name: 'Automated Process',
-    profilePhotoUrl: 'https://coffee-beans-1986-dev-ed--c.stmpa.stm.documentforce.com/profilephoto/005/T'
+    profilePhotoUrl: 'https://coffee-beans-1986-dev-ed--c.stmpa.stm.documentforce.com/profilephoto/005/T',
   },
   lastModifiedDate: '2021-04-29T15:30:32.000Z',
   lastQueriedDate: '2021-04-30T22:00:38.000Z',
   licenseAttributes: {
-    type: 'einsteinanalytics'
+    type: 'einsteinanalytics',
   },
   name: 'cestabasica',
   namespace: 'AnlyTxHack',
@@ -86,13 +86,13 @@ const nsDatasetJson = {
     create: true,
     manage: true,
     modify: true,
-    view: true
+    view: true,
   },
   type: 'dataset',
   url: '/services/data/v53.0/wave/datasets/0FbR000000057SlKAI',
   userXmd: {},
   versionsUrl: '/services/data/v53.0/wave/datasets/0FbR000000057SlKAI/versions',
-  visibility: 'All'
+  visibility: 'All',
 };
 
 describe('analytics:dataset:list', () => {
@@ -102,7 +102,7 @@ describe('analytics:dataset:list', () => {
     .stderr()
     .stdout()
     .command(['analytics:dataset:list'])
-    .it('runs analytics:dataset:list', ctx => {
+    .it('runs analytics:dataset:list', (ctx) => {
       expect(ctx.stderr, 'stderr').to.equal('');
       expect(ctx.stdout, 'stdout').to.contain(messages.getMessage('datasetsFound', [2]));
     });
@@ -113,7 +113,7 @@ describe('analytics:dataset:list', () => {
     .stderr()
     .stdout()
     .command(['analytics:dataset:list', '--json'])
-    .it('runs analytics:dataset:list --json', ctx => {
+    .it('runs analytics:dataset:list --json', (ctx) => {
       expect(ctx.stderr, 'stderr').to.equal('');
       expect(JSON.parse(ctx.stdout), 'stdout json').to.deep.equal({
         status: 0,
@@ -123,7 +123,7 @@ describe('analytics:dataset:list', () => {
             name: datasetJson.name,
             label: datasetJson.label,
             currentversionid: datasetJson.currentVersionId,
-            folderid: datasetJson.folder.id
+            folderid: datasetJson.folder.id,
           },
           {
             id: nsDatasetJson.id,
@@ -131,9 +131,9 @@ describe('analytics:dataset:list', () => {
             name: nsDatasetJson.name,
             label: nsDatasetJson.label,
             currentversionid: nsDatasetJson.currentVersionId,
-            folderid: nsDatasetJson.folder.id
-          }
-        ]
+            folderid: nsDatasetJson.folder.id,
+          },
+        ],
       });
     });
 
@@ -143,7 +143,7 @@ describe('analytics:dataset:list', () => {
     .stderr()
     .stdout()
     .command(['analytics:dataset:list'])
-    .it('runs analytics:dataset:list (no results)', ctx => {
+    .it('runs analytics:dataset:list (no results)', (ctx) => {
       expect(ctx.stderr).to.equal('');
       expect(ctx.stdout).to.contain('No results found.');
     });

@@ -6,7 +6,7 @@
  */
 
 import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/command/lib/test';
+import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
 
 core.Messages.importMessagesDirectory(__dirname);
 const messages = core.Messages.loadMessages('@salesforce/analytics', 'dataflow');
@@ -20,8 +20,8 @@ const dataflowValues = [
     waitTime: 8,
     progress: 10,
     retryCount: 2,
-    startDate: '2023-03-21T05:47:24.000Z'
-  }
+    startDate: '2023-03-21T05:47:24.000Z',
+  },
 ];
 
 describe('analytics:dataflow:job:list', () => {
@@ -30,7 +30,7 @@ describe('analytics:dataflow:job:list', () => {
     .withConnectionRequest(() => Promise.resolve({ dataflowJobs: dataflowValues }))
     .stdout()
     .command(['analytics:dataflow:job:list', '--dataflowid', dataflowId])
-    .it('runs analytics:dataflow:job:list --dataflowid ' + dataflowId, ctx => {
+    .it('runs analytics:dataflow:job:list --dataflowid ' + dataflowId, (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('dataflowsFound', [1]));
     });
 
@@ -39,7 +39,7 @@ describe('analytics:dataflow:job:list', () => {
     .withConnectionRequest(() => Promise.resolve({ dataflows: [] }))
     .stdout()
     .command(['analytics:dataflow:job:list', '--dataflowid', dataflowId])
-    .it('runs analytics:dataflow:job:list --dataflowid ' + dataflowId, ctx => {
+    .it('runs analytics:dataflow:job:list --dataflowid ' + dataflowId, (ctx) => {
       expect(ctx.stdout).to.contain('No results found.');
     });
 });

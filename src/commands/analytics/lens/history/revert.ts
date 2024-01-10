@@ -5,53 +5,52 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { flags, SfdxCommand } from '@salesforce/command';
-import { Messages, Org } from '@salesforce/core';
-import Lens from '../../../../lib/analytics/lens/lens';
+import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import { Messages } from '@salesforce/core';
+import Lens from '../../../../lib/analytics/lens/lens.js';
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.loadMessages('@salesforce/analytics', 'history');
 
-export default class Revert extends SfdxCommand {
-  public static description = messages.getMessage('revertCommandDescription');
-  public static longDescription = messages.getMessage('revertCommandLongDescription');
+export default class Revert extends SfCommand<string | undefined> {
+  public static readonly summary = messages.getMessage('revertCommandDescription');
+  public static readonly description = messages.getMessage('revertCommandLongDescription');
 
-  public static examples = [
-    '$ sfdx analytics:dashboard:history:revert -i <dashboardid> -y <historyid> -l <historyLabel> '
+  public static readonly examples = [
+    '$ sfdx analytics:dashboard:history:revert -i <dashboardid> -y <historyid> -l <historyLabel> ',
   ];
 
-  protected static flagsConfig = {
-    lensid: flags.id({
+  public static readonly flags = {
+    targetOrg: requiredOrgFlagWithDeprecations,
+    lensid: Flags.salesforceId({
       char: 'i',
       required: true,
-      description: messages.getMessage('dashboardidFlagDescription'),
-      longDescription: messages.getMessage('dashboardidFlagLongDescription')
+      summary: messages.getMessage('dashboardidFlagDescription'),
+      description: messages.getMessage('dashboardidFlagLongDescription'),
     }),
-    historyid: flags.id({
+    historyid: Flags.salesforceId({
       char: 'y',
       required: true,
-      description: messages.getMessage('dashboardHistoryidFlagDescription'),
-      longDescription: messages.getMessage('dashboardHistoryidFlagLongDescription')
+      summary: messages.getMessage('dashboardHistoryidFlagDescription'),
+      description: messages.getMessage('dashboardHistoryidFlagLongDescription'),
     }),
-    label: flags.string({
+    label: Flags.string({
       char: 'l',
-      description: messages.getMessage('revertLabelFlagDescription'),
-      longDescription: messages.getMessage('revertLabelFlagLongDescription')
-    })
+      summary: messages.getMessage('revertLabelFlagDescription'),
+      description: messages.getMessage('revertLabelFlagLongDescription'),
+    }),
   };
 
-  protected static requiresUsername = true;
-  protected static requiresProject = false;
-
   public async run() {
-    const lensId = this.flags.lensid as string;
-    const lensHistoryId = this.flags.historyid as string;
-    const lensHistoryLabel = this.flags.label as string | undefined;
-    const lens = new Lens(this.org as Org);
+    const { flags } = await this.parse(Revert);
+    const lensId = flags.lensid;
+    const lensHistoryId = flags.historyid;
+    const lensHistoryLabel = flags.label;
+    const lens = new Lens(flags.targetOrg);
 
     const id = await lens.revertToHistory(lensId, lensHistoryId, lensHistoryLabel);
     const message = messages.getMessage('revertSuccess', [id, lensHistoryId]);
-    this.ux.log(message);
+    this.log(message);
     return id;
   }
 }

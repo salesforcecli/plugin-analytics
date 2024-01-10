@@ -6,7 +6,7 @@
  */
 
 import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/command/lib/test';
+import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
 
 core.Messages.importMessagesDirectory(__dirname);
 const messages = core.Messages.loadMessages('@salesforce/analytics', 'asset');
@@ -17,9 +17,9 @@ const publisherValues = [
     assetid: '0FKxx0000004GNwGAM',
     publisherUser: {
       id: '005xx000001XK37AAG',
-      name: 'foo'
-    }
-  }
+      name: 'foo',
+    },
+  },
 ];
 
 describe('analytics:asset:publisher:list', () => {
@@ -28,7 +28,7 @@ describe('analytics:asset:publisher:list', () => {
     .withConnectionRequest(() => Promise.resolve({ publishers: publisherValues }))
     .stdout()
     .command(['analytics:asset:publisher:list', '--assetid', '0FKxx0000004GNwGAM'])
-    .it('runs analytics:asset:publisher:list --assetid 0FKxx0000004GNwGAM', ctx => {
+    .it('runs analytics:asset:publisher:list --assetid 0FKxx0000004GNwGAM', (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('publishersFound', [1, '0FKxx0000004GNwGAM']));
     });
 
@@ -37,7 +37,7 @@ describe('analytics:asset:publisher:list', () => {
     .withConnectionRequest(() => Promise.resolve({ publishers: [] }))
     .stdout()
     .command(['analytics:asset:publisher:list', '--assetid', '0FKxx0000004GNwGAM'])
-    .it('runs analytics:asset:publisher:list --assetid 0FKxx0000004GNwGAM', ctx => {
+    .it('runs analytics:asset:publisher:list --assetid 0FKxx0000004GNwGAM', (ctx) => {
       expect(ctx.stdout).to.contain('No results found.');
     });
 });

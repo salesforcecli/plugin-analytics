@@ -5,12 +5,12 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { SfdxError } from '@salesforce/core';
-import _ = require('lodash');
-import chalk = require('chalk');
+import { SfError } from '@salesforce/core';
+import _get from 'lodash.get';
+import chalk, { ChalkInstance } from 'chalk';
 
 export function throwWithData(mesg: string, data: unknown): never {
-  const e = new SfdxError(mesg);
+  const e = new SfError(mesg);
   e.setData(data);
   throw e;
 }
@@ -19,14 +19,17 @@ export function throwError(response: unknown): never {
   // For Gacks, the error message is on response.body[0].message but for handled errors
   // the error message is on response.body.Errors[0].description.
   const errMessage =
-    (_.get(response, 'Errors[0].description') as string) ||
-    (_.get(response, '[0].message') as string) ||
-    (_.get(response, 'message') as string) ||
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    (_get(response, 'Errors[0].description') as unknown as string) ||
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    (_get(response, '[0].message') as unknown as string) ||
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    (_get(response, 'message') as unknown as string) ||
     'Unknown Error';
-  throw new SfdxError(errMessage);
+  throw new SfError(errMessage);
 }
 
-export function colorize(s: string, color: chalk.Chalk | undefined): string {
+export function colorize(s: string, color: ChalkInstance | undefined): string {
   return color && process.platform !== 'win32' ? color(s) : s;
 }
 
@@ -47,7 +50,7 @@ export function getStatusIcon(s: string): string {
 
 export const COLORS = {
   // these seem to line up with what tsc (typescript compiler) does
-  readinessStatus: (s: string): chalk.Chalk | undefined => {
+  readinessStatus: (s: string): ChalkInstance | undefined => {
     switch (s) {
       case 'Complete':
         return chalk.green;
@@ -58,7 +61,7 @@ export const COLORS = {
       default:
         return undefined;
     }
-  }
+  },
 };
 
 /**
@@ -80,7 +83,7 @@ export function waitFor<T>(
     pauseMs,
     timeoutMs,
     rejectOnError = true,
-    timeoutMessage = 'timeout'
+    timeoutMessage = 'timeout',
   }: {
     pauseMs: number;
     timeoutMs: number;

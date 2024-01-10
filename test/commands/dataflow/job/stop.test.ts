@@ -6,7 +6,7 @@
  */
 
 import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/command/lib/test';
+import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
 
 core.Messages.importMessagesDirectory(__dirname);
 const messages = core.Messages.loadMessages('@salesforce/analytics', 'dataflow');
@@ -19,7 +19,7 @@ describe('analytics:dataflow:job:stop', () => {
     .withConnectionRequest(() => Promise.resolve({ dataflowjobId, status: 'Failure' }))
     .stdout()
     .command(['analytics:dataflow:job:stop', '--dataflowjobid', dataflowjobId])
-    .it('runs analytics:dataflow:job:stop --dataflowjobid 0FK9A0000008SDWWA2', ctx => {
+    .it('runs analytics:dataflow:job:stop --dataflowjobid 0FK9A0000008SDWWA2', (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('dataflowJobUpdate', [dataflowjobId, status]));
     });
 });

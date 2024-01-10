@@ -5,46 +5,54 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { flags, SfdxCommand } from '@salesforce/command';
-import { Messages, Org } from '@salesforce/core';
+import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import { Messages } from '@salesforce/core';
 
-import Publisher from '../../../../lib/analytics/publisher/publisher';
+import Publisher from '../../../../lib/analytics/publisher/publisher.js';
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.loadMessages('@salesforce/analytics', 'asset');
 
-export default class List extends SfdxCommand {
-  public static description = messages.getMessage('publisherListCommandDescription');
-  public static longDescription = messages.getMessage('publisherListCommandLongDescription');
+export default class List extends SfCommand<
+  Array<{
+    id?: string;
+    assetId?: string;
+    publishuser?: string;
+    publishuserid?: string;
+  }>
+> {
+  public static readonly summary = messages.getMessage('publisherListCommandDescription');
+  public static readonly description = messages.getMessage('publisherListCommandLongDescription');
 
-  public static examples = ['$ sfdx analytics:asset:publisher:list -i assetId'];
+  public static readonly examples = ['$ sfdx analytics:asset:publisher:list -i assetId'];
 
-  protected static flagsConfig = {
-    assetid: flags.id({
+  public static readonly flags = {
+    targetOrg: requiredOrgFlagWithDeprecations,
+    assetid: Flags.salesforceId({
       char: 'i',
       required: true,
-      description: messages.getMessage('assetidFlagDescription'),
-      longDescription: messages.getMessage('assetidFlagLongDescription')
-    })
+      summary: messages.getMessage('assetidFlagDescription'),
+      description: messages.getMessage('assetidFlagLongDescription'),
+    }),
   };
 
-  protected static requiresUsername = true;
-  protected static requiresProject = false;
-
-  protected static tableColumnData = ['id', 'assetid', 'publisheruser', 'publisheruserid'];
-
   public async run() {
-    const publisherSvc = new Publisher(this.org as Org);
-    const assetId = this.flags.assetid as string;
-    const publishers = ((await publisherSvc.list(assetId)) || []).map(publisher => ({
+    const { flags } = await this.parse(List);
+    const publisherSvc = new Publisher(flags.targetOrg);
+    const assetId = flags.assetid;
+    const publishers = ((await publisherSvc.list(assetId)) ?? []).map((publisher) => ({
       id: publisher.id,
       assetid: publisher.assetId,
       publisheruser: publisher.publisherUser?.name,
-      publisheruserid: publisher.publisherUser?.id
+      publisheruserid: publisher.publisherUser?.id,
     }));
-    if (publishers.length > 0) {
-      this.ux.styledHeader(messages.getMessage('publishersFound', [publishers.length, assetId]));
-    }
+    this.styledHeader(messages.getMessage('publishersFound', [publishers.length, assetId]));
+    this.table(publishers, {
+      id: { header: 'id' },
+      assetid: { header: 'assetid' },
+      publisheruser: { header: 'publisheruser' },
+      publisheruserid: { header: 'publisheruserid' },
+    });
     return publishers;
   }
 }

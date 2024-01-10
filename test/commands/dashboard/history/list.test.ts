@@ -6,13 +6,13 @@
  */
 
 import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/command/lib/test';
+import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
 
 core.Messages.importMessagesDirectory(__dirname);
 const messages = core.Messages.loadMessages('@salesforce/analytics', 'history');
 
 const dashBoardHistoryValues = [
-  { historyid: '0Rmxx0000004CdgCAE', dashboardid: '0FKxx0000004CguGAE', name: 'testName', label: 'my history' }
+  { historyid: '0Rmxx0000004CdgCAE', dashboardid: '0FKxx0000004CguGAE', name: 'testName', label: 'my history' },
 ];
 
 const dashboardId = '0FKxx0000004CguGAE';
@@ -23,7 +23,7 @@ describe('analytics:dashboard:history:list', () => {
     .withConnectionRequest(() => Promise.resolve({ histories: dashBoardHistoryValues }))
     .stdout()
     .command(['analytics:dashboard:history:list', '--dashboardid', dashboardId])
-    .it('runs analytics:dashboard:history:list', ctx => {
+    .it('runs analytics:dashboard:history:list', (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('dashboardsHistoriesFound', [1]));
     });
 
@@ -32,7 +32,7 @@ describe('analytics:dashboard:history:list', () => {
     .withConnectionRequest(() => Promise.resolve({ histories: [] }))
     .stdout()
     .command(['analytics:dashboard:history:list', '--dashboardid', dashboardId])
-    .it('runs analytics:dashboard:history:list', ctx => {
+    .it('runs analytics:dashboard:history:list', (ctx) => {
       expect(ctx.stdout).to.contain('No results found.');
     });
 });

@@ -5,12 +5,15 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { flags, SfdxCommand } from '@salesforce/command';
-import { Messages, Org } from '@salesforce/core';
+import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import { Messages } from '@salesforce/core';
 import chalk from 'chalk';
-import moment = require('moment');
+import moment from 'moment';
 
-import AutoInstall, { AutoInstallRequestType, AutoInstallStatus } from '../../../lib/analytics/autoinstall/autoinstall';
+import AutoInstall, {
+  AutoInstallRequestType,
+  AutoInstallStatus,
+} from '../../../lib/analytics/autoinstall/autoinstall.js';
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.loadMessages('@salesforce/analytics', 'autoinstall');
@@ -41,38 +44,37 @@ function colorStatus(s: AutoInstallStatus | undefined): string | undefined {
   return s;
 }
 
-export default class Display extends SfdxCommand {
-  public static description = messages.getMessage('displayCommandDescription');
-  public static longDescription = messages.getMessage('displayCommandLongDescription');
+export default class Display extends SfCommand<AutoInstallRequestType> {
+  public static readonly summary = messages.getMessage('displayCommandDescription');
+  public static readonly description = messages.getMessage('displayCommandLongDescription');
 
-  public static examples = ['$ sfdx analytics:autoinstall:display -i id'];
+  public static readonly examples = ['$ sfdx analytics:autoinstall:display -i id'];
 
-  protected static flagsConfig = {
-    autoinstallid: flags.id({
+  public static readonly flags = {
+    targetOrg: requiredOrgFlagWithDeprecations,
+    autoinstallid: Flags.salesforceId({
       char: 'i',
       required: true,
-      description: messages.getMessage('autoinstallidFlagDescription'),
-      longDescription: messages.getMessage('autoinstallidFlagLongDescription')
+      summary: messages.getMessage('autoinstallidFlagDescription'),
+      description: messages.getMessage('autoinstallidFlagLongDescription'),
     }),
-    applog: flags.boolean({
+    applog: Flags.boolean({
       char: 'a',
       required: false,
       default: false,
-      description: messages.getMessage('applogFlagDescription'),
-      longDescription: messages.getMessage('applogFlagLongDescription')
-    })
+      summary: messages.getMessage('applogFlagDescription'),
+      description: messages.getMessage('applogFlagLongDescription'),
+    }),
   };
 
-  protected static requiresUsername = true;
-  protected static requiresProject = false;
-
-  public async run(): Promise<AutoInstallRequestType> {
-    const autoinstall = new AutoInstall(this.org as Org);
-    const autoinstallRep = await autoinstall.fetch(this.flags.autoinstallid as string);
+  public async run() {
+    const { flags } = await this.parse(Display);
+    const autoinstall = new AutoInstall(flags.targetOrg);
+    const autoinstallRep = await autoinstall.fetch(flags.autoinstallid);
 
     // force:org:display does a blue chalk on the headers, so do it here, too
-    this.ux.styledHeader(blue(messages.getMessage('displayDetailHeader')));
-    this.ux.table(
+    this.styledHeader(blue(messages.getMessage('displayDetailHeader')));
+    this.table(
       [
         { key: 'Id', value: autoinstallRep.id },
         { key: 'Request Type', value: autoinstallRep.requestType },
@@ -91,31 +93,27 @@ export default class Display extends SfdxCommand {
         { key: 'Created By', value: autoinstallRep.createdBy?.name },
         { key: 'Created Date', value: formatDate(autoinstallRep.createdDate) },
         { key: 'Last Modified By', value: autoinstallRep.lastModifiedBy?.name },
-        { key: 'Last Modified Date', value: formatDate(autoinstallRep.lastModifiedDate) }
+        { key: 'Last Modified Date', value: formatDate(autoinstallRep.lastModifiedDate) },
       ],
       {
-        columns: [
-          { key: 'key', label: 'Key' },
-          { key: 'value', label: 'Value' }
-        ]
+        key: { header: 'Key' },
+        value: { header: 'Value' },
       }
     );
 
-    if (this.flags.applog) {
-      this.ux.styledHeader(blue(messages.getMessage('displayLogHeader')));
+    if (flags.applog) {
+      this.styledHeader(blue(messages.getMessage('displayLogHeader')));
       if (
         !autoinstallRep.appFromRequest?.appLog ||
         !Array.isArray(autoinstallRep.appFromRequest?.appLog) ||
         autoinstallRep.appFromRequest.appLog.length <= 0
       ) {
-        this.ux.log(messages.getMessage('displayNoLogAvailable'));
+        this.log(messages.getMessage('displayNoLogAvailable'));
       } else {
-        const data = autoinstallRep.appFromRequest.appLog?.map(line => {
-          return { message: (typeof line === 'string' ? line : line.message) || '' };
-        });
-        this.ux.table(data, {
-          columns: [{ key: 'message', label: 'Message' }]
-        });
+        const data = autoinstallRep.appFromRequest.appLog?.map((line) => ({
+          message: (typeof line === 'string' ? line : line.message) || '',
+        }));
+        this.table(data, { message: { header: 'Message' } });
       }
     }
 

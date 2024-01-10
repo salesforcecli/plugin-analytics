@@ -6,7 +6,7 @@
  */
 
 import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/command/lib/test';
+import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
 
 core.Messages.importMessagesDirectory(__dirname);
 const messages = core.Messages.loadMessages('@salesforce/analytics', 'app');
@@ -21,7 +21,7 @@ describe('analytics:app:decouple', () => {
     })
     .stdout()
     .command(['analytics:app:decouple', '--folderid', folderId, '--templateid', templateId])
-    .it('runs analytics:app:decouple  --folderid 0llxx000000000zCAA --templateid 0Nkxx000000000zCAA', ctx => {
+    .it('runs analytics:app:decouple  --folderid 0llxx000000000zCAA --templateid 0Nkxx000000000zCAA', (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('decoupleSuccess', [folderId, templateId]));
     });
 });

@@ -6,7 +6,7 @@
  */
 
 import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/command/lib/test';
+import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
 
 core.Messages.importMessagesDirectory(__dirname);
 const messages = core.Messages.loadMessages('@salesforce/analytics', 'app');
@@ -22,20 +22,20 @@ function makeAutoInstallJson() {
         deleteAppOnConstructionFailure: false,
         failOnDuplicateNames: false,
         values: [],
-        parentRequestIds: []
-      }
+        parentRequestIds: [],
+      },
     },
     createdBy: {
       id: '005xx000001XB1RAAW',
       name: 'Automated Process',
-      profilePhotoUrl: 'https://flow-business-748--c.documentforce.com/profilephoto/005/T'
+      profilePhotoUrl: 'https://flow-business-748--c.documentforce.com/profilephoto/005/T',
     },
     createdDate: '2020-03-05T16:56:26.000Z',
     id: '0UZ9A000000Cz6bWAC',
     lastModifiedBy: {
       id: '005xx000001XB1RAAW',
       name: 'Automated Process',
-      profilePhotoUrl: '/profilephoto/005/T'
+      profilePhotoUrl: '/profilephoto/005/T',
     },
     lastModifiedDate: '2020-03-05T16:56:29.000Z',
     parentRequests: [],
@@ -43,7 +43,7 @@ function makeAutoInstallJson() {
     requestName: 'AutoInstallRequest WaveEnable',
     requestStatus: 'Success',
     requestType: 'WaveEnable',
-    url: '/services/data/v55.0/wave/auto-install-requests/0UZ9A000000Cz6bWAC'
+    url: '/services/data/v55.0/wave/auto-install-requests/0UZ9A000000Cz6bWAC',
   };
   return json;
 }
@@ -65,7 +65,7 @@ describe('analytics:app:display', () => {
     .withConnectionRequest(() => Promise.resolve(displayJson))
     .stdout()
     .command(['analytics:autoinstall:display', '--autoinstallid', ID])
-    .it(`runs analytics:autoinstall:display --autoinstallid ${ID}`, ctx => {
+    .it(`runs analytics:autoinstall:display --autoinstallid ${ID}`, (ctx) => {
       verifyAppDetails(ctx.stdout);
       expect(ctx.stdout).to.not.contain(messages.getMessage('displayLogHeader'));
     });

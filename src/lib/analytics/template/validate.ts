@@ -5,8 +5,8 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import { Connection, Org } from '@salesforce/core';
-import { connectRequest } from '../request';
-import { throwError } from '../utils';
+import { connectRequest } from '../request.js';
+import { throwError } from '../utils.js';
 
 export type ValidateType = Record<string, unknown> & {
   id?: string;
@@ -39,7 +39,7 @@ export default class TemplateValidate {
     const response = await connectRequest<ValidateType>(this.connection, {
       method: 'POST',
       url: this.templatesUrl + encodeURIComponent(templateNameOrId) + '/validate',
-      body
+      body,
     });
     if (response) {
       return response;

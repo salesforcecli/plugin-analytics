@@ -5,10 +5,10 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { UX } from '@salesforce/command';
+import { UX } from '@salesforce/sf-plugins-core';
 import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/command/lib/test';
-import { SfdxError } from '@salesforce/core';
+import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
+import { SfError } from '@salesforce/core';
 import { JsonMap } from '@salesforce/ts-types';
 import { AutoInstallRequestType, AutoInstallStatus } from '../../../../src/lib/analytics/autoinstall/autoinstall';
 
@@ -23,7 +23,7 @@ function requestWithStatus(status: AutoInstallStatus): AutoInstallRequestType & 
     requestStatus: status,
     templateApiName: 'abc',
     folderId: '0llxx000000000zCAA',
-    folderLabel: 'abcde'
+    folderLabel: 'abcde',
   };
 }
 
@@ -43,7 +43,7 @@ describe('analytics:autoinstall:app:update', () => {
     .withConnectionRequest(() => Promise.resolve(requestWithStatus('New')))
     .stdout()
     .command(['analytics:autoinstall:app:update', '--async', '-n', 'abc', '-f', '0llxx000000000zCAA'])
-    .it('runs analytics:autoinstall:app:update --async', ctx => {
+    .it('runs analytics:autoinstall:app:update --async', (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('appUpdateRequestSuccess', ['0UZ6g000000E9qNGAS']));
     });
 
@@ -53,7 +53,7 @@ describe('analytics:autoinstall:app:update', () => {
     .stdout()
     // --wait 0 should be the same as --async so this should return right away
     .command(['analytics:autoinstall:app:update', '--wait', '0', '-n', 'abc', '-f', '0llxx000000000zCAA'])
-    .it('runs analytics:autoinstall:app:update --wait 0', ctx => {
+    .it('runs analytics:autoinstall:app:update --wait 0', (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('appUpdateRequestSuccess', ['0UZ6g000000E9qNGAS']));
     });
 
@@ -76,7 +76,7 @@ describe('analytics:autoinstall:app:update', () => {
     .stub(global, 'setTimeout', stubTimeout)
     .stdout()
     .command(['analytics:autoinstall:app:update', '-n', 'abc', '-f', '0llxx000000000zCAA'])
-    .it('runs analytics:autoinstall:app:update with Success status', ctx => {
+    .it('runs analytics:autoinstall:app:update with Success status', (ctx) => {
       expect(ctx.stdout).to.contain(
         messages.getMessage('appUpdateSuccess', ['0llxx000000000zCAA', '0UZ6g000000E9qNGAS'])
       );
@@ -100,7 +100,7 @@ describe('analytics:autoinstall:app:update', () => {
     .stdout()
     .stderr()
     .command(['analytics:autoinstall:app:update', '-n', 'abc', '-f', '0llxx000000000zCAA'])
-    .it('runs analytics:autoinstall:app:update with Failed status', ctx => {
+    .it('runs analytics:autoinstall:app:update with Failed status', (ctx) => {
       expect(ctx.stderr).to.contain(messages.getMessage('appUpdateFailed', ['0UZ6g000000E9qNGAS']));
     });
 
@@ -122,7 +122,7 @@ describe('analytics:autoinstall:app:update', () => {
     .stdout()
     .stderr()
     .command(['analytics:autoinstall:app:update', '-n', 'abc', '-f', '0llxx000000000zCAA'])
-    .it('runs analytics:autoinstall:app:update with Cancelled status', ctx => {
+    .it('runs analytics:autoinstall:app:update with Cancelled status', (ctx) => {
       expect(ctx.stderr).to.contain(messages.getMessage('requestCancelled', ['0UZ6g000000E9qNGAS']));
     });
 
@@ -141,7 +141,7 @@ describe('analytics:autoinstall:app:update', () => {
     .stdout()
     .stderr()
     .command(['analytics:autoinstall:app:update', '-n', 'abc', '-f', '0llxx000000000zCAA', '-w', '.001'])
-    .it('runs analytics:autoinstall:app:update with timeout in polling', ctx => {
+    .it('runs analytics:autoinstall:app:update with timeout in polling', (ctx) => {
       expect(ctx.stderr).to.contain(messages.getMessage('requestPollingTimeout', ['0UZ6g000000E9qNGAS', 'InProgress']));
     });
 
@@ -152,7 +152,7 @@ describe('analytics:autoinstall:app:update', () => {
       if (requestNum === 1) {
         return Promise.resolve(requestWithStatus('New'));
       } else if (requestNum === 3) {
-        return Promise.reject(new SfdxError('expected error in polling'));
+        return Promise.reject(new SfError('expected error in polling'));
       }
       return Promise.resolve(requestWithStatus('InProgress'));
     })
@@ -162,7 +162,7 @@ describe('analytics:autoinstall:app:update', () => {
     .stdout()
     .stderr()
     .command(['analytics:autoinstall:app:update', '-n', 'abc', '-f', '0llxx000000000zCAA'])
-    .it('runs analytics:autoinstall:app:update with error during polling', ctx => {
+    .it('runs analytics:autoinstall:app:update with error during polling', (ctx) => {
       expect(ctx.stderr).to.contain('expected error in polling');
     });
 });

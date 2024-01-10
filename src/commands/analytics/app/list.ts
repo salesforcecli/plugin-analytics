@@ -5,50 +5,63 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { join } from 'path';
-import { flags, SfdxCommand } from '@salesforce/command';
-import { Messages, Org } from '@salesforce/core';
+import { join } from 'node:path';
+import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import { Messages } from '@salesforce/core';
 
-import Folder from '../../../lib/analytics/app/folder';
+import Folder, { type AppStatus } from '../../../lib/analytics/app/folder.js';
 
 Messages.importMessagesDirectory(join(__dirname, '..', '..', '..', '..'));
 const messages = Messages.loadMessages('@salesforce/analytics', 'app');
 
-export default class List extends SfdxCommand {
-  public static description = messages.getMessage('listCommandDescription');
-  public static longDescription = messages.getMessage('listCommandLongDescription');
+export default class List extends SfCommand<
+  Array<{
+    name?: string;
+    label?: string;
+    folderid?: string;
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+    status?: AppStatus | string;
+    templateSourceId?: string;
+    namespace?: string;
+  }>
+> {
+  public static readonly summary = messages.getMessage('listCommandDescription');
+  public static readonly description = messages.getMessage('listCommandLongDescription');
 
-  public static examples = ['$ sfdx analytics:app:list'];
+  public static readonly examples = ['$ sfdx analytics:app:list'];
 
-  protected static flagsConfig = {
-    folderid: flags.string({
+  public static readonly flags = {
+    targetOrg: requiredOrgFlagWithDeprecations,
+    folderid: Flags.string({
       char: 'f',
-      description: messages.getMessage('folderidFlagDescription'),
-      longDescription: messages.getMessage('folderidFlagLongDescription')
-    })
+      summary: messages.getMessage('folderidFlagDescription'),
+      description: messages.getMessage('folderidFlagLongDescription'),
+    }),
   };
 
-  protected static requiresUsername = true;
-  protected static requiresProject = false;
-
-  protected static tableColumnData = ['name', 'label', 'folderid', 'status', 'templateSourceId', 'namespace'];
-
   public async run() {
-    const folderSvc = new Folder(this.org as Org);
-    const folderid = this.flags.folderid as string;
+    const { flags } = await this.parse(List);
+    const folderSvc = new Folder(flags.targetOrg);
+    const folderid = flags.folderid;
     const folders = ((await folderSvc.list()) || [])
-      .filter(folder => !folderid || folder.id === folderid)
-      .map(folder => ({
+      .filter((folder) => !folderid || folder.id === folderid)
+      .map((folder) => ({
         name: folder.name,
         label: folder.label,
         folderid: folder.id,
         status: folder.applicationStatus,
-        templateSourceId: folder.templateSourceId !== null ? folder.templateSourceId : null,
-        namespace: folder.namespace
+        templateSourceId: folder.templateSourceId,
+        namespace: folder.namespace,
       }));
-    if (folders.length > 0) {
-      this.ux.styledHeader(messages.getMessage('appsFound', [folders.length]));
-    }
+    this.styledHeader(messages.getMessage('appsFound', [folders.length]));
+    this.table(folders, {
+      name: { header: 'name' },
+      label: { header: 'label' },
+      folderid: { header: 'folderid' },
+      status: { header: 'status' },
+      templateSourceId: { header: 'templateSourceId' },
+      namespace: { header: 'namespace' },
+    });
     return folders;
   }
 }

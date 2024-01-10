@@ -4,10 +4,10 @@
  * Licensed under the BSD 3-Clause license.
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import { UX } from '@salesforce/command';
 import { Connection, Org } from '@salesforce/core';
-import { connectRequest, fetchAllPages } from '../request';
-import { throwError, waitFor } from '../utils';
+import { Ux } from '@salesforce/sf-plugins-core';
+import { connectRequest, fetchAllPages } from '../request.js';
+import { throwError, waitFor } from '../utils.js';
 
 export type AutoInstallStatus =
   | 'New'
@@ -105,19 +105,19 @@ export default class AutoInstall {
       ux,
       showSpinner = true,
       startMesg,
-      predicate = isFinishedRequest
+      predicate = isFinishedRequest,
     }: {
       timeoutMs: number;
       pauseMs: number;
       timeoutMessage: string | ((r: AutoInstallRequestType | undefined) => string | Error | never);
-      ux?: UX;
+      ux?: Ux;
       showSpinner?: boolean;
       startMesg?: string;
       predicate?: (r: AutoInstallRequestType) => boolean;
     }
   ): Promise<AutoInstallRequestType> {
     if (showSpinner && startMesg) {
-      ux?.startSpinner(startMesg);
+      ux?.spinner.start(startMesg);
     } else if (startMesg) {
       ux?.log(startMesg);
     }
@@ -126,7 +126,7 @@ export default class AutoInstall {
       result = await waitFor(() => this.fetch(autoInstallId), predicate, { pauseMs, timeoutMs, timeoutMessage });
     } finally {
       if (showSpinner && startMesg) {
-        ux?.stopSpinner();
+        ux?.spinner.stop();
       }
     }
     return result;
@@ -135,7 +135,7 @@ export default class AutoInstall {
   public async fetch(autoinstallid: string): Promise<AutoInstallRequestType> {
     const response: AutoInstallRequestType = await connectRequest(this.connection, {
       method: 'GET',
-      url: this.autoInstallUrl + encodeURIComponent(autoinstallid) + '?filterGroup=Supplemental'
+      url: this.autoInstallUrl + encodeURIComponent(autoinstallid) + '?filterGroup=Supplemental',
     });
     if (response) {
       return response;
@@ -161,8 +161,8 @@ export default class AutoInstall {
       requestStatus: enqueue ? enqueuedStatus : newStatus,
       requestType: createType,
       configuration: {
-        appConfiguration
-      }
+        appConfiguration,
+      },
     });
     return this.performPost(body);
   }
@@ -172,7 +172,7 @@ export default class AutoInstall {
       templateApiName,
       folderId,
       requestStatus: enqueuedStatus,
-      requestType: updateType
+      requestType: updateType,
     });
     return this.performPost(body);
   }
@@ -181,7 +181,7 @@ export default class AutoInstall {
     const body = JSON.stringify({
       folderId,
       requestStatus: enqueuedStatus,
-      requestType: deleteType
+      requestType: deleteType,
     });
     return this.performPost(body);
   }
@@ -189,20 +189,20 @@ export default class AutoInstall {
   public enable(): Promise<string | undefined> {
     const body = JSON.stringify({
       requestStatus: enqueuedStatus,
-      requestType: 'WaveEnable'
+      requestType: 'WaveEnable',
     });
     return this.performPost(body);
   }
 
   public async cancel(autoinstallid: string): Promise<string | undefined> {
     const body = JSON.stringify({
-      requestStatus: cancelStatusType
+      requestStatus: cancelStatusType,
     });
 
     const response = await connectRequest<AutoInstallRequestType>(this.connection, {
       method: 'PATCH',
       url: this.autoInstallUrl + encodeURIComponent(autoinstallid),
-      body
+      body,
     });
     if (response) {
       return response.id;
@@ -215,7 +215,7 @@ export default class AutoInstall {
     const response = await connectRequest<AutoInstallRequestType>(this.connection, {
       method: 'POST',
       url: this.autoInstallUrl,
-      body
+      body,
     });
     if (response) {
       return response.id;

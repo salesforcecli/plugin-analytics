@@ -6,7 +6,7 @@
  */
 
 import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/command/lib/test';
+import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
 import { AnyJson, ensureJsonMap, ensureString } from '@salesforce/ts-types';
 
 core.Messages.importMessagesDirectory(__dirname);
@@ -31,7 +31,7 @@ describe('analytics:template:update', () => {
 
   test
     .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
+    .withConnectionRequest((request) => {
       request = ensureJsonMap(request);
       if (request.method === 'GET') {
         return Promise.resolve({ folders: [], templates: [] });
@@ -43,13 +43,13 @@ describe('analytics:template:update', () => {
     })
     .stdout()
     .command(['analytics:template:update', '--templateid', '0Nkxx000000000zCAA'])
-    .it('runs analytics:template:update  --templateid 0Nkxx000000000zCAA ', ctx => {
+    .it('runs analytics:template:update  --templateid 0Nkxx000000000zCAA ', (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('errorNoFolderFound', [templateId]));
     });
 
   test
     .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
+    .withConnectionRequest((request) => {
       request = ensureJsonMap(request);
       if (request.method === 'GET') {
         return Promise.resolve({ folders: [], templates: [] });
@@ -64,7 +64,7 @@ describe('analytics:template:update', () => {
     })
     .stdout()
     .command(['analytics:template:update', '--templateid', '0Nkxx000000000zCAA', '--folderid', '00lxx000000000zCAA'])
-    .it('runs analytics:template:update  --templateid 0Nkxx000000000zCAA --folderid 00lxx000000000zCAA', ctx => {
+    .it('runs analytics:template:update  --templateid 0Nkxx000000000zCAA --folderid 00lxx000000000zCAA', (ctx) => {
       expect(ctx.stdout).to.contain(
         messages.getMessage('updateSuccess', [templateName, templateId, '00lxx000000000zCAA'])
       );
@@ -72,7 +72,7 @@ describe('analytics:template:update', () => {
 
   test
     .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
+    .withConnectionRequest((request) => {
       request = ensureJsonMap(request);
       if (request.method === 'PUT') {
         saveOffRequestBody(ensureString(request.body));
@@ -90,24 +90,24 @@ describe('analytics:template:update', () => {
       '--assetversion',
       '50',
       '--apiversion',
-      '54.0'
+      '54.0',
     ])
     .it(
       'runs analytics:template:update --folderid 00lxx000000000zCAA --templateid 0Nkxx000000000zCAA --assetversion 50 --apiversion 54.0',
-      ctx => {
+      (ctx) => {
         expect(ctx.stdout).to.contain(
           messages.getMessage('updateSuccess', [templateName, templateId, '00lxx000000000zCAA'])
         );
         expect(requestBody, 'requestBody').to.deep.equal({
           folderSource: { id: '00lxx000000000zCAA' },
-          assetVersion: 50
+          assetVersion: 50,
         });
       }
     );
 
   test
     .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
+    .withConnectionRequest((request) => {
       request = ensureJsonMap(request);
       if (request.method === 'GET') {
         return Promise.resolve({ folders: [], templates: [] });
@@ -122,7 +122,7 @@ describe('analytics:template:update', () => {
     })
     .stdout()
     .command(['analytics:template:update', '--templatename', templateName, '--folderid', '00lxx000000000zCAA'])
-    .it('runs analytics:template::update  --templatename myTemplate --folderid 00lxx000000000zCAA', ctx => {
+    .it('runs analytics:template::update  --templatename myTemplate --folderid 00lxx000000000zCAA', (ctx) => {
       expect(ctx.stdout).to.contain(
         messages.getMessage('updateSuccess', [templateName, templateId, '00lxx000000000zCAA'])
       );
@@ -130,7 +130,7 @@ describe('analytics:template:update', () => {
 
   test
     .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
+    .withConnectionRequest((request) => {
       request = ensureJsonMap(request);
       if (request.method === 'GET') {
         return Promise.resolve({ folders: [], templates: [] });
@@ -139,13 +139,13 @@ describe('analytics:template:update', () => {
     })
     .stdout()
     .command(['analytics:template:update', '--templatename', templateName])
-    .it('runs analytics:template::update  --templatename myTemplate', ctx => {
+    .it('runs analytics:template::update  --templatename myTemplate', (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('errorNoFolderFound', [templateName]));
     });
 
   test
     .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
+    .withConnectionRequest((request) => {
       request = ensureJsonMap(request);
       if (request.method === 'PUT') {
         saveOffRequestBody(ensureString(request.body));
@@ -163,90 +163,90 @@ describe('analytics:template:update', () => {
       '-r',
       '05vxx0000004CAeAAM, 05vxx0000004CAeAAM',
       '--apiversion',
-      '55.0'
+      '55.0',
     ])
     .it(
       'runs analytics:template:update --templateid 0Nkxx000000000zCAA --folderid 00lxx000000000zCAA  -r "05vxx0000004CAeAAM, 05vxx0000004CAeAAM" --apiversion 55.0',
-      ctx => {
-        expect(ctx.stdout).to.contain(
-          messages.getMessage('updateSuccess', [templateName, templateId, '00lxx000000000zCAA'])
-        );
-        expect(requestBody, 'requestBody').to.deep.equal({
-          folderSource: { id: '00lxx000000000zCAA' },
-          recipeIds: ['05vxx0000004CAeAAM', '05vxx0000004CAeAAM']
-        });
-      }
-    );
-
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
-      request = ensureJsonMap(request);
-      if (request.method === 'PUT') {
-        saveOffRequestBody(ensureString(request.body));
-        return Promise.resolve({ name: templateName, id: templateId });
-      }
-      return Promise.reject();
-    })
-    .stdout()
-    .command([
-      'analytics:template:update',
-      '--folderid',
-      '00lxx000000000zCAA',
-      '--templateid',
-      '0Nkxx000000000zCAA',
-      '-d',
-      '1dtxxx000000001, 1dtxxx000000002',
-      '--apiversion',
-      '59.0'
-    ])
-    .it(
-      'runs analytics:template:update --templateid 0Nkxx000000000zCAA --folderid 00lxx000000000zCAA  -d "1dtxxx000000001, 1dtxxx000000002" --apiversion 59.0',
-      ctx => {
-        expect(ctx.stdout).to.contain(
-          messages.getMessage('updateSuccess', [templateName, templateId, '00lxx000000000zCAA'])
-        );
-        expect(requestBody, 'requestBody').to.deep.equal({
-          folderSource: { id: '00lxx000000000zCAA' },
-          dataTransformIds: ['1dtxxx000000001', '1dtxxx000000002']
-        });
-      }
-    );
-
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
-      request = ensureJsonMap(request);
-      if (request.method === 'PUT') {
-        saveOffRequestBody(ensureString(request.body));
-        return Promise.resolve({ name: templateName, id: templateId });
-      }
-      return Promise.reject();
-    })
-    .stdout()
-    .command([
-      'analytics:template:update',
-      '--folderid',
-      '00lxx000000000zCAA',
-      '--templateid',
-      '0Nkxx000000000zCAA',
-      '-r',
-      '05vxx0000004CAeAAM, 05vxx0000004CAeAAM',
-      '-d',
-      '1dtxxx000000001, 1dtxxx000000002',
-      '--apiversion',
-      '59.0'
-    ])
-    .it(
-      'runs analytics:template:update --templateid 0Nkxx000000000zCAA --folderid 00lxx000000000zCAA -r "05vxx0000004CAeAAM, 05vxx0000004CAeAAM" -d "1dtxxx000000001, 1dtxxx000000002" --apiversion 59.0',
-      ctx => {
+      (ctx) => {
         expect(ctx.stdout).to.contain(
           messages.getMessage('updateSuccess', [templateName, templateId, '00lxx000000000zCAA'])
         );
         expect(requestBody, 'requestBody').to.deep.equal({
           folderSource: { id: '00lxx000000000zCAA' },
           recipeIds: ['05vxx0000004CAeAAM', '05vxx0000004CAeAAM'],
-          dataTransformIds: ['1dtxxx000000001', '1dtxxx000000002']
+        });
+      }
+    );
+
+  test
+    .withOrg({ username: 'test@org.com' }, true)
+    .withConnectionRequest((request) => {
+      request = ensureJsonMap(request);
+      if (request.method === 'PUT') {
+        saveOffRequestBody(ensureString(request.body));
+        return Promise.resolve({ name: templateName, id: templateId });
+      }
+      return Promise.reject();
+    })
+    .stdout()
+    .command([
+      'analytics:template:update',
+      '--folderid',
+      '00lxx000000000zCAA',
+      '--templateid',
+      '0Nkxx000000000zCAA',
+      '-d',
+      '1dtxxx000000001, 1dtxxx000000002',
+      '--apiversion',
+      '59.0',
+    ])
+    .it(
+      'runs analytics:template:update --templateid 0Nkxx000000000zCAA --folderid 00lxx000000000zCAA  -d "1dtxxx000000001, 1dtxxx000000002" --apiversion 59.0',
+      (ctx) => {
+        expect(ctx.stdout).to.contain(
+          messages.getMessage('updateSuccess', [templateName, templateId, '00lxx000000000zCAA'])
+        );
+        expect(requestBody, 'requestBody').to.deep.equal({
+          folderSource: { id: '00lxx000000000zCAA' },
+          dataTransformIds: ['1dtxxx000000001', '1dtxxx000000002'],
+        });
+      }
+    );
+
+  test
+    .withOrg({ username: 'test@org.com' }, true)
+    .withConnectionRequest((request) => {
+      request = ensureJsonMap(request);
+      if (request.method === 'PUT') {
+        saveOffRequestBody(ensureString(request.body));
+        return Promise.resolve({ name: templateName, id: templateId });
+      }
+      return Promise.reject();
+    })
+    .stdout()
+    .command([
+      'analytics:template:update',
+      '--folderid',
+      '00lxx000000000zCAA',
+      '--templateid',
+      '0Nkxx000000000zCAA',
+      '-r',
+      '05vxx0000004CAeAAM, 05vxx0000004CAeAAM',
+      '-d',
+      '1dtxxx000000001, 1dtxxx000000002',
+      '--apiversion',
+      '59.0',
+    ])
+    .it(
+      'runs analytics:template:update --templateid 0Nkxx000000000zCAA --folderid 00lxx000000000zCAA -r "05vxx0000004CAeAAM, 05vxx0000004CAeAAM" -d "1dtxxx000000001, 1dtxxx000000002" --apiversion 59.0',
+      (ctx) => {
+        expect(ctx.stdout).to.contain(
+          messages.getMessage('updateSuccess', [templateName, templateId, '00lxx000000000zCAA'])
+        );
+        expect(requestBody, 'requestBody').to.deep.equal({
+          folderSource: { id: '00lxx000000000zCAA' },
+          recipeIds: ['05vxx0000004CAeAAM', '05vxx0000004CAeAAM'],
+          dataTransformIds: ['1dtxxx000000001', '1dtxxx000000002'],
         });
       }
     );

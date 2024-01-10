@@ -5,39 +5,38 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { flags, SfdxCommand } from '@salesforce/command';
-import { Messages, Org } from '@salesforce/core';
+import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import { Messages } from '@salesforce/core';
 
-import Dataflow from '../../../../lib/analytics/dataflow/dataflow';
+import Dataflow, { type DataflowJobType } from '../../../../lib/analytics/dataflow/dataflow.js';
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.loadMessages('@salesforce/analytics', 'dataflow');
 
-export default class Stop extends SfdxCommand {
-  public static description = messages.getMessage('stopCommandDescription');
-  public static longDescription = messages.getMessage('stopCommandLongDescription');
+export default class Stop extends SfCommand<DataflowJobType> {
+  public static readonly summary = messages.getMessage('stopCommandDescription');
+  public static readonly description = messages.getMessage('stopCommandLongDescription');
 
-  public static examples = ['$ sfdx analytics:dataflow:job:stop --dataflowjobid <dataflowjobid>'];
+  public static readonly examples = ['$ sfdx analytics:dataflow:job:stop --dataflowjobid <dataflowjobid>'];
 
-  protected static flagsConfig = {
-    dataflowjobid: flags.id({
+  public static readonly flags = {
+    targetOrg: requiredOrgFlagWithDeprecations,
+    dataflowjobid: Flags.salesforceId({
       char: 'i',
       required: true,
-      description: messages.getMessage('dataflowjobIdFlagDescription'),
-      longDescription: messages.getMessage('dataflowjobIdFlagLongDescription')
-    })
+      summary: messages.getMessage('dataflowjobIdFlagDescription'),
+      description: messages.getMessage('dataflowjobIdFlagLongDescription'),
+    }),
   };
 
-  protected static requiresUsername = true;
-  protected static requiresProject = false;
-
   public async run() {
-    const dataflowjobId = this.flags.dataflowjobid as string;
-    const dataflow = new Dataflow(this.org as Org);
+    const { flags } = await this.parse(Stop);
+    const dataflowjobId = flags.dataflowjobid;
+    const dataflow = new Dataflow(flags.targetOrg);
 
     const dataflowJob = await dataflow.stopDataflowJob(dataflowjobId);
     const message = messages.getMessage('dataflowJobUpdate', [dataflowjobId, dataflowJob.status]);
-    this.ux.log(message);
+    this.log(message);
     return dataflowJob;
   }
 }

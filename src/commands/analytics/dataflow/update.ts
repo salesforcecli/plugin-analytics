@@ -4,55 +4,54 @@
  * Licensed under the BSD 3-Clause license.
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import { promises as fs } from 'fs';
-import { flags, SfdxCommand } from '@salesforce/command';
-import { Messages, Org, SfdxError } from '@salesforce/core';
-import Dataflow from '../../../lib/analytics/dataflow/dataflow';
+import { promises as fs } from 'node:fs';
+import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import { Messages, SfError } from '@salesforce/core';
+import Dataflow, { type DataflowType } from '../../../lib/analytics/dataflow/dataflow.js';
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.loadMessages('@salesforce/analytics', 'dataflow');
 
-export default class Update extends SfdxCommand {
-  public static description = messages.getMessage('updateCommandDescription');
-  public static longDescription = messages.getMessage('updateCommandLongDescription');
+export default class Update extends SfCommand<DataflowType> {
+  public static readonly summary = messages.getMessage('updateCommandDescription');
+  public static readonly description = messages.getMessage('updateCommandLongDescription');
 
-  public static examples = [
-    '$ sfdx analytics:dataflow:update --dataflowid <dataflowid> --dataflowfile dataflow-file.json'
+  public static readonly examples = [
+    '$ sfdx analytics:dataflow:update --dataflowid <dataflowid> --dataflowfile dataflow-file.json',
   ];
 
-  protected static flagsConfig = {
-    dataflowid: flags.id({
+  public static readonly flags = {
+    targetOrg: requiredOrgFlagWithDeprecations,
+    dataflowid: Flags.salesforceId({
       char: 'i',
       required: true,
-      description: messages.getMessage('dataflowidFlagDescription'),
-      longDescription: messages.getMessage('dataflowidFlagLongDescription')
+      summary: messages.getMessage('dataflowidFlagDescription'),
+      description: messages.getMessage('dataflowidFlagLongDescription'),
     }),
-    dataflowfile: flags.filepath({
+    dataflowfile: Flags.file({
       char: 'f',
-      description: messages.getMessage('dataflowFileFlagDescription'),
-      longDescription: messages.getMessage('dataflowFileFlagLongDescription')
+      summary: messages.getMessage('dataflowFileFlagDescription'),
+      description: messages.getMessage('dataflowFileFlagLongDescription'),
     }),
-    dataflowstr: flags.string({
+    dataflowstr: Flags.string({
       char: 's',
-      description: messages.getMessage('dataflowJsonFlagDescription'),
-      longDescription: messages.getMessage('dataflowJsonFlagLongDescription')
-    })
+      summary: messages.getMessage('dataflowJsonFlagDescription'),
+      description: messages.getMessage('dataflowJsonFlagLongDescription'),
+    }),
   };
 
-  protected static requiresUsername = true;
-  protected static requiresProject = false;
-
   public async run() {
-    const dataflowId = this.flags.dataflowid as string;
-    const dataflow = new Dataflow(this.org as Org);
+    const { flags } = await this.parse(Update);
+    const dataflowId = flags.dataflowid;
+    const dataflow = new Dataflow(flags.targetOrg);
 
     let json: unknown;
-    if (this.flags.dataflowfile) {
-      const path = String(this.flags.dataflowfile);
+    if (flags.dataflowfile) {
+      const path = String(flags.dataflowfile);
       try {
         json = JSON.parse(await fs.readFile(path, 'utf8'));
       } catch (e) {
-        throw new SfdxError(
+        throw new SfError(
           `Error parsing ${path}`,
           undefined,
           undefined,
@@ -60,14 +59,14 @@ export default class Update extends SfdxCommand {
           e instanceof Error ? e : new Error(e ? String(e) : '<unknown>')
         );
       }
-    } else if (this.flags.dataflowstr) {
-      json = JSON.parse(String(this.flags.dataflowstr));
+    } else if (flags.dataflowstr) {
+      json = JSON.parse(String(flags.dataflowstr));
     } else {
-      throw new SfdxError(messages.getMessage('missingRequiredField'));
+      throw new SfError(messages.getMessage('missingRequiredField'));
     }
     const dataflowResponse = await dataflow.updateDataflow(dataflowId, json);
     const message = messages.getMessage('updateDataflow', [dataflowResponse.name, dataflowId]);
-    this.ux.log(message);
+    this.log(message);
     return dataflowResponse;
   }
 }

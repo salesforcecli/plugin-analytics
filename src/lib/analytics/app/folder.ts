@@ -6,8 +6,8 @@
  */
 
 import { Connection, Org } from '@salesforce/core';
-import { connectRequest, fetchAllPages } from '../request';
-import { throwError } from '../utils';
+import { connectRequest, fetchAllPages } from '../request.js';
+import { throwError } from '../utils.js';
 
 export type AppStatus =
   | 'newstatus'
@@ -20,6 +20,7 @@ export type AppStatus =
 export type AppFolder = Record<string, unknown> & {
   id: string;
   name?: string;
+  namespace?: string;
   label?: string;
   applicationStatus?: AppStatus;
   appLog?: Array<{ message?: string }>;
@@ -61,7 +62,7 @@ export default class Folder {
   public async fetch(folderid: string, includeLog = false): Promise<AppFolder> {
     const response = await connectRequest<AppFolder>(this.connection, {
       method: 'GET',
-      url: this.foldersUrl + encodeURIComponent(folderid) + (includeLog ? '?filterGroup=Supplemental' : '')
+      url: this.foldersUrl + encodeURIComponent(folderid) + (includeLog ? '?filterGroup=Supplemental' : ''),
     });
     if (response) {
       return response;
@@ -81,7 +82,7 @@ export default class Folder {
     const response = await connectRequest<AppFolder>(this.connection, {
       method: 'POST',
       url: this.foldersUrl,
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
     });
     if (response) {
       return response.id;
@@ -97,15 +98,15 @@ export default class Folder {
         templateSourceId: templateid,
         templateOptions: {
           appAction: 'Upgrade',
-          dynamicOptions: { productionType: 'ATF_3_0', runtimeLogEntryLevel: 'Warning' }
-        }
+          dynamicOptions: { productionType: 'ATF_3_0', runtimeLogEntryLevel: 'Warning' },
+        },
       });
     }
     const wtUrl = this.foldersUrl + encodeURIComponent(folderid);
     const response = await connectRequest<AppFolder>(this.connection, {
       method: 'PUT',
       url: wtUrl,
-      body
+      body,
     });
 
     if (response) {
@@ -118,13 +119,13 @@ export default class Folder {
   public async decouple(folderid: string, templateid: string): Promise<string | undefined> {
     const body = JSON.stringify({
       templateSourceId: templateid,
-      templateOptions: { appAction: 'DecoupleApp' }
+      templateOptions: { appAction: 'DecoupleApp' },
     });
     const wtUrl = this.foldersUrl + encodeURIComponent(folderid);
     const response = await connectRequest<AppFolder>(this.connection, {
       method: 'PUT',
       url: wtUrl,
-      body
+      body,
     });
 
     if (response) {
@@ -142,7 +143,7 @@ export default class Folder {
     const folderUrl = this.foldersUrl + folderid;
     await connectRequest(this.connection, {
       method: 'DELETE',
-      url: folderUrl
+      url: folderUrl,
     });
   }
 }

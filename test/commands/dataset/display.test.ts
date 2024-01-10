@@ -6,7 +6,7 @@
  */
 
 import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/command/lib/test';
+import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
 
 core.Messages.importMessagesDirectory(__dirname);
 const messages = core.Messages.loadMessages('@salesforce/analytics', 'dataset');
@@ -15,7 +15,7 @@ const datasetJson = {
   createdBy: {
     id: '005xx000001XCD7AAO',
     name: 'User User',
-    profilePhotoUrl: '/profilephoto/005/T'
+    profilePhotoUrl: '/profilephoto/005/T',
   },
   createdDate: '2021-01-20T20:07:19.000Z',
   currentVersionId: '0Fcxx0000004CsCCAU',
@@ -24,7 +24,7 @@ const datasetJson = {
   datasetType: 'default',
   folder: {
     id: '005xx000001XCD7AAO',
-    label: 'User User'
+    label: 'User User',
   },
   id: '0Fbxx0000004CyeCAE',
   label: 'ABCWidgetSales2017',
@@ -32,7 +32,7 @@ const datasetJson = {
   lastModifiedBy: {
     id: '005xx000001XCGLAA4',
     name: 'Integration User',
-    profilePhotoUrl: '/profilephoto/005/T'
+    profilePhotoUrl: '/profilephoto/005/T',
   },
   lastModifiedDate: '2021-01-20T20:08:34.000Z',
   lastQueriedDate: '2021-03-06T03:18:57.000Z',
@@ -41,11 +41,11 @@ const datasetJson = {
     create: true,
     manage: true,
     modify: true,
-    view: true
+    view: true,
   },
   type: 'dataset',
   url: '/services/data/v52.0/wave/datasets/0Fbxx0000004CyeCAE',
-  userXmd: {}
+  userXmd: {},
 };
 
 const liveDatasetJson = {
@@ -53,7 +53,7 @@ const liveDatasetJson = {
   createdBy: {
     id: '005R0000000t2B1IAI',
     name: 'Admin User',
-    profilePhotoUrl: 'https://karilwctesting-dev-ed--c.stmpa.stm.documentforce.com/profilephoto/005/T'
+    profilePhotoUrl: 'https://karilwctesting-dev-ed--c.stmpa.stm.documentforce.com/profilephoto/005/T',
   },
   createdDate: '2021-04-20T21:36:54.000Z',
   currentVersionId: '0FcR0000000M6qRKAS',
@@ -64,7 +64,7 @@ const liveDatasetJson = {
     id: '00lR0000000V3a0IAC',
     label: 'LWC Testing',
     name: 'LWC_Testing',
-    url: '/services/data/v53.0/wave/folders/00lR0000000V3a0IAC'
+    url: '/services/data/v53.0/wave/folders/00lR0000000V3a0IAC',
   },
   id: '0FbR000000056n1KAA',
   label: 'AIRLINE_DELAYS',
@@ -72,14 +72,14 @@ const liveDatasetJson = {
   lastModifiedBy: {
     id: '005R0000000t2B1IAI',
     name: 'Admin User',
-    profilePhotoUrl: 'https://karilwctesting-dev-ed--c.stmpa.stm.documentforce.com/profilephoto/005/T'
+    profilePhotoUrl: 'https://karilwctesting-dev-ed--c.stmpa.stm.documentforce.com/profilephoto/005/T',
   },
   lastModifiedDate: '2021-04-20T21:36:54.000Z',
   liveConnection: {
     connectionLabel: 'SnowflakeOne',
     connectionName: 'SnowflakeOne',
     connectionType: 'SnowflakeDirect',
-    sourceObjectName: 'AIRLINE_DELAYS'
+    sourceObjectName: 'AIRLINE_DELAYS',
   },
   name: 'AIRLINE_DELAYS',
   namespace: 'SomeNamespace',
@@ -87,12 +87,12 @@ const liveDatasetJson = {
     create: true,
     manage: true,
     modify: true,
-    view: true
+    view: true,
   },
   type: 'dataset',
   url: '/services/data/v53.0/wave/datasets/0FbR000000056n1KAA',
   versionsUrl: '/services/data/v53.0/wave/datasets/0FbR000000056n1KAA/versions',
-  visibility: 'All'
+  visibility: 'All',
 };
 
 describe('analytics:dataset:display', () => {
@@ -101,7 +101,7 @@ describe('analytics:dataset:display', () => {
     .withConnectionRequest(() => Promise.resolve(datasetJson))
     .stdout()
     .command(['analytics:dataset:display', '--datasetid', datasetJson.id])
-    .it(`runs analytics:dataset:display --datasetid ${datasetJson.id}`, ctx => {
+    .it(`runs analytics:dataset:display --datasetid ${datasetJson.id}`, (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('displayDetailHeader'));
       expect(ctx.stdout).to.contain(datasetJson.id);
       expect(ctx.stdout).to.contain(datasetJson.name);
@@ -117,7 +117,7 @@ describe('analytics:dataset:display', () => {
     .withConnectionRequest(() => Promise.resolve(datasetJson))
     .stdout()
     .command(['analytics:dataset:display', '--datasetname', datasetJson.name])
-    .it(`runs analytics:dataset:display --datasetname ${datasetJson.name}`, ctx => {
+    .it(`runs analytics:dataset:display --datasetname ${datasetJson.name}`, (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('displayDetailHeader'));
       expect(ctx.stdout).to.contain(datasetJson.id);
       expect(ctx.stdout).to.contain(datasetJson.name);
@@ -132,7 +132,7 @@ describe('analytics:dataset:display', () => {
     .withConnectionRequest(() => Promise.resolve(liveDatasetJson))
     .stdout()
     .command(['analytics:dataset:display', '-n', liveDatasetJson.name])
-    .it(`runs analytics:dataset:display -n ${liveDatasetJson.name} (live dataset)`, ctx => {
+    .it(`runs analytics:dataset:display -n ${liveDatasetJson.name} (live dataset)`, (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('displayDetailHeader'));
       expect(ctx.stdout).to.match(new RegExp(`^Id\\s+${liveDatasetJson.id}$`, 'm'));
       expect(ctx.stdout).to.match(new RegExp(`^Namespace\\s+${liveDatasetJson.namespace}$`, 'm'));
@@ -163,7 +163,7 @@ describe('analytics:dataset:display', () => {
     .withConnectionRequest(() => Promise.reject(new Error('Should not have been called')))
     .stderr()
     .command(['analytics:dataset:display'])
-    .it('runs analytics:dataset:display', ctx => {
+    .it('runs analytics:dataset:display', (ctx) => {
       expect(ctx.stderr).to.contain(messages.getMessage('missingRequiredField'));
     });
 });

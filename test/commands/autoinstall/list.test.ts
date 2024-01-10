@@ -6,7 +6,7 @@
  */
 
 import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/command/lib/test';
+import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
 core.Messages.importMessagesDirectory(__dirname);
 const messages = core.Messages.loadMessages('@salesforce/analytics', 'autoinstall');
 
@@ -18,8 +18,8 @@ const autoinstallValues = [
     requestStatus: 'Success',
     templateApiName: 'abc',
     folderId: '0llxx000000000zCAA',
-    folderLabel: 'abcde'
-  }
+    folderLabel: 'abcde',
+  },
 ];
 
 describe('analytics:autoinstall:list', () => {
@@ -30,7 +30,7 @@ describe('analytics:autoinstall:list', () => {
     })
     .stdout()
     .command(['analytics:autoinstall:list'])
-    .it('runs analytics:autoinstall:list', ctx => {
+    .it('runs analytics:autoinstall:list', (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('autoinstallsFound', [1]));
     });
 
@@ -41,7 +41,7 @@ describe('analytics:autoinstall:list', () => {
     })
     .stdout()
     .command(['analytics:autoinstall:list'])
-    .it('runs analytics:autoinstall:list', ctx => {
+    .it('runs analytics:autoinstall:list', (ctx) => {
       expect(ctx.stdout).to.contain('No results found.');
     });
 });

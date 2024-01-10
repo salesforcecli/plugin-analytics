@@ -5,32 +5,33 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { flags, UX } from '@salesforce/command';
-import { Connection, Messages, SfdxError } from '@salesforce/core';
-import DatasetSvc, { DatasetType } from '../dataset/dataset';
-import { connectRequest } from '../request';
+import { Flags, Ux } from '@salesforce/sf-plugins-core';
+import { Connection, Messages, SfError } from '@salesforce/core';
+import { type AnyJson } from '@salesforce/ts-types';
+import DatasetSvc, { DatasetType } from '../dataset/dataset.js';
+import { connectRequest } from '../request.js';
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.loadMessages('@salesforce/analytics', 'query');
 
-export const LIMIT_FLAG = flags.number({
-  description: messages.getMessage('limitDescription'),
-  longDescription: messages.getMessage('limitLongDescription'),
-  min: 0
+export const LIMIT_FLAG = Flags.integer({
+  summary: messages.getMessage('limitDescription'),
+  description: messages.getMessage('limitLongDescription'),
+  min: 0,
 });
 
-export const RESULT_FORMAT_FLAG = flags.enum({
+export const RESULT_FORMAT_FLAG = Flags.string({
   char: 'r',
-  description: messages.getMessage('resultformatDescription'),
-  longDescription: messages.getMessage('resultformatLongDescription'),
-  options: ['human', 'csv', 'json'],
-  default: 'human'
+  summary: messages.getMessage('resultformatDescription'),
+  description: messages.getMessage('resultformatLongDescription'),
+  options: ['human', 'csv', 'json'] as const,
+  default: 'human',
 });
 
-export const DRYRUN_FLAG = flags.boolean({
+export const DRYRUN_FLAG = Flags.boolean({
   hidden: true,
   description: "Show the resulting query that would be executed, but don't run it",
-  default: false
+  default: false,
 });
 
 export type QueryLanguage = 'Saql' | 'Sql';
@@ -62,6 +63,7 @@ export type QueryResponse =
 
 export type SaqlMetadata = ExtraProps & {
   lineage: SaqlLineageNode;
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   queryLanguage?: 'SAQL' | string;
 };
 
@@ -114,11 +116,13 @@ export type SaqlUnionNode = ExtraProps & {
 
 export type SqlMetadata = ExtraProps & {
   columns: Array<ExtraProps & { columnLabel: string; columnType: string }>;
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   queryLanguage?: 'SQL' | string;
 };
 
 export type SqlLiveMetadata = ExtraProps & {
   columns: Array<ExtraProps & { label: string; type: string }>;
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   queryLanguage?: 'SQL' | string;
 };
 
@@ -143,12 +147,12 @@ export default class QuerySvc {
     const response = await connectRequest(this.connection, {
       method: 'POST',
       url: this.queryUrl,
-      body: JSON.stringify(query)
+      body: JSON.stringify(query),
     });
     if (response) {
       return response as QueryResponse;
     } else {
-      throw new SfdxError('Empty http response');
+      throw new SfError('Empty http response');
     }
   }
 
@@ -157,12 +161,12 @@ export default class QuerySvc {
     const response = await connectRequest(this.connection, {
       method: 'POST',
       url: `${this.connection.baseUrl()}/wave/dataConnectors/${encodeURIComponent(query.connectorIdOrApiName)}/query`,
-      body: JSON.stringify({ query: query.query })
+      body: JSON.stringify({ query: query.query }),
     });
     if (response) {
       return response as QueryResponse;
     } else {
-      throw new SfdxError('Empty http response');
+      throw new SfError('Empty http response');
     }
   }
 
@@ -171,22 +175,23 @@ export default class QuerySvc {
    */
   public async mapDatasetNames(query: string): Promise<string> {
     const dsSvc = new DatasetSvc(this.connection);
-    return mapDatasetNames(query, async name => {
+    return mapDatasetNames(query, async (name) => {
       let dataset: DatasetType;
       try {
         dataset = await dsSvc.fetch(name);
       } catch (error) {
         const msg = error instanceof Error ? error.message : String(error);
-        throw new SfdxError(`Unable to fetch dataset ${name}: ${msg}`);
+        throw new SfError(`Unable to fetch dataset ${name}: ${msg}`);
       }
       if (!dataset.currentVersionId) {
-        throw new SfdxError(`Dataset ${name} (${dataset.id}) does not have a current version id`);
+        throw new SfError(`Dataset ${name} (${dataset.id}) does not have a current version id`);
       }
 
       return `${dataset.id}/${dataset.currentVersionId}`;
     });
   }
 
+  // eslint-disable-next-line class-methods-use-this
   public computeColumnNames(response: QueryResponse): string[] {
     return computeColumnNames(response);
   }
@@ -194,30 +199,30 @@ export default class QuerySvc {
   /** Run a query-ish sfdx command and possibly do some output
    *
    * @param query the query request
-   * @param ux the command UX, or undefined to do no output
+   * @param ux the command Ux, or undefined to do no output
    * @param limit the max number of rows to output and return (undefined for all)
    * @param resultforamt 'json', 'csv', or anything else for an sfdx table
    * @return the query response
    */
   public async runQueryCommand(
     query: QueryRequest,
-    params: { ux?: UX; limit?: number; resultformat?: string; dryrun?: false }
+    params: { ux?: Ux; limit?: number; resultformat?: string; dryrun?: false }
   ): Promise<QueryResponse>;
   public async runQueryCommand(
     query: QueryRequest,
-    params: { ux?: UX; limit?: number; resultformat?: string; dryrun: true }
+    params: { ux?: Ux; limit?: number; resultformat?: string; dryrun: true }
   ): Promise<undefined>;
   public async runQueryCommand(
     query: QueryRequest,
-    { ux, limit, resultformat, dryrun }: { ux?: UX; limit?: number; resultformat?: string; dryrun: boolean }
+    { ux, limit, resultformat, dryrun }: { ux?: Ux; limit?: number; resultformat?: string; dryrun: boolean }
   ): Promise<QueryResponse | undefined>;
   public async runQueryCommand(
     query: QueryRequest,
-    { ux, limit, resultformat, dryrun = false }: { ux?: UX; limit?: number; resultformat?: string; dryrun?: boolean }
+    { ux, limit, resultformat, dryrun = false }: { ux?: Ux; limit?: number; resultformat?: string; dryrun?: boolean }
   ): Promise<QueryResponse | undefined> {
     if (dryrun) {
       ux?.log(messages.getMessage('dryrunHeader'));
-      ux?.logJson(query);
+      ux?.styledJSON(query);
       return undefined;
     }
     return this.processQueryCommandResponse(await this.execute(query), { ux, limit, resultformat });
@@ -226,26 +231,26 @@ export default class QuerySvc {
   /** Run an external query-ish sfdx command and possibly do some output
    *
    * @param query the query request
-   * @param ux the command UX, or undefined to do no output
+   * @param ux the command Ux, or undefined to do no output
    * @param limit the max number of rows to output and return (undefined for all)
    * @param resultforamt 'json', 'csv', or anything else for an sfdx table
    * @return the query response
    */
   public async runExternalQueryCommand(
     query: ExternalQueryRequest,
-    params: { ux?: UX; limit?: number; resultformat?: string; dryrun?: false }
+    params: { ux?: Ux; limit?: number; resultformat?: string; dryrun?: false }
   ): Promise<QueryResponse>;
   public async runExternalQueryCommand(
     query: ExternalQueryRequest,
-    params: { ux?: UX; limit?: number; resultformat?: string; dryrun: true }
+    params: { ux?: Ux; limit?: number; resultformat?: string; dryrun: true }
   ): Promise<undefined>;
   public async runExternalQueryCommand(
     query: ExternalQueryRequest,
-    { ux, limit, resultformat, dryrun }: { ux?: UX; limit?: number; resultformat?: string; dryrun: boolean }
+    { ux, limit, resultformat, dryrun }: { ux?: Ux; limit?: number; resultformat?: string; dryrun: boolean }
   ): Promise<QueryResponse | undefined>;
   public async runExternalQueryCommand(
     query: ExternalQueryRequest,
-    { ux, limit, resultformat, dryrun = false }: { ux?: UX; limit?: number; resultformat?: string; dryrun?: boolean }
+    { ux, limit, resultformat, dryrun = false }: { ux?: Ux; limit?: number; resultformat?: string; dryrun?: boolean }
   ): Promise<QueryResponse | undefined> {
     if (dryrun) {
       ux?.log(messages.getMessage('dryrunHeader'));
@@ -258,14 +263,14 @@ export default class QuerySvc {
   /** Process a query response, possibly doing some output.
    *
    * @param query the query request
-   * @param ux the command UX, or undefined to do no output
+   * @param ux the command Ux, or undefined to do no output
    * @param limit the max number of rows to output and return (undefined for all)
    * @param resultforamt 'json', 'csv', or anything else for an sfdx table
    * @return the query response
    */
   private processQueryCommandResponse(
     response: QueryResponse,
-    { ux, limit, resultformat }: { ux?: UX; limit?: number; resultformat?: string }
+    { ux, limit, resultformat }: { ux?: Ux; limit?: number; resultformat?: string }
   ): QueryResponse {
     const results = getQueryResults(response);
     const records = results && Array.isArray(results?.records) ? results.records : [];
@@ -275,31 +280,27 @@ export default class QuerySvc {
 
     if (ux) {
       if (resultformat === 'json') {
-        ux.logJson(response);
+        ux.styledJSON(response as AnyJson);
       } else {
         const columnNames = this.computeColumnNames(response);
         if (resultformat === 'csv') {
           writeCsvLine(ux, columnNames);
-          records.forEach(record => {
-            const values = columnNames.map(columnName => record[columnName]);
+          records.forEach((record) => {
+            const values = columnNames.map((columnName) => record[columnName]);
             writeCsvLine(ux, values);
           });
-        } else {
+        } else if (columnNames.length <= 0) {
           // resultformat === 'human', do a table
-          if (columnNames.length <= 0) {
-            ux.log(messages.getMessage('noResultsMesg'));
-          } else {
-            ux.table(records, {
-              columns: columnNames.map(name => {
-                return {
-                  key: name,
-                  label: name,
-                  format: convertRowValue
-                };
-              })
-            });
-            ux.styledHeader(messages.getMessage('rowsFound', [records.length]));
-          }
+          ux.log(messages.getMessage('noResultsMesg'));
+        } else {
+          ux.table(
+            records,
+            columnNames.reduce<Ux.Table.Columns<Row>>((all, name) => {
+              all[name] = { header: name, get: () => convertRowValue(name) };
+              return all;
+            }, {})
+          );
+          ux.styledHeader(messages.getMessage('rowsFound', [records.length]));
         }
       }
     }
@@ -311,7 +312,7 @@ export function convertRowValue(value: unknown): string {
   return Array.isArray(value) ? '[' + value.join(',') + ']' : typeof value === 'string' ? value : String(value);
 }
 
-function writeCsvLine(ux: UX, values: unknown[], delim = ','): void {
+function writeCsvLine(ux: Ux, values: unknown[], delim = ','): void {
   let line = '';
   for (let i = 0; i < values.length; i++) {
     if (i !== 0) {
@@ -319,7 +320,7 @@ function writeCsvLine(ux: UX, values: unknown[], delim = ','): void {
     }
     if (values[i]) {
       const value = convertRowValue(values[i]).replace(/"/g, '""');
-      if (value.indexOf(delim) >= 0 || value.indexOf('\n') >= 0) {
+      if (value.includes(delim) || value.includes('\n')) {
         line += `"${value}"`;
       } else {
         line += value;
@@ -342,13 +343,14 @@ export async function mapDatasetNames(query: string, nameToRef: (name: string) =
   for (let i = 0, len = lines.length; i < len; i++) {
     // see if it's a '... load "DatasetName"'
     const matches = LOAD_RE.exec(lines[i]);
-    if (!matches || !matches[2]) {
+    if (!matches?.[2]) {
       continue;
     }
     // pull the dataset name from that
     const name = matches[2];
     // if it's not already of the "id/versionid" form, fetch the dataset and string sub
-    if (name.indexOf('/') < 0) {
+    if (!name.includes('/')) {
+      // eslint-disable-next-line no-await-in-loop
       const ref = await nameToRef(name);
       lines[i] = lines[i].replace(matches[0], `load${matches[1]}"${ref}"`);
     }

@@ -6,7 +6,7 @@
  */
 
 import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/command/lib/test';
+import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
 
 core.Messages.importMessagesDirectory(__dirname);
 // const messages = core.Messages.loadMessages('@salesforce/analytics', 'validate');
@@ -17,9 +17,9 @@ const templateValues = {
     {
       label: 'TemplateAssociationTask',
       message: 'Certification for sfdc_internal__Sales_Analytics_Flex template.',
-      readinessStatus: 'Complete'
-    }
-  ]
+      readinessStatus: 'Complete',
+    },
+  ],
 };
 describe('analytics:template:validate', () => {
   test
@@ -27,7 +27,7 @@ describe('analytics:template:validate', () => {
     .withConnectionRequest(() => Promise.resolve({ result: templateValues }))
     .stdout()
     .command(['analytics:template:validate', '--templateid', ID])
-    .it(`runs analytics:template:validate --templateid ${ID}`, ctx => {
+    .it(`runs analytics:template:validate --templateid ${ID}`, (ctx) => {
       expect(ctx.stdout).to.contain('Command only available in api version 58.0 or later');
     });
 });
@@ -38,9 +38,9 @@ const templateWithFailedReadiness = {
     {
       label: 'EvaluateTemplateRequirement',
       message: "Expected number of accounts don't match. Expected: 100, Actual: 0",
-      readinessStatus: 'Failed'
-    }
-  ]
+      readinessStatus: 'Failed',
+    },
+  ],
 };
 describe('analytics:template:validate failure', () => {
   const exitCode = process.exitCode;

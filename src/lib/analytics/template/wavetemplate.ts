@@ -5,8 +5,8 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import { Connection, Org } from '@salesforce/core';
-import { connectRequest, fetchAllPages } from '../request';
-import { throwError } from '../utils';
+import { connectRequest, fetchAllPages } from '../request.js';
+import { throwError } from '../utils.js';
 
 export type TemplateType = Record<string, unknown> & {
   id?: string;
@@ -40,7 +40,7 @@ export default class WaveTemplate {
   public async fetch(templateNameOrId: string, viewOnly = true): Promise<TemplateType> {
     const response = await connectRequest<TemplateType>(this.connection, {
       method: 'GET',
-      url: this.templatesUrl + encodeURIComponent(templateNameOrId) + (viewOnly ? '?options=ViewOnly' : '')
+      url: this.templatesUrl + encodeURIComponent(templateNameOrId) + (viewOnly ? '?options=ViewOnly' : ''),
     });
     if (response) {
       return response;
@@ -55,7 +55,7 @@ export default class WaveTemplate {
       label,
       description,
       recipeIds,
-      datatransformIds
+      datatransformIds,
     }: { label?: string; description?: string; recipeIds?: string[]; datatransformIds?: string[] } = {}
   ): Promise<string | undefined> {
     const opts: Record<string, unknown> = { folderSource: { id: folderid }, label, description, recipeIds };
@@ -67,7 +67,7 @@ export default class WaveTemplate {
     const response = await connectRequest<TemplateType>(this.connection, {
       method: 'POST',
       url: this.templatesUrl,
-      body
+      body,
     });
     if (response) {
       return response.id;
@@ -79,8 +79,11 @@ export default class WaveTemplate {
   public async update(
     folderid: string,
     templateIdOrName: string,
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     templateAssetVersion: number | unknown,
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     recipeIds: string[] | unknown,
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     datatransformIds: string[] | unknown
   ): Promise<{ id: string | undefined; name: string | undefined } | undefined> {
     const opts: Record<string, unknown> = { folderSource: { id: folderid } };
@@ -99,7 +102,7 @@ export default class WaveTemplate {
     const response = await connectRequest<TemplateType>(this.connection, {
       method: 'PUT',
       url: wtUrl,
-      body
+      body,
     });
 
     if (response) {
@@ -123,7 +126,7 @@ export default class WaveTemplate {
   public deleteTemplate(templateid: string): Promise<void> {
     return connectRequest(this.connection, {
       method: 'DELETE',
-      url: this.templatesUrl + encodeURIComponent(templateid)
+      url: this.templatesUrl + encodeURIComponent(templateid),
     });
   }
 }

@@ -5,39 +5,44 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { SfdxCommand } from '@salesforce/command';
-import { Messages, Org } from '@salesforce/core';
+import { SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import { Messages } from '@salesforce/core';
 
-import Dataflow from '../../../lib/analytics/dataflow/dataflow';
+import Dataflow from '../../../lib/analytics/dataflow/dataflow.js';
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.loadMessages('@salesforce/analytics', 'dataflow');
 
-export default class List extends SfdxCommand {
-  public static description = messages.getMessage('listCommandDescription');
-  public static longDescription = messages.getMessage('listCommandLongDescription');
+export default class List extends SfCommand<
+  Array<{ dataflowid?: string; namespace?: string; name?: string; label?: string; type?: string }>
+> {
+  public static readonly summary = messages.getMessage('listCommandDescription');
+  public static readonly description = messages.getMessage('listCommandLongDescription');
 
-  public static examples = ['$ sfdx analytics:dataflow:list'];
+  public static readonly examples = ['$ sfdx analytics:dataflow:list'];
 
-  protected static flagsConfig = {};
-
-  protected static requiresUsername = true;
-  protected static requiresProject = false;
-
-  protected static tableColumnData = ['dataflowid', 'name', 'label', 'type', 'namespace'];
+  public static readonly flags = {
+    targetOrg: requiredOrgFlagWithDeprecations,
+  };
 
   public async run() {
-    const dataflowSvc = new Dataflow(this.org as Org);
-    const dataflows = ((await dataflowSvc.list()) || []).map(dataflow => ({
+    const { flags } = await this.parse(List);
+    const dataflowSvc = new Dataflow(flags.targetOrg);
+    const dataflows = ((await dataflowSvc.list()) || []).map((dataflow) => ({
       dataflowid: dataflow.id,
       namespace: dataflow.namespace,
       name: dataflow.name,
       label: dataflow.label,
-      type: dataflow.type
+      type: dataflow.type,
     }));
-    if (dataflows.length) {
-      this.ux.styledHeader(messages.getMessage('dataflowsFound', [dataflows.length]));
-    }
+    this.styledHeader(messages.getMessage('dataflowsFound', [dataflows.length]));
+    this.table(dataflows, {
+      dataflowid: { header: 'dataflowid' },
+      namespace: { header: 'namespace' },
+      name: { header: 'name' },
+      label: { header: 'label' },
+      type: { header: 'type' },
+    });
     return dataflows;
   }
 }

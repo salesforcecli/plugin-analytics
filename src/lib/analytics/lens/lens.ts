@@ -6,8 +6,8 @@
  */
 
 import { Connection, Org } from '@salesforce/core';
-import { connectRequest, fetchAllPages } from '../request';
-import { throwError } from '../utils';
+import { connectRequest, fetchAllPages } from '../request.js';
+import { throwError } from '../utils.js';
 
 export type LensHistoryType = {
   id?: string;
@@ -57,8 +57,8 @@ export default class Lens {
       url: revertUrl,
       body: JSON.stringify({
         historyId,
-        historyLabel
-      })
+        historyLabel,
+      }),
     });
 
     if (response) {

@@ -6,8 +6,8 @@
  */
 
 import { Connection, Org } from '@salesforce/core';
-import { connectRequest, fetchAllPages } from '../request';
-import { throwError } from '../utils';
+import { connectRequest, fetchAllPages } from '../request.js';
+import { throwError } from '../utils.js';
 
 export type RecipeType = Record<string, unknown> & {
   conversionDetails: [];
@@ -24,6 +24,7 @@ export type RecipeType = Record<string, unknown> & {
   lastModifiedDate?: string;
   licenseAttributes?: { type?: string };
   name?: string;
+  namespace?: string;
   publishingTarget?: string;
   recipeDefinition?: { name?: string; nodes?: Record<string, unknown>; ui?: Record<string, unknown>; version?: string };
   scheduleAttributes?: { assetId: string; frequency: string };
@@ -57,7 +58,7 @@ export default class Recipe {
 
     const recipeDetails = await connectRequest<RecipeType>(this.connection, {
       method: 'GET',
-      url: targetDataflowIdUrl
+      url: targetDataflowIdUrl,
     });
     const dataflowId = recipeDetails.targetDataflowId;
     const response = await connectRequest<RecipeType>(this.connection, {
@@ -65,8 +66,8 @@ export default class Recipe {
       url: startRecipeUrl,
       body: JSON.stringify({
         dataflowId,
-        command
-      })
+        command,
+      }),
     });
 
     if (response) {

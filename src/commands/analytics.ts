@@ -10,7 +10,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 
-import { SfdxCommand } from '@salesforce/command';
+import { SfCommand } from '@salesforce/sf-plugins-core';
 
 const asciiSignature = (version: string) => `
                  DX DX DX
@@ -48,7 +48,10 @@ Salesforce Analytics CLI Plugin v${version}
 * Analytics Extensions for VS Code: https://marketplace.visualstudio.com/items?itemName=salesforce.analyticsdx-vscode
 `;
 
-export class AnalyticsCommand extends SfdxCommand {
+// This command is a little funky in that it's really masking the default operation for hitting an oclif topic, so
+// we don't really want a summary nor examples.
+// eslint-disable-next-line sf-plugin/command-example, sf-plugin/command-summary
+export default class Analytics extends SfCommand<{ adxVersion: string }> {
   public static readonly hidden = true;
 
   private static cachedVersion: string;
@@ -56,7 +59,7 @@ export class AnalyticsCommand extends SfdxCommand {
     if (!this.cachedVersion) {
       try {
         const pkg = require('../../package.json') as Record<string, unknown>;
-        AnalyticsCommand.cachedVersion = (pkg && typeof pkg.version === 'string' && pkg.version.trim()) || '<unknown>';
+        Analytics.cachedVersion = (pkg && typeof pkg.version === 'string' && pkg.version.trim()) || '<unknown>';
       } catch (e) {
         // eslint-disable-next-line no-console
         console.warn('Unable to determine analytics sfdx plugin version', e);
@@ -69,7 +72,7 @@ export class AnalyticsCommand extends SfdxCommand {
   }
 
   public run() {
-    this.ux.log(asciiSignature(AnalyticsCommand.version));
-    return Promise.resolve({ adxVersion: AnalyticsCommand.version });
+    this.log(asciiSignature(Analytics.version));
+    return Promise.resolve({ adxVersion: Analytics.version });
   }
 }

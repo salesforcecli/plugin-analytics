@@ -6,7 +6,7 @@
  */
 
 import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/command/lib/test';
+import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
 
 core.Messages.importMessagesDirectory(__dirname);
 const messages = core.Messages.loadMessages('@salesforce/analytics', 'template');
@@ -14,7 +14,7 @@ const messages = core.Messages.loadMessages('@salesforce/analytics', 'template')
 const ID = '0Nkxx000000000zCAA';
 // this is what the template json looks like (49+, at least)
 const json = {
-  description: 'foo bar desc',
+  summary: 'foo bar desc',
   id: ID,
   label: 'foo bar',
   name: 'foobar',
@@ -22,8 +22,8 @@ const json = {
   assetVersion: 50,
   templateType: 'embeddedapp',
   folderSource: {
-    id: '005xx000001XB1RAAW'
-  }
+    id: '005xx000001XB1RAAW',
+  },
 };
 
 describe('analytics:template:display', () => {
@@ -32,7 +32,7 @@ describe('analytics:template:display', () => {
     .withConnectionRequest(() => Promise.resolve(json))
     .stdout()
     .command(['analytics:template:display', '--templateid', ID])
-    .it(`runs analytics:template:display --templateid ${ID}`, ctx => {
+    .it(`runs analytics:template:display --templateid ${ID}`, (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('displayDetailHeader'));
     });
 
@@ -41,7 +41,7 @@ describe('analytics:template:display', () => {
     .withConnectionRequest(() => Promise.resolve(json))
     .stdout()
     .command(['analytics:template:display', '--templatename', 'foo'])
-    .it('runs analytics:template:display --templatename foo', ctx => {
+    .it('runs analytics:template:display --templatename foo', (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('displayDetailHeader'));
     });
 
@@ -50,7 +50,7 @@ describe('analytics:template:display', () => {
     .withConnectionRequest(() => Promise.reject(new Error('Should not have been called.')))
     .stderr()
     .command(['analytics:template:display'])
-    .it('runs analytics:template:display', ctx => {
+    .it('runs analytics:template:display', (ctx) => {
       expect(ctx.stderr).to.contain(messages.getMessage('missingRequiredField'));
     });
 });

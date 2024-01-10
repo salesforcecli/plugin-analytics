@@ -5,10 +5,10 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { UX } from '@salesforce/command';
+import { UX } from '@salesforce/sf-plugins-core';
 import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/command/lib/test';
-import { SfdxError } from '@salesforce/core';
+import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
+import { SfError } from '@salesforce/core';
 import { JsonMap } from '@salesforce/ts-types';
 import { AutoInstallRequestType, AutoInstallStatus } from '../../../../src/lib/analytics/autoinstall/autoinstall';
 
@@ -23,7 +23,7 @@ function requestWithStatus(status: AutoInstallStatus): AutoInstallRequestType & 
     requestStatus: status,
     templateApiName: 'abc',
     folderId: '0llxx000000000zCAA',
-    folderLabel: 'abcde'
+    folderLabel: 'abcde',
   };
 }
 
@@ -43,7 +43,7 @@ describe('analytics:autoinstall:app:delete', () => {
     .withConnectionRequest(() => Promise.resolve(requestWithStatus('New')))
     .stdout()
     .command(['analytics:autoinstall:app:delete', '--async', '-f', '0llxx000000000zCAA'])
-    .it('runs analytics:autoinstall:app:delete --async', ctx => {
+    .it('runs analytics:autoinstall:app:delete --async', (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('appDeleteRequestSuccess', ['0UZ6g000000E9qXGAS']));
     });
 
@@ -53,7 +53,7 @@ describe('analytics:autoinstall:app:delete', () => {
     .stdout()
     // --wait 0 should be the same as --async so this should return right away
     .command(['analytics:autoinstall:app:delete', '--wait', '0', '-f', '0llxx000000000zCAA'])
-    .it('runs analytics:autoinstall:app:delete --wait 0', ctx => {
+    .it('runs analytics:autoinstall:app:delete --wait 0', (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('appDeleteRequestSuccess', ['0UZ6g000000E9qXGAS']));
     });
 
@@ -76,7 +76,7 @@ describe('analytics:autoinstall:app:delete', () => {
     .stub(global, 'setTimeout', stubTimeout)
     .stdout()
     .command(['analytics:autoinstall:app:delete', '-f', '0llxx000000000zCAA'])
-    .it('runs analytics:autoinstall:app:delete with Success status', ctx => {
+    .it('runs analytics:autoinstall:app:delete with Success status', (ctx) => {
       expect(ctx.stdout).to.contain(
         messages.getMessage('appDeleteSuccess', ['0llxx000000000zCAA', '0UZ6g000000E9qXGAS'])
       );
@@ -100,7 +100,7 @@ describe('analytics:autoinstall:app:delete', () => {
     .stdout()
     .stderr()
     .command(['analytics:autoinstall:app:delete', '-f', '0llxx000000000zCAA'])
-    .it('runs analytics:autoinstall:app:delete with Failed status', ctx => {
+    .it('runs analytics:autoinstall:app:delete with Failed status', (ctx) => {
       expect(ctx.stderr).to.contain(messages.getMessage('appDeleteFailed', ['0UZ6g000000E9qXGAS']));
     });
 
@@ -122,7 +122,7 @@ describe('analytics:autoinstall:app:delete', () => {
     .stdout()
     .stderr()
     .command(['analytics:autoinstall:app:delete', '-f', '0llxx000000000zCAA'])
-    .it('runs analytics:autoinstall:app:delete with Cancelled status', ctx => {
+    .it('runs analytics:autoinstall:app:delete with Cancelled status', (ctx) => {
       expect(ctx.stderr).to.contain(messages.getMessage('requestCancelled', ['0UZ6g000000E9qXGAS']));
     });
 
@@ -141,7 +141,7 @@ describe('analytics:autoinstall:app:delete', () => {
     .stdout()
     .stderr()
     .command(['analytics:autoinstall:app:delete', '-f', '0llxx000000000zCAA', '-w', '.001'])
-    .it('runs analytics:autoinstall:app:delete with timeout in polling', ctx => {
+    .it('runs analytics:autoinstall:app:delete with timeout in polling', (ctx) => {
       expect(ctx.stderr).to.contain(messages.getMessage('requestPollingTimeout', ['0UZ6g000000E9qXGAS', 'InProgress']));
     });
 
@@ -152,7 +152,7 @@ describe('analytics:autoinstall:app:delete', () => {
       if (requestNum === 1) {
         return Promise.resolve(requestWithStatus('New'));
       } else if (requestNum === 3) {
-        return Promise.reject(new SfdxError('expected error in polling'));
+        return Promise.reject(new SfError('expected error in polling'));
       }
       return Promise.resolve(requestWithStatus('InProgress'));
     })
@@ -162,7 +162,7 @@ describe('analytics:autoinstall:app:delete', () => {
     .stdout()
     .stderr()
     .command(['analytics:autoinstall:app:delete', '-f', '0llxx000000000zCAA'])
-    .it('runs analytics:autoinstall:app:delete with error during polling', ctx => {
+    .it('runs analytics:autoinstall:app:delete with error during polling', (ctx) => {
       expect(ctx.stderr).to.contain('expected error in polling');
     });
 });

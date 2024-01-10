@@ -6,7 +6,7 @@
  */
 
 import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/command/lib/test';
+import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
 
 core.Messages.importMessagesDirectory(__dirname);
 const messages = core.Messages.loadMessages('@salesforce/analytics', 'dashboard');
@@ -21,7 +21,7 @@ describe('analytics:dashboard:update', () => {
     .command(['analytics:dashboard:update', '--dashboardid', dashboardId, '--currenthistoryid', currentHistoryId])
     .it(
       'runs analytics:dashboard:update  --dashboardid 0FKxx0000004GNwGAM --currenthistoryid 0Rmxx0000004IPkCAM',
-      ctx => {
+      (ctx) => {
         expect(ctx.stdout).to.contain(messages.getMessage('updateSuccess', [currentHistoryId]));
       }
     );
@@ -31,7 +31,7 @@ describe('analytics:dashboard:update', () => {
     .withConnectionRequest(() => Promise.resolve({ id: dashboardId }))
     .stdout()
     .command(['analytics:dashboard:update', '--dashboardid', dashboardId, '--removecurrenthistory'])
-    .it('runs analytics:dashboard:update  --dashboardid 0FKxx0000004GNwGAM --removecurrenthistory', ctx => {
+    .it('runs analytics:dashboard:update  --dashboardid 0FKxx0000004GNwGAM --removecurrenthistory', (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('updateRemoveSuccess', []));
     });
 
@@ -40,7 +40,7 @@ describe('analytics:dashboard:update', () => {
     .withConnectionRequest(() => Promise.resolve({ id: dashboardId }))
     .stdout()
     .command(['analytics:dashboard:update', '--dashboardid', dashboardId])
-    .it('runs analytics:dashboard:update  --dashboardid 0FKxx0000004GNwGAM', ctx => {
+    .it('runs analytics:dashboard:update  --dashboardid 0FKxx0000004GNwGAM', (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('updateRemoveSuccess', []));
     });
 });

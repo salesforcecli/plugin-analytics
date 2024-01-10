@@ -5,94 +5,93 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { flags, SfdxCommand } from '@salesforce/command';
-import { Messages, Org, SfdxError } from '@salesforce/core';
+import { Flags, SfCommand, Ux, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import { Messages, SfError } from '@salesforce/core';
 
-import AutoInstall from '../../../../lib/analytics/autoinstall/autoinstall';
+import AutoInstall, { type AutoInstallRequestType } from '../../../../lib/analytics/autoinstall/autoinstall.js';
 import {
   DEF_APP_CREATE_UPDATE_TIMEOUT,
   DEF_POLLING_INTERVAL,
-  MIN_POLLING_INTERVAL
-} from '../../../../lib/analytics/constants';
-import { throwWithData } from '../../../../lib/analytics/utils';
+  MIN_POLLING_INTERVAL,
+} from '../../../../lib/analytics/constants.js';
+import { throwWithData } from '../../../../lib/analytics/utils.js';
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.loadMessages('@salesforce/analytics', 'autoinstall');
 
-export default class Update extends SfdxCommand {
-  public static description = messages.getMessage('updateCommandDescription');
-  public static longDescription = messages.getMessage('updateCommandLongDescription');
+export default class Update extends SfCommand<AutoInstallRequestType | string | undefined> {
+  public static readonly summary = messages.getMessage('updateCommandDescription');
+  public static readonly description = messages.getMessage('updateCommandLongDescription');
 
-  public static examples = [
+  public static readonly examples = [
     '$ sfdx analytics:autoinstall:app:update -t templateid -f folderid',
-    '$ sfdx analytics:autoinstall:app:update -n templatename -f folderid'
+    '$ sfdx analytics:autoinstall:app:update -n templatename -f folderid',
   ];
 
-  protected static flagsConfig = {
-    templateid: flags.id({
+  public static readonly flags = {
+    targetOrg: requiredOrgFlagWithDeprecations,
+    templateid: Flags.salesforceId({
       char: 't',
-      description: messages.getMessage('templateidFlagDescription'),
-      longDescription: messages.getMessage('templateidFlagLongDescription'),
-      exclusive: ['templatename']
+      summary: messages.getMessage('templateidFlagDescription'),
+      description: messages.getMessage('templateidFlagLongDescription'),
+      exclusive: ['templatename'],
     }),
-    templatename: flags.string({
+    templatename: Flags.string({
       char: 'n',
-      description: messages.getMessage('templatenameFlagDescription'),
-      longDescription: messages.getMessage('templatenameFlagLongDescription'),
-      exclusive: ['templateid']
+      summary: messages.getMessage('templatenameFlagDescription'),
+      description: messages.getMessage('templatenameFlagLongDescription'),
+      exclusive: ['templateid'],
     }),
-    folderid: flags.id({
+    folderid: Flags.salesforceId({
       char: 'f',
       required: true,
-      description: messages.getMessage('folderidFlagDescription'),
-      longDescription: messages.getMessage('folderidFlagLongDescription')
+      summary: messages.getMessage('folderidFlagDescription'),
+      description: messages.getMessage('folderidFlagLongDescription'),
     }),
-    async: flags.boolean({
+    async: Flags.boolean({
       char: 'a',
-      description: messages.getMessage('appUpdateAsyncDescription'),
-      longDescription: messages.getMessage('appUpdateAsyncLongDescription')
+      summary: messages.getMessage('appUpdateAsyncDescription'),
+      description: messages.getMessage('appUpdateAsyncLongDescription'),
     }),
-    wait: flags.number({
+    wait: Flags.integer({
       char: 'w',
-      description: messages.getMessage('autoInstallWaitDescription'),
-      longDescription: messages.getMessage('autoInstallWaitLongDescription', [DEF_APP_CREATE_UPDATE_TIMEOUT]),
+      summary: messages.getMessage('autoInstallWaitDescription'),
+      description: messages.getMessage('autoInstallWaitLongDescription', [DEF_APP_CREATE_UPDATE_TIMEOUT]),
       min: 0,
-      default: DEF_APP_CREATE_UPDATE_TIMEOUT
+      default: DEF_APP_CREATE_UPDATE_TIMEOUT,
     }),
-    pollinterval: flags.number({
+    pollinterval: Flags.integer({
       char: 'p',
-      description: messages.getMessage('autoInstallPollIntervalDescription'),
-      longDescription: messages.getMessage('autoInstallPollIntervalLongDescription', [DEF_POLLING_INTERVAL]),
+      summary: messages.getMessage('autoInstallPollIntervalDescription'),
+      description: messages.getMessage('autoInstallPollIntervalLongDescription', [DEF_POLLING_INTERVAL]),
       min: MIN_POLLING_INTERVAL,
-      default: DEF_POLLING_INTERVAL
-    })
+      default: DEF_POLLING_INTERVAL,
+    }),
   };
 
-  protected static requiresUsername = true;
-  protected static requiresProject = false;
-
   public async run() {
-    const templateInput = (this.flags.templateid ?? this.flags.templatename) as string;
+    const { flags } = await this.parse(Update);
+    const templateInput = (flags.templateid ?? flags.templatename) as string;
     if (!templateInput) {
-      throw new SfdxError(messages.getMessage('missingRequiredField'));
+      throw new SfError(messages.getMessage('missingRequiredField'));
     }
-    const autoinstall = new AutoInstall(this.org as Org);
-    const autoInstallId = await autoinstall.update(templateInput, this.flags.folderid as string);
-    if (this.flags.async || this.flags.wait <= 0) {
-      this.ux.log(messages.getMessage('appUpdateRequestSuccess', [autoInstallId]));
+    const autoinstall = new AutoInstall(flags.targetOrg);
+    const autoInstallId = await autoinstall.update(templateInput, flags.folderid);
+    if (flags.async || flags.wait <= 0) {
+      this.log(messages.getMessage('appUpdateRequestSuccess', [autoInstallId]));
     } else if (autoInstallId) {
       // otherwise start polling the request
       const finalRequest = await autoinstall.pollRequest(autoInstallId, {
-        timeoutMs: this.flags.wait * 60 * 1000,
-        pauseMs: this.flags.pollinterval as number,
-        timeoutMessage: r =>
-          throwWithData(messages.getMessage('requestPollingTimeout', [autoInstallId, r?.requestStatus || '']), r),
-        ux: this.ux,
-        startMesg: messages.getMessage('startRequestPolling', [autoInstallId])
+        timeoutMs: flags.wait * 60 * 1000,
+        pauseMs: flags.pollinterval,
+        timeoutMessage: (r) =>
+          throwWithData(messages.getMessage('requestPollingTimeout', [autoInstallId, r?.requestStatus ?? '']), r),
+        ux: new Ux({ jsonEnabled: this.jsonEnabled() }),
+        startMesg: messages.getMessage('startRequestPolling', [autoInstallId]),
       });
       const status = finalRequest.requestStatus?.toLocaleLowerCase();
       if (status === 'success') {
-        this.ux.log(messages.getMessage('appUpdateSuccess', [finalRequest.folderId, autoInstallId]));
+        this.log(messages.getMessage('appUpdateSuccess', [finalRequest.folderId, autoInstallId]));
         return finalRequest;
       } else if (status === 'cancelled') {
         throwWithData(messages.getMessage('requestCancelled', [autoInstallId]), finalRequest);
@@ -101,7 +100,7 @@ export default class Update extends SfdxCommand {
       }
     } else {
       // we should always get an auto-install-request id back, but fail if we don't
-      throw new SfdxError(messages.getMessage('appUpdateFailed', ['']));
+      throw new SfError(messages.getMessage('appUpdateFailed', ['']));
     }
     return autoInstallId;
   }

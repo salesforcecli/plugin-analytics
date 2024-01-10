@@ -6,8 +6,8 @@
  */
 
 import { Connection, Org } from '@salesforce/core';
-import { connectRequest, fetchAllPages } from '../request';
-import { throwError } from '../utils';
+import { connectRequest, fetchAllPages } from '../request.js';
+import { throwError } from '../utils.js';
 
 export type DashboardHistoryType = {
   id?: string;
@@ -49,7 +49,7 @@ export default class Dashboard {
     const response = await connectRequest<DashboardType>(this.connection, {
       method: 'PATCH',
       url: this.dashboardsUrl + encodeURIComponent(dashboardId),
-      body: JSON.stringify({ currentHistoryId })
+      body: JSON.stringify({ currentHistoryId }),
     });
 
     if (response) {
@@ -77,8 +77,8 @@ export default class Dashboard {
       url: revertUrl,
       body: JSON.stringify({
         historyId,
-        historyLabel
-      })
+        historyLabel,
+      }),
     });
 
     if (response) {

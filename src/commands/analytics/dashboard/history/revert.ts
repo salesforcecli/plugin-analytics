@@ -5,53 +5,52 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { flags, SfdxCommand } from '@salesforce/command';
-import { Messages, Org } from '@salesforce/core';
-import Dashboard from '../../../../lib/analytics/dashboard/dashboard';
+import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import { Messages } from '@salesforce/core';
+import Dashboard from '../../../../lib/analytics/dashboard/dashboard.js';
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.loadMessages('@salesforce/analytics', 'history');
 
-export default class Revert extends SfdxCommand {
-  public static description = messages.getMessage('revertCommandDescription');
-  public static longDescription = messages.getMessage('revertCommandLongDescription');
+export default class Revert extends SfCommand<string | undefined> {
+  public static readonly summary = messages.getMessage('revertCommandDescription');
+  public static readonly description = messages.getMessage('revertCommandLongDescription');
 
-  public static examples = [
-    '$ sfdx analytics:dashboard:history:revert -i <dashboardid> -y <historyid> -l <historyLabel> '
+  public static readonly examples = [
+    '$ sfdx analytics:dashboard:history:revert -i <dashboardid> -y <historyid> -l <historyLabel> ',
   ];
 
-  protected static flagsConfig = {
-    dashboardid: flags.id({
+  public static readonly flags = {
+    targetOrg: requiredOrgFlagWithDeprecations,
+    dashboardid: Flags.salesforceId({
       char: 'i',
       required: true,
-      description: messages.getMessage('dashboardidFlagDescription'),
-      longDescription: messages.getMessage('dashboardidFlagLongDescription')
+      summary: messages.getMessage('dashboardidFlagDescription'),
+      description: messages.getMessage('dashboardidFlagLongDescription'),
     }),
-    historyid: flags.id({
+    historyid: Flags.salesforceId({
       char: 'y',
       required: true,
-      description: messages.getMessage('dashboardHistoryidFlagDescription'),
-      longDescription: messages.getMessage('dashboardHistoryidFlagLongDescription')
+      summary: messages.getMessage('dashboardHistoryidFlagDescription'),
+      description: messages.getMessage('dashboardHistoryidFlagLongDescription'),
     }),
-    label: flags.string({
+    label: Flags.string({
       char: 'l',
-      description: messages.getMessage('revertLabelFlagDescription'),
-      longDescription: messages.getMessage('revertLabelFlagLongDescription')
-    })
+      summary: messages.getMessage('revertLabelFlagDescription'),
+      description: messages.getMessage('revertLabelFlagLongDescription'),
+    }),
   };
 
-  protected static requiresUsername = true;
-  protected static requiresProject = false;
-
   public async run() {
-    const dashboardId = this.flags.dashboardid as string;
-    const dashboardHistoryId = this.flags.historyid as string;
-    const dashboardHistoryLabel = this.flags.label as string | undefined;
-    const dashboard = new Dashboard(this.org as Org);
+    const { flags } = await this.parse(Revert);
+    const dashboardId = flags.dashboardid;
+    const dashboardHistoryId = flags.historyid;
+    const dashboardHistoryLabel = flags.label;
+    const dashboard = new Dashboard(flags.targetOrg);
 
     const id = await dashboard.revertToHistory(dashboardId, dashboardHistoryId, dashboardHistoryLabel);
     const message = messages.getMessage('revertSuccess', [id, dashboardHistoryId]);
-    this.ux.log(message);
+    this.log(message);
     return id;
   }
 }

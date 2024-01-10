@@ -6,13 +6,13 @@
  */
 
 import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/command/lib/test';
+import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
 
 core.Messages.importMessagesDirectory(__dirname);
 const messages = core.Messages.loadMessages('@salesforce/analytics', 'recipe');
 
 const recipeValues = [
-  { id: '05vxx0000004C92AAE', name: 'myrecipe', namespace: 'testNS', label: 'my recipe', status: 'New' }
+  { id: '05vxx0000004C92AAE', name: 'myrecipe', namespace: 'testNS', label: 'my recipe', status: 'New' },
 ];
 
 describe('analytics:recipe:list', () => {
@@ -21,7 +21,7 @@ describe('analytics:recipe:list', () => {
     .withConnectionRequest(() => Promise.resolve({ recipes: recipeValues }))
     .stdout()
     .command(['analytics:recipe:list'])
-    .it('runs analytics:recipe:list', ctx => {
+    .it('runs analytics:recipe:list', (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('recipesFound', [1]));
     });
 
@@ -30,7 +30,7 @@ describe('analytics:recipe:list', () => {
     .withConnectionRequest(() => Promise.resolve({ recipes: [] }))
     .stdout()
     .command(['analytics:recipe:list'])
-    .it('runs analytics:recipe:list', ctx => {
+    .it('runs analytics:recipe:list', (ctx) => {
       expect(ctx.stdout).to.contain('No results found.');
     });
 });

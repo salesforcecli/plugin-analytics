@@ -5,86 +5,80 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { flags, SfdxCommand } from '@salesforce/command';
+import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
 import { Messages, Org } from '@salesforce/core';
-import { cli } from 'cli-ux';
 
-import Folder from '../../../lib/analytics/app/folder';
-import WaveTemplate from '../../../lib/analytics/template/wavetemplate';
+import Folder from '../../../lib/analytics/app/folder.js';
+import WaveTemplate from '../../../lib/analytics/template/wavetemplate.js';
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.loadMessages('@salesforce/analytics', 'template');
 
-export default class Delete extends SfdxCommand {
-  public static description = messages.getMessage('deleteCommandDescription');
-  public static longDescription = messages.getMessage('deleteCommandLongDescription');
+export default class Delete extends SfCommand<string | undefined> {
+  public static readonly summary = messages.getMessage('deleteCommandDescription');
+  public static readonly description = messages.getMessage('deleteCommandLongDescription');
 
-  public static examples = ['$ sfdx analytics:template:delete -t templateid'];
+  public static readonly examples = ['$ sfdx analytics:template:delete -t templateid'];
 
-  protected static flagsConfig = {
-    templateid: flags.id({
+  public static readonly flags = {
+    targetOrg: requiredOrgFlagWithDeprecations,
+    templateid: Flags.salesforceId({
       char: 't',
       required: true,
-      description: messages.getMessage('templateidFlagDescription'),
-      longDescription: messages.getMessage('templateidFlagLongDescription')
+      summary: messages.getMessage('templateidFlagDescription'),
+      description: messages.getMessage('templateidFlagLongDescription'),
     }),
-    forcedelete: flags.boolean({
-      description: messages.getMessage('forceDeleteTemplateFlagDescription'),
-      longDescription: messages.getMessage('forceDeleteTemplateFlagLongDescription')
+    forcedelete: Flags.boolean({
+      summary: messages.getMessage('forceDeleteTemplateFlagDescription'),
+      description: messages.getMessage('forceDeleteTemplateFlagLongDescription'),
     }),
-    decouple: flags.boolean({
-      description: messages.getMessage('decoupleTemplateFlagDescription'),
-      longDescription: messages.getMessage('decoupleTemplateFlagLongDescription')
+    decouple: Flags.boolean({
+      summary: messages.getMessage('decoupleTemplateFlagDescription'),
+      description: messages.getMessage('decoupleTemplateFlagLongDescription'),
     }),
-    noprompt: flags.boolean({
+    noprompt: Flags.boolean({
       char: 'p',
-      description: messages.getMessage('nopromptFlagDescription'),
-      longDescription: messages.getMessage('nopromptFlagLongDescription')
-    })
+      summary: messages.getMessage('nopromptFlagDescription'),
+      description: messages.getMessage('nopromptFlagLongDescription'),
+    }),
   };
 
-  protected static requiresUsername = true;
-  protected static requiresProject = false;
-
   public async run() {
-    if (this.flags.noprompt) {
-      await this.executeCommand();
-    } else {
-      const answer = (await cli.prompt(
-        messages.getMessage(
-          (!!this.flags.forcedelete && 'confirmForceDeleteYesNo') ||
-            (!!this.flags.decouple && 'confirmDecoupleYesNo') ||
-            'confirmDeleteYesNo'
-        )
-      )) as string;
-      if (answer.toUpperCase() === 'YES' || answer.toUpperCase() === 'Y') {
-        await this.executeCommand();
-      }
+    const { flags } = await this.parse(Delete);
+    if (
+      flags.noprompt ||
+      (await this.confirm({
+        message: messages.getMessage(
+          flags.forcedelete ? 'confirmForceDeleteYesNo' : flags.decouple ? 'confirmDecoupleYesNo' : 'confirmDeleteYesNo'
+        ),
+      }))
+    ) {
+      await this.executeCommand(flags);
     }
-    return this.flags.templateid as string;
+    return flags.templateid;
   }
 
-  private async executeCommand() {
-    const templateid = this.flags.templateid as string;
-    const forceDelete = !!this.flags.forcedelete;
-    const decouple = !!this.flags.decouple;
+  private async executeCommand(flags: { targetOrg: Org; templateid: string; forcedelete: boolean; decouple: boolean }) {
+    const templateid = flags.templateid;
+    const forceDelete = flags.forcedelete;
+    const decouple = flags.decouple;
 
-    const wavetemplate = new WaveTemplate(this.org as Org);
+    const wavetemplate = new WaveTemplate(flags.targetOrg);
     // make sure we can find this template and if not let it error from the api
     await wavetemplate.fetch(templateid);
 
     if (forceDelete || decouple) {
-      const folderSvc = new Folder(this.org as Org);
-      const folders = (await folderSvc.list()).filter(folder => folder.templateSourceId === templateid && folder.id);
+      const folderSvc = new Folder(flags.targetOrg);
+      const folders = (await folderSvc.list()).filter((folder) => folder.templateSourceId === templateid && folder.id);
 
       if (folders && folders.length > 0) {
         for (const folder of folders) {
           if (forceDelete) {
             await folderSvc.deleteFolder(folder.id);
-            this.ux.log(messages.getMessage('deleteAppSuccess', [folder.label || folder.name, folder.id]));
+            this.log(messages.getMessage('deleteAppSuccess', [folder.label ?? folder.name, folder.id]));
           } else {
             await folderSvc.decouple(folder.id, templateid);
-            this.ux.log(messages.getMessage('decoupleAppSuccess', [folder.label || folder.name, folder.id]));
+            this.log(messages.getMessage('decoupleAppSuccess', [folder.label ?? folder.name, folder.id]));
           }
         }
       }
@@ -93,6 +87,6 @@ export default class Delete extends SfdxCommand {
     // Delete the template
     await wavetemplate.deleteTemplate(templateid);
 
-    this.ux.log(messages.getMessage('deleteTemplateSuccess', [templateid]));
+    this.log(messages.getMessage('deleteTemplateSuccess', [templateid]));
   }
 }

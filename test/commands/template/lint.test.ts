@@ -6,7 +6,7 @@
  */
 
 import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/command/lib/test';
+import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
 
 core.Messages.importMessagesDirectory(__dirname);
 // const messages = core.Messages.loadMessages('@salesforce/analytics', 'lint');
@@ -18,9 +18,9 @@ const templateValues = {
     {
       label: 'TemplateAssociationTask',
       message: 'Certification for sfdc_internal__Sales_Analytics_Flex template.',
-      readinessStatus: 'Complete'
-    }
-  ]
+      readinessStatus: 'Complete',
+    },
+  ],
 };
 
 describe('analytics:template:lint', () => {
@@ -29,7 +29,7 @@ describe('analytics:template:lint', () => {
     .withConnectionRequest(() => Promise.resolve({ result: templateValues }))
     .stdout()
     .command(['analytics:template:lint', '--templateid', ID])
-    .it(`runs analytics:template:lint --templateid ${ID}`, ctx => {
+    .it(`runs analytics:template:lint --templateid ${ID}`, (ctx) => {
       expect(ctx.stdout).to.contain('Command only available in api version 58.0 or later');
     });
 });
@@ -41,9 +41,9 @@ const templateWithFailedReadiness = {
     {
       label: 'EvaluateTemplateRequirement',
       message: 'Certification for sfdc_internal__Sales_Analytics_Flex template.',
-      readinessStatus: 'Failed'
-    }
-  ]
+      readinessStatus: 'Failed',
+    },
+  ],
 };
 
 describe('analytics:template:lint failure', () => {

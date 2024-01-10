@@ -5,53 +5,52 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { flags, SfdxCommand } from '@salesforce/command';
-import { Messages, Org } from '@salesforce/core';
-import Dataflow from '../../../../lib/analytics/dataflow/dataflow';
+import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import { Messages } from '@salesforce/core';
+import Dataflow from '../../../../lib/analytics/dataflow/dataflow.js';
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.loadMessages('@salesforce/analytics', 'history');
 
-export default class Revert extends SfdxCommand {
-  public static description = messages.getMessage('revertCommandDescription');
-  public static longDescription = messages.getMessage('revertCommandLongDescription');
+export default class Revert extends SfCommand<string | undefined> {
+  public static readonly summary = messages.getMessage('revertCommandDescription');
+  public static readonly description = messages.getMessage('revertCommandLongDescription');
 
-  public static examples = [
-    '$ sfdx analytics:dataflow:history:revert -i <dataflowid> -y <historyid> -l <historyLabel> '
+  public static readonly examples = [
+    '$ sfdx analytics:dataflow:history:revert -i <dataflowid> -y <historyid> -l <historyLabel> ',
   ];
 
-  protected static flagsConfig = {
-    dataflowid: flags.id({
+  public static readonly flags = {
+    targetOrg: requiredOrgFlagWithDeprecations,
+    dataflowid: Flags.salesforceId({
       char: 'i',
       required: true,
-      description: messages.getMessage('dataflowidFlagDescription'),
-      longDescription: messages.getMessage('dataflowidFlagLongDescription')
+      summary: messages.getMessage('dataflowidFlagDescription'),
+      description: messages.getMessage('dataflowidFlagLongDescription'),
     }),
-    historyid: flags.id({
+    historyid: Flags.salesforceId({
       char: 'y',
       required: true,
-      description: messages.getMessage('dataflowHistoryidFlagDescription'),
-      longDescription: messages.getMessage('dataflowHistoryidFlagLongDescription')
+      summary: messages.getMessage('dataflowHistoryidFlagDescription'),
+      description: messages.getMessage('dataflowHistoryidFlagLongDescription'),
     }),
-    label: flags.string({
+    label: Flags.string({
       char: 'l',
-      description: messages.getMessage('revertLabelFlagDescription'),
-      longDescription: messages.getMessage('revertLabelFlagLongDescription')
-    })
+      summary: messages.getMessage('revertLabelFlagDescription'),
+      description: messages.getMessage('revertLabelFlagLongDescription'),
+    }),
   };
 
-  protected static requiresUsername = true;
-  protected static requiresProject = false;
-
   public async run() {
-    const dataflowId = this.flags.dataflowid as string;
-    const dataflowHistoryId = this.flags.historyid as string;
-    const dataflowHistoryLabel = this.flags.label as string | undefined;
-    const dataflow = new Dataflow(this.org as Org);
+    const { flags } = await this.parse(Revert);
+    const dataflowId = flags.dataflowid;
+    const dataflowHistoryId = flags.historyid;
+    const dataflowHistoryLabel = flags.label;
+    const dataflow = new Dataflow(flags.targetOrg);
 
     const id = await dataflow.revertToHistory(dataflowId, dataflowHistoryId, dataflowHistoryLabel);
     const message = messages.getMessage('revertSuccess', [id, dataflowHistoryId]);
-    this.ux.log(message);
+    this.log(message);
     return id;
   }
 }

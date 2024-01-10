@@ -5,14 +5,14 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { UX } from '@salesforce/command';
 import { Logger, Messages, Org, StatusResult, StreamingClient } from '@salesforce/core';
-import { JsonMap } from '@salesforce/ts-types';
+import { type JsonMap } from '@salesforce/ts-types';
 import chalk from 'chalk';
 import { Duration } from '@salesforce/kit';
-import Folder, { CreateAppBody } from '../app/folder';
-import { throwWithData } from '../utils';
-import WaveAssetEvent from './waveAssetEvent';
+import { Ux } from '@salesforce/sf-plugins-core';
+import Folder, { CreateAppBody } from '../app/folder.js';
+import { throwWithData } from '../utils.js';
+import WaveAssetEvent from './waveAssetEvent.js';
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.loadMessages('@salesforce/analytics', 'app');
@@ -26,16 +26,26 @@ export type StreamingResult = {
   Message: string;
 };
 
+function getStreamResultMark(success: boolean) {
+  if (process.platform === 'win32') {
+    return '';
+  }
+  if (success) {
+    return chalk.green('✔');
+  }
+  return chalk.red('✖');
+}
+
 export default class AppStreaming {
   public streamingResults = [] as StreamingResult[];
 
   protected logger: Logger | undefined;
-  protected ux: UX;
+  protected ux: Ux;
   protected allEvents = false;
   protected org: Org;
   protected wait: number;
 
-  public constructor(organization: Org, allEvents: boolean, wait: number, ux: UX) {
+  public constructor(organization: Org, allEvents: boolean, wait: number, ux: Ux) {
     this.allEvents = allEvents;
     this.org = organization;
     this.wait = wait;
@@ -60,7 +70,7 @@ export default class AppStreaming {
 
   public async streamCreateEvent(folder: Folder, body: CreateAppBody) {
     let folderId: string | undefined;
-    const options = new StreamingClient.DefaultOptions(this.org, '/event/WaveAssetEvent', message =>
+    const options = new StreamingClient.DefaultOptions(this.org, '/event/WaveAssetEvent', (message) =>
       this.streamProcessor(folderId, message)
     );
     const asyncStatusClient: StreamingClient = await this.createStreamingClient(options);
@@ -73,7 +83,7 @@ export default class AppStreaming {
       if ((error as Record<string, unknown>).code === 'genericTimeoutMessage') {
         // include the app id in the error if we timeout waiting, since the app got created
         throwWithData(messages.getMessage('timeoutMessage', [(error as Record<string, unknown>).message as string]), {
-          id: folderId
+          id: folderId,
         });
       }
       throw error;
@@ -82,7 +92,7 @@ export default class AppStreaming {
   }
 
   public async streamUpdateEvent(folder: Folder, folderId: string, templateId: string) {
-    const options = new StreamingClient.DefaultOptions(this.org, '/event/WaveAssetEvent', message =>
+    const options = new StreamingClient.DefaultOptions(this.org, '/event/WaveAssetEvent', (message) =>
       this.streamProcessor(folderId, message)
     );
     const asyncStatusClient: StreamingClient = await this.createStreamingClient(options);
@@ -94,7 +104,7 @@ export default class AppStreaming {
       if ((error as Record<string, unknown>).code === 'genericTimeoutMessage') {
         // include the app id in the error if we timeout waiting, since the app got created
         throwWithData(messages.getMessage('timeoutMessage', [(error as Record<string, unknown>).message as string]), {
-          id: folderId
+          id: folderId,
         });
       }
       throw error;
@@ -170,16 +180,16 @@ export default class AppStreaming {
       case 'Application': {
         this.createEventJson(waveAssetEvent);
         if (waveAssetEvent.status === 'Success') {
-          this.ux.log(this.getStreamResultMark(true), messages.getMessage('finishAppCreation', [waveAssetEvent.label]));
+          this.ux.log(getStreamResultMark(true), messages.getMessage('finishAppCreation', [waveAssetEvent.label]));
         } else {
           // failed or cancelled
           this.ux.log(
-            this.getStreamResultMark(false),
+            getStreamResultMark(false),
             messages.getMessage('finishAppCreationFailure', [waveAssetEvent.message])
           );
           throwWithData(messages.getMessage('finishAppCreationFailure', [waveAssetEvent.message]), {
             id: folderId,
-            events: this.streamingResults
+            events: this.streamingResults,
           });
         }
         return { completed: true };
@@ -193,25 +203,25 @@ export default class AppStreaming {
       this.createEventJson(event);
       if (event.status === 'Success') {
         this.ux.log(
-          this.getStreamResultMark(true),
+          getStreamResultMark(true),
           messages.getMessage('verboseAppCreateEventSuccess', [
             messages.getMessage('appCreateSuccessfulLabel'),
             eventDisplayName,
             event.index,
             event.total,
-            event.label
+            event.label,
           ])
         );
       } else {
         this.ux.log(
-          this.getStreamResultMark(false),
+          getStreamResultMark(false),
           messages.getMessage('appCreateEventFail', [
             messages.getMessage('appCreateEventFailureLabel'),
             eventDisplayName,
             event.index,
             event.total,
             event.label,
-            event.message
+            event.message,
           ])
         );
       }
@@ -219,21 +229,21 @@ export default class AppStreaming {
       if (event.status === 'Success' && event.total > 0 && event.total === event.index) {
         this.createEventJson(event);
         this.ux.log(
-          this.getStreamResultMark(true),
+          getStreamResultMark(true),
           messages.getMessage('appCreateEvent', [event.total, eventDisplayName, action])
         );
       }
       if (event.status !== 'Success') {
         this.createEventJson(event);
         this.ux.log(
-          this.getStreamResultMark(true),
+          getStreamResultMark(true),
           messages.getMessage('appCreateEventFail', [
             messages.getMessage('appCreateEventFailureLabel'),
             eventDisplayName,
             event.index,
             event.total,
             event.label,
-            event.message
+            event.message,
           ])
         );
       }
@@ -258,18 +268,8 @@ export default class AppStreaming {
       Index: event.index,
       Total: event.total,
       ItemLabel: event.label,
-      Message: event.message
+      Message: event.message,
     };
     this.streamingResults.push(entry);
-  }
-
-  private getStreamResultMark(success: boolean) {
-    if (process.platform === 'win32') {
-      return '';
-    }
-    if (success) {
-      return chalk.green('✔');
-    }
-    return chalk.red('✖');
   }
 }

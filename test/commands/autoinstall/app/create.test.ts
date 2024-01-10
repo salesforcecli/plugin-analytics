@@ -6,10 +6,10 @@
  */
 
 import { promises as fs } from 'fs';
-import { UX } from '@salesforce/command';
+import { UX } from '@salesforce/sf-plugins-core';
 import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/command/lib/test';
-import { SfdxError } from '@salesforce/core';
+import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
+import { SfError } from '@salesforce/core';
 import { AnyJson, ensureJsonMap, ensureString, JsonMap } from '@salesforce/ts-types';
 import { AutoInstallRequestType, AutoInstallStatus } from '../../../../src/lib/analytics/autoinstall/autoinstall';
 
@@ -29,12 +29,12 @@ const testAppConfigJson = {
       hour: 2,
       minute: 35,
       timezone: {
-        zoneId: 'PST'
-      }
+        zoneId: 'PST',
+      },
     },
     daysOfWeek: ['monday'],
-    frequency: 'weekly'
-  }
+    frequency: 'weekly',
+  },
 };
 
 function requestWithStatus(status: AutoInstallStatus): AutoInstallRequestType & JsonMap {
@@ -45,7 +45,7 @@ function requestWithStatus(status: AutoInstallStatus): AutoInstallRequestType & 
     requestStatus: status,
     templateApiName: 'abc',
     folderId: '0llxx000000000zCAA',
-    folderLabel: 'abcde'
+    folderLabel: 'abcde',
   };
 }
 
@@ -76,7 +76,7 @@ describe('analytics:autoinstall:app:create', () => {
     .withConnectionRequest(() => Promise.resolve(requestWithStatus('New')))
     .stdout()
     .command(['analytics:autoinstall:app:create', '--async', '-n', 'abc'])
-    .it('runs analytics:autoinstall:app:create --async', ctx => {
+    .it('runs analytics:autoinstall:app:create --async', (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('appCreateRequestSuccess', ['0UZxx0000004FzkGAE']));
     });
 
@@ -86,14 +86,14 @@ describe('analytics:autoinstall:app:create', () => {
     .withConnectionRequest(() => Promise.resolve(requestWithStatus('New')))
     .stdout()
     .command(['analytics:autoinstall:app:create', '--async', '-n', 'abc', '--json'])
-    .it('runs analytics:autoinstall:app:create --async --json', ctx => {
+    .it('runs analytics:autoinstall:app:create --async --json', (ctx) => {
       expect(ctx.stdout).to.not.be.undefined.and.not.be.null.and.not.equal('');
       const results = JSON.parse(ctx.stdout) as unknown;
       expect(results, 'result').to.deep.include({
         status: 0,
         result: {
-          id: '0UZxx0000004FzkGAE'
-        }
+          id: '0UZxx0000004FzkGAE',
+        },
       });
     });
 
@@ -103,7 +103,7 @@ describe('analytics:autoinstall:app:create', () => {
     .stdout()
     // --wait 0 should be the same as --async so this should return right away
     .command(['analytics:autoinstall:app:create', '--wait', '0', '-n', 'abc'])
-    .it('runs analytics:autoinstall:app:create --wait 0', ctx => {
+    .it('runs analytics:autoinstall:app:create --wait 0', (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('appCreateRequestSuccess', ['0UZxx0000004FzkGAE']));
     });
 
@@ -126,7 +126,7 @@ describe('analytics:autoinstall:app:create', () => {
     .stub(global, 'setTimeout', stubTimeout)
     .stdout()
     .command(['analytics:autoinstall:app:create', '-n', 'abc'])
-    .it('runs analytics:autoinstall:app:create with Success status', ctx => {
+    .it('runs analytics:autoinstall:app:create with Success status', (ctx) => {
       expect(ctx.stdout).to.contain(
         messages.getMessage('appCreateSuccess', ['0llxx000000000zCAA', '0UZxx0000004FzkGAE'])
       );
@@ -152,7 +152,7 @@ describe('analytics:autoinstall:app:create', () => {
     .stub(global, 'setTimeout', stubTimeout)
     .stdout()
     .command(['analytics:autoinstall:app:create', '-n', 'abc', '--json'])
-    .it('runs analytics:autoinstall:app:create --json with Success status', ctx => {
+    .it('runs analytics:autoinstall:app:create --json with Success status', (ctx) => {
       expect(ctx.stdout).to.not.be.undefined.and.not.be.null.and.not.equal('');
       const results = JSON.parse(ctx.stdout) as unknown;
       expect(results, 'result').to.deep.include({
@@ -164,8 +164,8 @@ describe('analytics:autoinstall:app:create', () => {
           requestName: 'foo',
           requestStatus: 'Success',
           templateApiName: 'abc',
-          folderLabel: 'abcde'
-        }
+          folderLabel: 'abcde',
+        },
       });
     });
 
@@ -187,7 +187,7 @@ describe('analytics:autoinstall:app:create', () => {
     .stdout()
     .stderr()
     .command(['analytics:autoinstall:app:create', '-n', 'abc'])
-    .it('runs analytics:autoinstall:app:create with Failed status', ctx => {
+    .it('runs analytics:autoinstall:app:create with Failed status', (ctx) => {
       expect(ctx.stderr).to.contain(messages.getMessage('appCreateFailed', ['0UZxx0000004FzkGAE']));
     });
 
@@ -211,7 +211,7 @@ describe('analytics:autoinstall:app:create', () => {
     .stdout()
     .stderr()
     .command(['analytics:autoinstall:app:create', '-n', 'abc', '--json'])
-    .it('runs analytics:autoinstall:app:create --json with Failed status', ctx => {
+    .it('runs analytics:autoinstall:app:create --json with Failed status', (ctx) => {
       // output seems to go to stdout in tests
       const output = ctx.stderr || ctx.stdout || '';
       expect(output, 'console output').to.not.equal('');
@@ -228,8 +228,8 @@ describe('analytics:autoinstall:app:create', () => {
           requestStatus: 'Failed',
           templateApiName: 'abc',
           folderId: '0llxx000000000zCAA',
-          folderLabel: 'abcde'
-        }
+          folderLabel: 'abcde',
+        },
       });
     });
 
@@ -251,7 +251,7 @@ describe('analytics:autoinstall:app:create', () => {
     .stdout()
     .stderr()
     .command(['analytics:autoinstall:app:create', '-n', 'abc'])
-    .it('runs analytics:autoinstall:app:create with Cancelled status', ctx => {
+    .it('runs analytics:autoinstall:app:create with Cancelled status', (ctx) => {
       expect(ctx.stderr).to.contain(messages.getMessage('requestCancelled', ['0UZxx0000004FzkGAE']));
     });
 
@@ -273,7 +273,7 @@ describe('analytics:autoinstall:app:create', () => {
     .stdout()
     .stderr()
     .command(['analytics:autoinstall:app:create', '-n', 'abc'])
-    .it('runs analytics:autoinstall:app:create with Skipped status', ctx => {
+    .it('runs analytics:autoinstall:app:create with Skipped status', (ctx) => {
       expect(ctx.stderr).to.contain(messages.getMessage('requestSkipped', ['0UZxx0000004FzkGAE']));
     });
 
@@ -292,7 +292,7 @@ describe('analytics:autoinstall:app:create', () => {
     .stdout()
     .stderr()
     .command(['analytics:autoinstall:app:create', '-n', 'abc', '-w', '.001'])
-    .it('runs analytics:autoinstall:app:create with timeout in polling', ctx => {
+    .it('runs analytics:autoinstall:app:create with timeout in polling', (ctx) => {
       expect(ctx.stderr).to.contain(messages.getMessage('requestPollingTimeout', ['0UZxx0000004FzkGAE', 'InProgress']));
     });
 
@@ -303,7 +303,7 @@ describe('analytics:autoinstall:app:create', () => {
       if (requestNum === 1) {
         return Promise.resolve(requestWithStatus('New'));
       } else if (requestNum === 3) {
-        return Promise.reject(new SfdxError('expected error in polling'));
+        return Promise.reject(new SfError('expected error in polling'));
       }
       return Promise.resolve(requestWithStatus('InProgress'));
     })
@@ -313,14 +313,14 @@ describe('analytics:autoinstall:app:create', () => {
     .stdout()
     .stderr()
     .command(['analytics:autoinstall:app:create', '-n', 'abc'])
-    .it('runs analytics:autoinstall:app:create with error during polling', ctx => {
+    .it('runs analytics:autoinstall:app:create with error during polling', (ctx) => {
       expect(ctx.stderr).to.contain('expected error in polling');
     });
 
   // Test that --appname and --appdescription values appear in the request body
   test
     .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(async request => {
+    .withConnectionRequest(async (request) => {
       request = ensureJsonMap(request);
       saveOffRequestBody(ensureString(request.body));
       return requestWithStatus('New');
@@ -334,20 +334,20 @@ describe('analytics:autoinstall:app:create', () => {
       '--appname',
       'customname',
       '--appdescription',
-      'customdesc'
+      'customdesc',
     ])
-    .it('runs analytics:autoinstall:app:create --async --appname customname --appdescription customdesc', ctx => {
+    .it('runs analytics:autoinstall:app:create --async --appname customname --appdescription customdesc', (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('appCreateRequestSuccess', ['0UZxx0000004FzkGAE']));
       expect(requestBody, 'requestBody').to.have.nested.include({
         'configuration.appConfiguration.appLabel': 'customname',
         'configuration.appConfiguration.appName': 'customname',
-        'configuration.appConfiguration.appDescription': 'customdesc'
+        'configuration.appConfiguration.appDescription': 'customdesc',
       });
     });
 
   test
     .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(async request => {
+    .withConnectionRequest(async (request) => {
       request = ensureJsonMap(request);
       saveOffRequestBody(ensureString(request.body));
       return requestWithStatus('New');
@@ -355,7 +355,7 @@ describe('analytics:autoinstall:app:create', () => {
     .stub(fs, 'readFile', () => Promise.resolve(JSON.stringify(testAppConfigJson)))
     .stdout()
     .command(['analytics:autoinstall:app:create', '--appconfiguration', 'config/foo.json', '--async', '-n', 'abc'])
-    .it('runs analytics:app:create --appconfiguration config/foo.json --async', ctx => {
+    .it('runs analytics:app:create --appconfiguration config/foo.json --async', (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('appCreateRequestSuccess', ['0UZxx0000004FzkGAE']));
       expect(requestBody, 'requestBody').to.not.be.undefined;
     });

@@ -5,7 +5,7 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/command/lib/test';
+import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
 import { ensureJsonMap } from '@salesforce/ts-types';
 
 core.Messages.importMessagesDirectory(__dirname);
@@ -15,7 +15,7 @@ const appId = '0llxx000000000zCAA';
 describe('analytics:app:delete', () => {
   test
     .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
+    .withConnectionRequest((request) => {
       request = ensureJsonMap(request);
       if (request.method === 'DELETE') {
         return Promise.resolve({ id: appId });
@@ -24,7 +24,7 @@ describe('analytics:app:delete', () => {
     })
     .stdout()
     .command(['analytics:app:delete', '--noprompt', '--folderid', appId])
-    .it('runs analytics:app:delete  --folderid 0llxx000000000zCAA --noprompt', ctx => {
+    .it('runs analytics:app:delete  --folderid 0llxx000000000zCAA --noprompt', (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('deleteAppSuccess', [appId]));
     });
 });

@@ -6,7 +6,7 @@
  */
 
 import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/command/lib/test';
+import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
 import { ensureJsonMap, ensureString } from '@salesforce/ts-types';
 
 core.Messages.importMessagesDirectory(__dirname);
@@ -29,7 +29,7 @@ describe('analytics:template:delete', () => {
 
   test
     .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
+    .withConnectionRequest((request) => {
       request = ensureJsonMap(request);
       const url = ensureString(request.url);
       if (request.method === 'GET' && url.indexOf('/wave/templates') >= 0) {
@@ -47,7 +47,7 @@ describe('analytics:template:delete', () => {
     })
     .stdout()
     .command(['analytics:template:delete', '--noprompt', '-t', templateId])
-    .it('runs analytics:template:delete -t 0Nkxx000000000zCAA --noprompt', ctx => {
+    .it('runs analytics:template:delete -t 0Nkxx000000000zCAA --noprompt', (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('deleteTemplateSuccess', [templateId]));
       expect(templateDeletes, '# of template DELETEs').to.equal(1);
       expect(folderGets, '# of folder GETs').to.equal(0);
@@ -57,7 +57,7 @@ describe('analytics:template:delete', () => {
 
   test
     .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
+    .withConnectionRequest((request) => {
       request = ensureJsonMap(request);
       const url = ensureString(request.url);
       if (request.method === 'GET' && url.indexOf('/wave/templates') >= 0) {
@@ -75,7 +75,7 @@ describe('analytics:template:delete', () => {
     })
     .stdout()
     .command(['analytics:template:delete', '--noprompt', '--forcedelete', '-t', templateId])
-    .it('runs analytics:template:delete -t 0Nkxx000000000zCAA --noprompt --forcedelete (no linked folders)', ctx => {
+    .it('runs analytics:template:delete -t 0Nkxx000000000zCAA --noprompt --forcedelete (no linked folders)', (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('deleteTemplateSuccess', [templateId]));
       expect(folderGets, '# of folder GETs').to.equal(1);
       expect(templateDeletes, '# of template DELETEs').to.equal(1);
@@ -83,7 +83,7 @@ describe('analytics:template:delete', () => {
 
   test
     .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
+    .withConnectionRequest((request) => {
       request = ensureJsonMap(request);
       const url = ensureString(request.url);
       if (request.method === 'GET' && url.indexOf('/wave/templates') >= 0) {
@@ -93,7 +93,7 @@ describe('analytics:template:delete', () => {
         folderGets++;
         return Promise.resolve({
           id: '0llxx000000000zCAA',
-          folders: [{ id: appId, templateSourceId: templateId, label: appLabel }]
+          folders: [{ id: appId, templateSourceId: templateId, label: appLabel }],
         });
       }
       if (request.method === 'DELETE' && url.indexOf('/wave/folders/') >= 0) {
@@ -108,7 +108,7 @@ describe('analytics:template:delete', () => {
     })
     .stdout()
     .command(['analytics:template:delete', '--noprompt', '--forcedelete', '--templateid', templateId])
-    .it('runs analytics:template:delete --templateid 0Nkxx000000000zCAA --noprompt --forcedelete', ctx => {
+    .it('runs analytics:template:delete --templateid 0Nkxx000000000zCAA --noprompt --forcedelete', (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('deleteAppSuccess', [appLabel, appId]));
       expect(folderGets, '# of folder GETs').to.equal(1);
       expect(folderDeletes, '# of folder DELETEs').to.equal(1);
@@ -118,7 +118,7 @@ describe('analytics:template:delete', () => {
 
   test
     .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
+    .withConnectionRequest((request) => {
       request = ensureJsonMap(request);
       const url = ensureString(request.url);
       if (request.method === 'GET' && url.indexOf('/wave/templates') >= 0) {
@@ -128,7 +128,7 @@ describe('analytics:template:delete', () => {
         folderGets++;
         return Promise.resolve({
           id: '0llxx000000000zCAA',
-          folders: [{ id: appId, templateSourceId: templateId, name: appLabel }]
+          folders: [{ id: appId, templateSourceId: templateId, name: appLabel }],
         });
       }
       if (request.method === 'PUT' && url.indexOf('/wave/folders/') >= 0) {
@@ -143,7 +143,7 @@ describe('analytics:template:delete', () => {
     })
     .stdout()
     .command(['analytics:template:delete', '--noprompt', '--decouple', '--templateid', templateId])
-    .it('runs analytics:template:delete --templateid 0Nkxx000000000zCAA --noprompt --decouple', ctx => {
+    .it('runs analytics:template:delete --templateid 0Nkxx000000000zCAA --noprompt --decouple', (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('decoupleAppSuccess', [appLabel, appId]));
       expect(folderGets, '# of folder GETs').to.equal(1);
       // the puts are the decouple() calls

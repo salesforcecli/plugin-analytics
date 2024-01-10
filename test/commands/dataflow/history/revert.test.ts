@@ -6,7 +6,7 @@
  */
 
 import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/command/lib/test';
+import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
 
 core.Messages.importMessagesDirectory(__dirname);
 const messages = core.Messages.loadMessages('@salesforce/analytics', 'history');
@@ -22,7 +22,7 @@ describe('analytics:dataflow:history:revert', () => {
     .command(['analytics:dataflow:history:revert', '--dataflowid', dataflowId, '--historyid', dataflowHistoryId])
     .it(
       'runs analytics:dataflow:history:revert --dataflowid 0FK9A0000008SDWWA2 --historyid 0Rm9A00000006yeSAA',
-      ctx => {
+      (ctx) => {
         expect(ctx.stdout).to.contain(messages.getMessage('revertSuccess', [dataflowId, dataflowHistoryId]));
       }
     );

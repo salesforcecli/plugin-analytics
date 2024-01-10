@@ -5,7 +5,7 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { expect, test } from '@salesforce/command/lib/test';
+import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
 import { JsonMap } from '@salesforce/ts-types';
 
 describe('analytics', () => {
@@ -15,7 +15,7 @@ describe('analytics', () => {
     .stdout()
     .stderr()
     .command(['analytics', '--json'])
-    .it('runs analytics --json', ctx => {
+    .it('runs analytics --json', (ctx) => {
       // if it can't find the version, it'll console.warn() so make sure it didn't
       expect(ctx.stderr).to.equal('');
 
@@ -31,7 +31,7 @@ describe('analytics', () => {
     .stdout()
     .stderr()
     .command(['analytics'])
-    .it('runs analytics', ctx => {
+    .it('runs analytics', (ctx) => {
       expect(ctx.stderr).to.equal('');
 
       expect(ctx.stdout).to.not.be.undefined.and.not.be.null.and.not.equal('');

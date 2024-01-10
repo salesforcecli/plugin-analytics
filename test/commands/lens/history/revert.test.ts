@@ -6,7 +6,7 @@
  */
 
 import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/command/lib/test';
+import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
 
 core.Messages.importMessagesDirectory(__dirname);
 const messages = core.Messages.loadMessages('@salesforce/analytics', 'history');
@@ -20,7 +20,7 @@ describe('analytics:lens:history:revert', () => {
     .withConnectionRequest(() => Promise.resolve({ asset: { id: lensId } }))
     .stdout()
     .command(['analytics:lens:history:revert', '--lensid', lensId, '--historyid', lensHistoryId])
-    .it('runs analytics:lens:history:revert --lensid 0FK9A0000008SDWWA2 --historyid 0Rm9A00000006yeSAA', ctx => {
+    .it('runs analytics:lens:history:revert --lensid 0FK9A0000008SDWWA2 --historyid 0Rm9A00000006yeSAA', (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('revertSuccess', [lensId, lensHistoryId]));
     });
 });

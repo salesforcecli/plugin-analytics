@@ -5,10 +5,10 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { UX } from '@salesforce/command';
+import { UX } from '@salesforce/sf-plugins-core';
 import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/command/lib/test';
-import { SfdxError } from '@salesforce/core';
+import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
+import { SfError } from '@salesforce/core';
 import { JsonMap } from '@salesforce/ts-types';
 import { AutoInstallRequestType, AutoInstallStatus } from '../../src/lib/analytics/autoinstall/autoinstall';
 
@@ -20,7 +20,7 @@ function requestWithStatus(status: AutoInstallStatus): AutoInstallRequestType & 
     id: '0UZ6g000000E9qDGAS',
     requestType: 'WaveEnable',
     requestName: 'AutoInstallRequest WaveEnable',
-    requestStatus: status
+    requestStatus: status,
   };
 }
 
@@ -40,7 +40,7 @@ describe('analytics:enable', () => {
     .withConnectionRequest(() => Promise.resolve(requestWithStatus('New')))
     .stdout()
     .command(['analytics:enable', '--async'])
-    .it('runs analytics:enable --async', ctx => {
+    .it('runs analytics:enable --async', (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('enableRequestSuccess', ['0UZ6g000000E9qDGAS']));
     });
 
@@ -50,7 +50,7 @@ describe('analytics:enable', () => {
     .stdout()
     // --wait 0 should be the same as --async so this should return right away
     .command(['analytics:enable', '--wait', '0'])
-    .it('runs analytics:enable --wait 0', ctx => {
+    .it('runs analytics:enable --wait 0', (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('enableRequestSuccess', ['0UZ6g000000E9qDGAS']));
     });
 
@@ -73,7 +73,7 @@ describe('analytics:enable', () => {
     .stub(global, 'setTimeout', stubTimeout)
     .stdout()
     .command(['analytics:enable'])
-    .it('runs analytics:enable with Success status', ctx => {
+    .it('runs analytics:enable with Success status', (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('enableSuccess', ['0UZ6g000000E9qDGAS']));
     });
 
@@ -95,7 +95,7 @@ describe('analytics:enable', () => {
     .stdout()
     .stderr()
     .command(['analytics:enable'])
-    .it('runs analytics:enable with Failed status', ctx => {
+    .it('runs analytics:enable with Failed status', (ctx) => {
       expect(ctx.stderr).to.contain(messages.getMessage('enableFailed', ['0UZ6g000000E9qDGAS']));
     });
 
@@ -117,7 +117,7 @@ describe('analytics:enable', () => {
     .stdout()
     .stderr()
     .command(['analytics:enable'])
-    .it('runs analytics:enable with Cancelled status', ctx => {
+    .it('runs analytics:enable with Cancelled status', (ctx) => {
       expect(ctx.stderr).to.contain(messages.getMessage('requestCancelled', ['0UZ6g000000E9qDGAS']));
     });
 
@@ -136,7 +136,7 @@ describe('analytics:enable', () => {
     .stdout()
     .stderr()
     .command(['analytics:enable', '-w', '.001'])
-    .it('runs analytics:enable with timeout in polling', ctx => {
+    .it('runs analytics:enable with timeout in polling', (ctx) => {
       expect(ctx.stderr).to.contain(messages.getMessage('requestPollingTimeout', ['0UZ6g000000E9qDGAS', 'InProgress']));
     });
 
@@ -147,7 +147,7 @@ describe('analytics:enable', () => {
       if (requestNum === 1) {
         return Promise.resolve(requestWithStatus('New'));
       } else if (requestNum === 3) {
-        return Promise.reject(new SfdxError('expected error in polling'));
+        return Promise.reject(new SfError('expected error in polling'));
       }
       return Promise.resolve(requestWithStatus('InProgress'));
     })
@@ -157,7 +157,7 @@ describe('analytics:enable', () => {
     .stdout()
     .stderr()
     .command(['analytics:enable'])
-    .it('runs analytics:enable with error during polling', ctx => {
+    .it('runs analytics:enable with error during polling', (ctx) => {
       expect(ctx.stderr).to.contain('expected error in polling');
     });
 });

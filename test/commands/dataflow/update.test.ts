@@ -6,7 +6,7 @@
  */
 
 import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/command/lib/test';
+import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
 
 core.Messages.importMessagesDirectory(__dirname);
 const messages = core.Messages.loadMessages('@salesforce/analytics', 'dataflow');
@@ -21,7 +21,7 @@ describe('analytics:dataflow:update', () => {
     .withConnectionRequest(() => Promise.resolve({ dataflowId, name: dataflowName }))
     .stdout()
     .command(['analytics:dataflow:update', '--dataflowid', dataflowId, '--dataflowstr', dataflowStr])
-    .it('runs analytics:dataflow:update --dataflowid 0FK9A0000008SDWWA2 --dataflowstr ' + dataflowStr, ctx => {
+    .it('runs analytics:dataflow:update --dataflowid 0FK9A0000008SDWWA2 --dataflowstr ' + dataflowStr, (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('updateDataflow', [dataflowName, dataflowId]));
     });
 });

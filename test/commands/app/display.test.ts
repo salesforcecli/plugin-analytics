@@ -6,7 +6,7 @@
  */
 
 import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/command/lib/test';
+import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
 
 core.Messages.importMessagesDirectory(__dirname);
 const messages = core.Messages.loadMessages('@salesforce/analytics', 'app');
@@ -17,25 +17,26 @@ function makeFolderJson(withAppLog: boolean, namespace?: string) {
   const json = {
     appLog: [
       {
-        message: 'Successfully created dataset [Dataset01234567890123456789012345678901234567891].'
+        message: 'Successfully created dataset [Dataset01234567890123456789012345678901234567891].',
       },
       {
-        message: 'Successfully created resource type [dashboard], label [Account Dashboard].'
+        message: 'Successfully created resource type [dashboard], label [Account Dashboard].',
       },
       {
         message:
-          'Successfully created resource type [workflow], label [Dataflow0123456789012345678901234567890123456789].'
+          'Successfully created resource type [workflow], label [Dataflow0123456789012345678901234567890123456789].',
       },
       {
         // this message does seem to really contain a trailing space in the server
-        message: 'Dataflow plan [0ePxx00000000KzEAI] completed with status [Success]. '
+        message: 'Dataflow plan [0ePxx00000000KzEAI] completed with status [Success]. ',
       },
       {
-        message: 'Successfully created resource type [xmd], label [Dataset0123456789012345678901234567890123456789_tp].'
+        message:
+          'Successfully created resource type [xmd], label [Dataset0123456789012345678901234567890123456789_tp].',
       },
       {
-        message: 'Creating application [foobar] was successful.'
-      }
+        message: 'Creating application [foobar] was successful.',
+      },
     ],
     applicationStatus: 'completedstatus',
     assetSharingUrl:
@@ -45,14 +46,14 @@ function makeFolderJson(withAppLog: boolean, namespace?: string) {
     createdBy: {
       id: '005xx000001XB1RAAW',
       name: 'User User',
-      profilePhotoUrl: '/profilephoto/005/T'
+      profilePhotoUrl: '/profilephoto/005/T',
     },
     createdDate: '2020-03-05T16:56:26.000Z',
     featuredAssets: {},
     icon: {
       id: '00lxx000000j9PxAAI',
       name: '16.png',
-      url: '/analytics/wave/web/proto/images/app/icons/16.png'
+      url: '/analytics/wave/web/proto/images/app/icons/16.png',
     },
     id: ID,
     isPinned: false,
@@ -60,7 +61,7 @@ function makeFolderJson(withAppLog: boolean, namespace?: string) {
     lastModifiedBy: {
       id: '005xx000001XB1RAAW',
       name: 'User User',
-      profilePhotoUrl: '/profilephoto/005/T'
+      profilePhotoUrl: '/profilephoto/005/T',
     },
     lastModifiedDate: '2020-03-05T16:56:29.000Z',
     name: 'foobar',
@@ -69,7 +70,7 @@ function makeFolderJson(withAppLog: boolean, namespace?: string) {
       create: true,
       manage: true,
       modify: true,
-      view: true
+      view: true,
     },
     shares: [
       {
@@ -77,15 +78,15 @@ function makeFolderJson(withAppLog: boolean, namespace?: string) {
         imageUrl: '/profilephoto/005/T',
         shareType: 'user',
         sharedWithId: '005xx000001XB1RAAW',
-        sharedWithLabel: 'User User'
-      }
+        sharedWithLabel: 'User User',
+      },
     ],
     templateOptions: {
       appAction: 'create',
       appActionDate: '2020-03-05T16:56:25.617Z',
       appActionUser: {
-        id: '005xx000001XB1RAAW'
-      }
+        id: '005xx000001XB1RAAW',
+      },
     },
     templateSourceId: '0Nkxx0000004DDACA2',
     templateValues: {
@@ -95,12 +96,12 @@ function makeFolderJson(withAppLog: boolean, namespace?: string) {
         createAllExternalFiles: true,
         createDataflow: true,
         createAllDatasetFiles: true,
-        createAllImages: true
-      }
+        createAllImages: true,
+      },
     },
     templateVersion: '1.1',
     type: 'folder',
-    url: '/services/data/v49.0/wave/folders/00lxx000000j9PxAAI'
+    url: '/services/data/v49.0/wave/folders/00lxx000000j9PxAAI',
   };
   if (!withAppLog) {
     json.appLog = [];
@@ -134,7 +135,7 @@ describe('analytics:app:display', () => {
     .withConnectionRequest(() => Promise.resolve(folderJsonNoLog))
     .stdout()
     .command(['analytics:app:display', '--folderid', ID])
-    .it(`runs analytics:app:display --folderid ${ID} (with no appLog)`, ctx => {
+    .it(`runs analytics:app:display --folderid ${ID} (with no appLog)`, (ctx) => {
       verifyAppDetails(ctx.stdout);
       expect(ctx.stdout).to.not.contain(messages.getMessage('displayLogHeader'));
     });
@@ -144,7 +145,7 @@ describe('analytics:app:display', () => {
     .withConnectionRequest(() => Promise.resolve(nsFolderJson))
     .stdout()
     .command(['analytics:app:display', '--folderid', ID])
-    .it(`runs analytics:app:display --folderid ${ID} (with namespace)`, ctx => {
+    .it(`runs analytics:app:display --folderid ${ID} (with namespace)`, (ctx) => {
       verifyAppDetails(ctx.stdout, 'AnlyTxHack');
       expect(ctx.stdout).to.not.contain(messages.getMessage('displayLogHeader'));
     });
@@ -154,7 +155,7 @@ describe('analytics:app:display', () => {
     .withConnectionRequest(() => Promise.resolve(folderJsonNoLog))
     .stdout()
     .command(['analytics:app:display', '--folderid', ID, '--applog'])
-    .it(`runs analytics:app:display --folderid ${ID} --applog (with no appLog)`, ctx => {
+    .it(`runs analytics:app:display --folderid ${ID} --applog (with no appLog)`, (ctx) => {
       verifyAppDetails(ctx.stdout);
       // we did --applog but there's not appLog available
       expect(ctx.stdout).to.contain(messages.getMessage('displayLogHeader'));
@@ -166,11 +167,11 @@ describe('analytics:app:display', () => {
     .withConnectionRequest(() => Promise.resolve(folderJsonLog))
     .stdout()
     .command(['analytics:app:display', '-f', ID])
-    .it(`runs analytics:app:display  f ${ID} (with appLog)`, ctx => {
+    .it(`runs analytics:app:display  f ${ID} (with appLog)`, (ctx) => {
       verifyAppDetails(ctx.stdout);
       // no -a, so no applog output
       expect(ctx.stdout).to.not.contain(messages.getMessage('displayLogHeader'));
-      folderJsonLog.appLog.forEach(line => {
+      folderJsonLog.appLog.forEach((line) => {
         expect(ctx.stdout).to.not.contain(line);
       });
     });
@@ -180,10 +181,10 @@ describe('analytics:app:display', () => {
     .withConnectionRequest(() => Promise.resolve(folderJsonLog))
     .stdout()
     .command(['analytics:app:display', '-f', ID, '-a'])
-    .it(`runs analytics:app:display  -f ${ID} -a (with appLog)`, ctx => {
+    .it(`runs analytics:app:display  -f ${ID} -a (with appLog)`, (ctx) => {
       verifyAppDetails(ctx.stdout);
       expect(ctx.stdout).to.contain(messages.getMessage('displayLogHeader'));
-      folderJsonLog.appLog.forEach(line => {
+      folderJsonLog.appLog.forEach((line) => {
         expect(ctx.stdout).to.contain(line.message.trim());
       });
     });

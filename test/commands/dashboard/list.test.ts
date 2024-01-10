@@ -6,7 +6,7 @@
  */
 
 import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/command/lib/test';
+import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
 
 core.Messages.importMessagesDirectory(__dirname);
 const messages = core.Messages.loadMessages('@salesforce/analytics', 'dashboard');
@@ -17,8 +17,8 @@ const dashBoardValues = [
     name: 'mydash',
     namespace: 'testNS',
     label: 'my dashboard',
-    folder: { id: '0llxx000000000zCAA', name: 'my app' }
-  }
+    folder: { id: '0llxx000000000zCAA', name: 'my app' },
+  },
 ];
 
 describe('analytics:dashboard:list', () => {
@@ -27,7 +27,7 @@ describe('analytics:dashboard:list', () => {
     .withConnectionRequest(() => Promise.resolve({ dashboards: dashBoardValues }))
     .stdout()
     .command(['analytics:dashboard:list'])
-    .it('runs analytics:dashboard:list', ctx => {
+    .it('runs analytics:dashboard:list', (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('dashboardsFound', [1]));
     });
 
@@ -36,7 +36,7 @@ describe('analytics:dashboard:list', () => {
     .withConnectionRequest(() => Promise.resolve({ dashboards: [] }))
     .stdout()
     .command(['analytics:dashboard:list'])
-    .it('runs analytics:dashboard:list', ctx => {
+    .it('runs analytics:dashboard:list', (ctx) => {
       expect(ctx.stdout).to.contain('No results found.');
     });
 });

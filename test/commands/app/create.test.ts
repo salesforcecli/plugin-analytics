@@ -7,7 +7,7 @@
 
 import { promises as fs } from 'fs';
 import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/command/lib/test';
+import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
 import { AnyJson, ensureJsonMap, ensureString } from '@salesforce/ts-types';
 import { StreamingClient } from '@salesforce/core';
 
@@ -16,9 +16,9 @@ const messages = core.Messages.loadMessages('@salesforce/analytics', 'app');
 const appId = '0llxx000000000zCAA';
 const testTemplateJson = {
   id: '0Nkxx000000000zCAA',
-  description: '',
+  summary: '',
   label: 'Test Template',
-  name: 'TestTemplate'
+  name: 'TestTemplate',
 };
 const sustainabilityTemplateJson = { id: '0Nkxx000000000zCAB', name: 'Sustainability', label: 'Sustainability' };
 
@@ -39,7 +39,7 @@ describe('analytics:app:create', () => {
 
   test
     .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
+    .withConnectionRequest((request) => {
       request = ensureJsonMap(request);
       if (request.method === 'GET') {
         // call for the template by id, it should return the one template
@@ -53,21 +53,21 @@ describe('analytics:app:create', () => {
     })
     .stdout()
     .command(['analytics:app:create', '--templateid', testTemplateJson.id, '--async'])
-    .it(`runs analytics:app:create --templateid ${testTemplateJson.id} --async`, ctx => {
+    .it(`runs analytics:app:create --templateid ${testTemplateJson.id} --async`, (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
       // request body should have values from the template GET
       expect(requestBody, 'requestBody').to.not.be.undefined;
       expect(requestBody, 'requestBody').to.include({
         templateSourceId: testTemplateJson.id,
         label: testTemplateJson.label,
-        name: testTemplateJson.name
+        name: testTemplateJson.name,
       });
     });
 
   // make sure --async --json returns the the app id
   test
     .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
+    .withConnectionRequest((request) => {
       request = ensureJsonMap(request);
       if (request.method === 'GET') {
         // call for the template by id, it should return the one template
@@ -80,20 +80,20 @@ describe('analytics:app:create', () => {
     })
     .stdout()
     .command(['analytics:app:create', '--templateid', testTemplateJson.id, '--async', '--json'])
-    .it(`runs analytics:app:create --templateid ${testTemplateJson.id} --async --json`, ctx => {
+    .it(`runs analytics:app:create --templateid ${testTemplateJson.id} --async --json`, (ctx) => {
       expect(ctx.stdout).to.not.be.undefined.and.not.be.null.and.not.equal('');
       const results = JSON.parse(ctx.stdout) as unknown;
       expect(results, 'result').to.deep.include({
         status: 0,
         result: {
-          id: appId
-        }
+          id: appId,
+        },
       });
     });
 
   test
     .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
+    .withConnectionRequest((request) => {
       request = ensureJsonMap(request);
       if (request.method === 'GET') {
         // call for the template by id, it should return the one template
@@ -108,7 +108,7 @@ describe('analytics:app:create', () => {
     .stdout()
     // --wait=0 should be the same as --async so this should return right away
     .command(['analytics:app:create', '-t', testTemplateJson.id, '-n', 'customname', '--wait=0'])
-    .it(`runs analytics:app:create -t ${testTemplateJson.id} -n customname --wait=0`, ctx => {
+    .it(`runs analytics:app:create -t ${testTemplateJson.id} -n customname --wait=0`, (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
       expect(requestBody, 'requestBody').to.not.be.undefined;
       expect(requestBody, 'requestBody').to.include({
@@ -116,18 +116,18 @@ describe('analytics:app:create', () => {
         templateSourceId: testTemplateJson.id,
         // but name and label should be from arg
         label: 'customname',
-        name: 'customname'
+        name: 'customname',
       });
     });
 
   test
     .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
+    .withConnectionRequest((request) => {
       request = ensureJsonMap(request);
       if (request.method === 'GET') {
         // call for all templates
         return Promise.resolve({
-          templates: [testTemplateJson, sustainabilityTemplateJson]
+          templates: [testTemplateJson, sustainabilityTemplateJson],
         });
       }
       if (request.method === 'POST') {
@@ -138,25 +138,25 @@ describe('analytics:app:create', () => {
     })
     .stdout()
     .command(['analytics:app:create', '--templatename', 'Sustainability', '--async'])
-    .it('runs analytics:app:create --templatename Sustainability --async', ctx => {
+    .it('runs analytics:app:create --templatename Sustainability --async', (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
       // request body should have values from the templates GET
       expect(requestBody, 'requestBody').to.not.be.undefined;
       expect(requestBody, 'requestBody').to.include({
         templateSourceId: sustainabilityTemplateJson.id,
         label: sustainabilityTemplateJson.label,
-        name: sustainabilityTemplateJson.name
+        name: sustainabilityTemplateJson.name,
       });
     });
 
   test
     .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
+    .withConnectionRequest((request) => {
       request = ensureJsonMap(request);
       if (request.method === 'GET') {
         // call for all templates
         return Promise.resolve({
-          templates: [testTemplateJson, sustainabilityTemplateJson]
+          templates: [testTemplateJson, sustainabilityTemplateJson],
         });
       }
       if (request.method === 'POST') {
@@ -167,7 +167,7 @@ describe('analytics:app:create', () => {
     })
     .stdout()
     .command(['analytics:app:create', '--templatename', 'Sustainability', '--appname', 'customname', '--async'])
-    .it('runs analytics:app:create --templatename Sustainability --appname customname --async', ctx => {
+    .it('runs analytics:app:create --templatename Sustainability --appname customname --async', (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
       expect(requestBody, 'requestBody').to.not.be.undefined;
       expect(requestBody, 'requestBody').to.include({
@@ -175,18 +175,18 @@ describe('analytics:app:create', () => {
         templateSourceId: sustainabilityTemplateJson.id,
         // but name and label should come from the cli arg
         label: 'customname',
-        name: 'customname'
+        name: 'customname',
       });
     });
 
   test
     .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
+    .withConnectionRequest((request) => {
       request = ensureJsonMap(request);
       if (request.method === 'GET') {
         // call for all templates
         return Promise.resolve({
-          templates: [testTemplateJson, sustainabilityTemplateJson]
+          templates: [testTemplateJson, sustainabilityTemplateJson],
         });
       }
       if (request.method === 'POST') {
@@ -204,11 +204,11 @@ describe('analytics:app:create', () => {
       'customname',
       '--appdescription',
       'customdesc',
-      '--async'
+      '--async',
     ])
     .it(
       'runs analytics:app:create --templatename Sustainability --appname customname --appdescription customdesc --async',
-      ctx => {
+      (ctx) => {
         expect(ctx.stdout).to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
         expect(requestBody, 'requestBody').to.not.be.undefined;
         expect(requestBody, 'requestBody').to.include({
@@ -217,14 +217,14 @@ describe('analytics:app:create', () => {
           // but name and label should come from the cli arg
           label: 'customname',
           name: 'customname',
-          description: 'customdesc'
+          summary: 'customdesc',
         });
       }
     );
 
   test
     .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
+    .withConnectionRequest((request) => {
       request = ensureJsonMap(request);
       if (request.method === 'POST') {
         saveOffRequestBody(request.body as string);
@@ -238,13 +238,13 @@ describe('analytics:app:create', () => {
           templateSourceId: testTemplateJson.id,
           assetIcon: '16.png',
           label: testTemplateJson.label,
-          name: testTemplateJson.name
+          name: testTemplateJson.name,
         })
       )
     )
     .stdout()
     .command(['analytics:app:create', '--definitionfile', 'config/foo.json', '--async'])
-    .it('runs analytics:app:create --definitionfile config/foo.json --async', ctx => {
+    .it('runs analytics:app:create --definitionfile config/foo.json --async', (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
       expect(requestBody, 'requestBody').to.not.be.undefined;
       expect(requestBody, 'requestBody').to.include({
@@ -252,13 +252,13 @@ describe('analytics:app:create', () => {
         templateSourceId: testTemplateJson.id,
         assetIcon: '16.png',
         label: testTemplateJson.label,
-        name: testTemplateJson.name
+        name: testTemplateJson.name,
       });
     });
 
   test
     .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
+    .withConnectionRequest((request) => {
       request = ensureJsonMap(request);
       if (request.method === 'POST') {
         saveOffRequestBody(request.body as string);
@@ -270,14 +270,14 @@ describe('analytics:app:create', () => {
       Promise.resolve(
         JSON.stringify({
           templateSourceId: testTemplateJson.id,
-          assetIcon: '16.png'
+          assetIcon: '16.png',
           // leave off name and label so it should use the name from the cli arg
         })
       )
     )
     .stdout()
     .command(['analytics:app:create', '-f', 'config/foo.json', '-n', 'customname', '-a'])
-    .it('runs analytics:app:create -f config/foo.json -n customname -a', ctx => {
+    .it('runs analytics:app:create -f config/foo.json -n customname -a', (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
       expect(requestBody, 'requestBody').to.not.be.undefined;
       expect(requestBody, 'requestBody').to.include({
@@ -286,13 +286,13 @@ describe('analytics:app:create', () => {
         assetIcon: '16.png',
         // but name and label should come from cli arg
         name: 'customname',
-        label: 'customname'
+        label: 'customname',
       });
     });
 
   test
     .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
+    .withConnectionRequest((request) => {
       request = ensureJsonMap(request);
       if (request.method === 'POST') {
         saveOffRequestBody(request.body as string);
@@ -305,21 +305,21 @@ describe('analytics:app:create', () => {
         JSON.stringify({
           assetIcon: '16.png',
           name: 'emptyapp',
-          label: 'Empty App'
+          label: 'Empty App',
           // leave off templateSourceId to make sure this finishes w/o the --async
         })
       )
     )
     .stdout()
     .command(['analytics:app:create', '-f', 'config/emptyapp.json'])
-    .it('runs analytics:app:create -f config/emptyapp.json', ctx => {
+    .it('runs analytics:app:create -f config/emptyapp.json', (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
       expect(requestBody, 'requestBody').to.not.be.undefined;
       expect(requestBody, 'requestBody').to.include({
         // request body should have fields from the readFile()
         assetIcon: '16.png',
         name: 'emptyapp',
-        label: 'Empty App'
+        label: 'Empty App',
       });
       // and it shouldn't have a template id listed
       expect(requestBody, 'requestBody').to.not.have.key('templateSourceId');
@@ -338,30 +338,30 @@ describe('analytics:app:create', () => {
               Status: 'Success',
               ItemLabel: 'foo',
               FolderId: 'test',
-              Message: 'Success'
+              Message: 'Success',
             },
-            event: { replayId: 20 }
-          })
+            event: { replayId: 20 },
+          }),
       };
     })
     .stub(fs, 'readFile', () =>
       Promise.resolve(
         JSON.stringify({
           templateSourceId: testTemplateJson.id,
-          assetIcon: '16.png'
+          assetIcon: '16.png',
         })
       )
     )
     .stdout()
     .command(['analytics:app:create', '--definitionfile', 'config/foo.json'])
-    .it('runs analytics:app:create --definitionfile config/foo.json (with success message)', ctx => {
+    .it('runs analytics:app:create --definitionfile config/foo.json (with success message)', (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('finishAppCreation', ['foo']));
     });
 
   // verify that we get the appId and streaming events when doing --json
   test
     .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
+    .withConnectionRequest((request) => {
       request = ensureJsonMap(request);
       if (request.method === 'POST') {
         return Promise.resolve({ id: appId });
@@ -383,24 +383,24 @@ describe('analytics:app:create', () => {
               Status: 'Success',
               ItemLabel: 'foo',
               FolderId: 'test',
-              Message: 'Success'
+              Message: 'Success',
             },
-            event: { replayId: 20 }
+            event: { replayId: 20 },
           });
-        }
+        },
       };
     })
     .stub(fs, 'readFile', () =>
       Promise.resolve(
         JSON.stringify({
           templateSourceId: testTemplateJson.id,
-          assetIcon: '16.png'
+          assetIcon: '16.png',
         })
       )
     )
     .stdout()
     .command(['analytics:app:create', '--definitionfile', 'config/foo.json', '--json'])
-    .it('runs analytics:app:create --definitionfile config/foo.json --json (with success message)', ctx => {
+    .it('runs analytics:app:create --definitionfile config/foo.json --json (with success message)', (ctx) => {
       expect(ctx.stdout).to.not.be.undefined.and.not.be.null.and.not.equal('');
       const results = JSON.parse(ctx.stdout) as unknown;
       expect(results, 'result').to.deep.include({
@@ -414,10 +414,10 @@ describe('analytics:app:create', () => {
               ItemLabel: 'foo',
               Message: 'Success',
               Status: 'Success',
-              Total: 0
-            }
-          ]
-        }
+              Total: 0,
+            },
+          ],
+        },
       });
     });
 
@@ -434,24 +434,24 @@ describe('analytics:app:create', () => {
               Status: 'Failed',
               ItemLabel: 'foo',
               FolderId: 'test',
-              Message: 'failed'
+              Message: 'failed',
             },
-            event: { replayId: 20 }
-          })
+            event: { replayId: 20 },
+          }),
       };
     })
     .stub(fs, 'readFile', () =>
       Promise.resolve(
         JSON.stringify({
           templateSourceId: testTemplateJson.id,
-          assetIcon: '16.png'
+          assetIcon: '16.png',
         })
       )
     )
     .stdout()
     .stderr()
     .command(['analytics:app:create', '--definitionfile', 'config/foo.json'])
-    .it('runs analytics:app:create --definitionfile config/foo.json (with failure message)', ctx => {
+    .it('runs analytics:app:create --definitionfile config/foo.json (with failure message)', (ctx) => {
       // this is in the list of events output
       expect(ctx.stdout).to.contain(messages.getMessage('finishAppCreationFailure', ['failed']));
       // and this is from the command failing
@@ -461,7 +461,7 @@ describe('analytics:app:create', () => {
   // verify --json on failure returns the app id and the events
   test
     .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
+    .withConnectionRequest((request) => {
       request = ensureJsonMap(request);
       if (request.method === 'POST') {
         return Promise.resolve({ id: appId });
@@ -483,25 +483,25 @@ describe('analytics:app:create', () => {
               Status: 'Failed',
               ItemLabel: 'foo',
               FolderId: 'test',
-              Message: 'failed'
+              Message: 'failed',
             },
-            event: { replayId: 20 }
+            event: { replayId: 20 },
           });
-        }
+        },
       };
     })
     .stub(fs, 'readFile', () =>
       Promise.resolve(
         JSON.stringify({
           templateSourceId: testTemplateJson.id,
-          assetIcon: '16.png'
+          assetIcon: '16.png',
         })
       )
     )
     .stderr()
     .stdout()
     .command(['analytics:app:create', '--definitionfile', 'config/foo.json', '--json'])
-    .it('runs analytics:app:create --definitionfile config/foo.json --json (with failure message)', ctx => {
+    .it('runs analytics:app:create --definitionfile config/foo.json --json (with failure message)', (ctx) => {
       // in tests, the output seems to go stdout
       const output = ctx.stderr || ctx.stdout || '';
       expect(output, 'output').to.not.equal('');
@@ -519,10 +519,10 @@ describe('analytics:app:create', () => {
               ItemLabel: 'foo',
               Message: 'failed',
               Status: 'Failed',
-              Total: 0
-            }
-          ]
-        }
+              Total: 0,
+            },
+          ],
+        },
       });
     });
 });

@@ -5,39 +5,47 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { flags, SfdxCommand } from '@salesforce/command';
-import { Messages, Org } from '@salesforce/core';
+import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import { Messages } from '@salesforce/core';
 
-import WaveTemplate from '../../../lib/analytics/template/wavetemplate';
+import WaveTemplate from '../../../lib/analytics/template/wavetemplate.js';
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.loadMessages('@salesforce/analytics', 'template');
 
-export default class List extends SfdxCommand {
-  public static description = messages.getMessage('listCommandDescription');
-  public static longDescription = messages.getMessage('listCommandLongDescription');
+type TemplateInfo = {
+  name?: string;
+  label?: string;
+  templateid?: string;
+  templatetype?: string;
+  folderid?: string;
+  namespace?: string;
+  templateversion?: string;
+};
 
-  public static examples = [
+export default class List extends SfCommand<TemplateInfo[]> {
+  public static readonly summary = messages.getMessage('listCommandDescription');
+  public static readonly description = messages.getMessage('listCommandLongDescription');
+
+  public static readonly examples = [
     '$ sfdx analytics:template:list',
     '$ sfdx analytics:template:list --includembeddedtemplates',
-    '$ sfdx analytics:template:list --includesalesforcetemplates'
+    '$ sfdx analytics:template:list --includesalesforcetemplates',
   ];
 
-  protected static flagsConfig = {
-    includesalesforcetemplates: flags.boolean({
+  public static readonly flags = {
+    targetOrg: requiredOrgFlagWithDeprecations,
+    includesalesforcetemplates: Flags.boolean({
       char: 'a',
-      description: messages.getMessage('includeSalesforceTemplatesFlagDescription'),
-      longDescription: messages.getMessage('includeSalesforceTemplatesFlagLongDescription')
+      summary: messages.getMessage('includeSalesforceTemplatesFlagDescription'),
+      description: messages.getMessage('includeSalesforceTemplatesFlagLongDescription'),
     }),
-    includembeddedtemplates: flags.boolean({
+    includembeddedtemplates: Flags.boolean({
       char: 'e',
-      description: messages.getMessage('includeEmbeddedAppTemplatesFlagDescription'),
-      longDescription: messages.getMessage('includeEmbeddedAppTemplatesFlagLongDescription')
-    })
+      summary: messages.getMessage('includeEmbeddedAppTemplatesFlagDescription'),
+      description: messages.getMessage('includeEmbeddedAppTemplatesFlagLongDescription'),
+    }),
   };
-
-  protected static requiresUsername = true;
-  protected static requiresProject = false;
 
   protected static tableColumnData = [
     'name',
@@ -46,25 +54,34 @@ export default class List extends SfdxCommand {
     'templatetype',
     'folderid',
     'namespace',
-    'templateversion'
+    'templateversion',
   ];
 
   public async run() {
-    const wavetemplate = new WaveTemplate(this.org as Org);
-    const templates = ((await wavetemplate.list(!!this.flags.includembeddedtemplates)) || [])
-      .filter(template => this.flags.includesalesforcetemplates || template.id?.startsWith('0Nk'))
-      .map(template => ({
+    const { flags } = await this.parse(List);
+    const wavetemplate = new WaveTemplate(flags.targetOrg);
+    const templates = ((await wavetemplate.list(flags.includembeddedtemplates)) || [])
+      .filter((template) => flags.includesalesforcetemplates || template.id?.startsWith('0Nk'))
+      .map((template) => ({
         name: template.name,
         label: template.label,
         templateid: template.id,
         templatetype: template.templateType,
-        folderid: template.folderSource?.id ?? null,
+        folderid: template.folderSource?.id,
         namespace: template.namespace,
-        templateversion: template.releaseInfo?.templateVersion ?? null
+        templateversion: template.releaseInfo?.templateVersion,
       }));
-    if (templates.length) {
-      this.ux.styledHeader(messages.getMessage('templatesFound', [templates.length]));
-    }
+    this.styledHeader(messages.getMessage('templatesFound', [templates.length]));
+    this.table(templates, {
+      name: { header: 'name' },
+      label: { header: 'label' },
+      templateid: { header: 'templateid' },
+      templatetype: { header: 'templatetype' },
+      folderid: { header: 'folderid' },
+      namespace: { header: 'namespace' },
+      templateversion: { header: 'templateversion' },
+    });
+
     return templates;
   }
 }

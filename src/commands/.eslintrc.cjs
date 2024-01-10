@@ -6,9 +6,13 @@
  */
 
 module.exports = {
-  extends: '../../.eslintrc.js',
+  extends: '../../.eslintrc.cjs',
   rules: {
     // we don't support any api usages of the commands, so we don't need to enforce return types decls
-    '@typescript-eslint/explicit-module-boundary-types': 'off'
-  }
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
+    // TODO: add startsWith's to all the Flags.salesforceId()
+    'sf-plugin/id-flag-suggestions': 'off',
+    // all our awaits-in-loops are intentional (e.g. either need previous result, or want to to do 1-at-a-time)
+    'no-await-in-loop': 'off',
+  },
 };

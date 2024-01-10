@@ -6,14 +6,14 @@
  */
 
 import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/command/lib/test';
+import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
 
 core.Messages.importMessagesDirectory(__dirname);
 const messages = core.Messages.loadMessages('@salesforce/analytics', 'template');
 
 const templateValues = [
   { name: 'foo', label: 'Foo Label', id: '0Nkxx000000000zCAA' },
-  { name: 'bar', label: 'Bar Label', id: 'file_based_template' }
+  { name: 'bar', label: 'Bar Label', id: 'file_based_template' },
 ];
 
 describe('analytics:template:list', () => {
@@ -22,7 +22,7 @@ describe('analytics:template:list', () => {
     .withConnectionRequest(() => Promise.resolve({ templates: templateValues }))
     .stdout()
     .command(['analytics:template:list'])
-    .it('runs analytics:template:list', ctx => {
+    .it('runs analytics:template:list', (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('templatesFound', [1]));
       expect(ctx.stdout).to.contain(templateValues[0].name);
       expect(ctx.stdout).to.contain(templateValues[0].label);
@@ -35,7 +35,7 @@ describe('analytics:template:list', () => {
     .withConnectionRequest(() => Promise.resolve({ templates: templateValues }))
     .stdout()
     .command(['analytics:template:list', '--includesalesforcetemplates'])
-    .it('runs analytics:template:list --includesalesforcetemplates', ctx => {
+    .it('runs analytics:template:list --includesalesforcetemplates', (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('templatesFound', [2]));
       expect(ctx.stdout).to.contain(templateValues[0].name);
       expect(ctx.stdout).to.contain(templateValues[0].label);
@@ -48,7 +48,7 @@ describe('analytics:template:list', () => {
     .withConnectionRequest(() => Promise.resolve({ templates: templateValues }))
     .stdout()
     .command(['analytics:template:list', '--includembeddedtemplates'])
-    .it('runs analytics:template:list --includembeddedtemplates', ctx => {
+    .it('runs analytics:template:list --includembeddedtemplates', (ctx) => {
       expect(ctx.stdout).to.contain(messages.getMessage('templatesFound', [1]));
       expect(ctx.stdout).to.contain(templateValues[0].name);
       expect(ctx.stdout).to.contain(templateValues[0].label);
@@ -59,7 +59,7 @@ describe('analytics:template:list', () => {
     .withConnectionRequest(() => Promise.resolve({ templates: [] }))
     .stdout()
     .command(['analytics:template:list'])
-    .it('runs analytics:template:list', ctx => {
+    .it('runs analytics:template:list', (ctx) => {
       expect(ctx.stdout).to.contain('No results found.');
       expect(ctx.stdout).to.not.contain(templateValues[0].id);
       expect(ctx.stdout).to.not.contain(templateValues[0].name);

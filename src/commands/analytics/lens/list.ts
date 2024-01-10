@@ -5,38 +5,42 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { SfdxCommand } from '@salesforce/command';
-import { Messages, Org } from '@salesforce/core';
+import { SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import { Messages } from '@salesforce/core';
 
-import Lens from '../../../lib/analytics/lens/lens';
+import Lens from '../../../lib/analytics/lens/lens.js';
 
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.loadMessages('@salesforce/analytics', 'lens');
 
-export default class List extends SfdxCommand {
-  public static description = messages.getMessage('listCommandDescription');
-  public static longDescription = messages.getMessage('listCommandLongDescription');
+export default class List extends SfCommand<
+  Array<{ lensid?: string; name?: string; namespace?: string; label?: string }>
+> {
+  public static readonly summary = messages.getMessage('listCommandDescription');
+  public static readonly description = messages.getMessage('listCommandLongDescription');
 
-  public static examples = ['$ sfdx analytics:lens:list'];
+  public static readonly examples = ['$ sfdx analytics:lens:list'];
 
-  protected static flagsConfig = {};
-
-  protected static requiresUsername = true;
-  protected static requiresProject = false;
-
-  protected static tableColumnData = ['lensid', 'name', 'label', 'namespace'];
+  public static readonly flags = {
+    targetOrg: requiredOrgFlagWithDeprecations,
+  };
 
   public async run() {
-    const lensSvc = new Lens(this.org as Org);
-    const lenses = ((await lensSvc.list()) || []).map(lens => ({
+    const { flags } = await this.parse(List);
+    const lensSvc = new Lens(flags.targetOrg);
+    const lenses = ((await lensSvc.list()) || []).map((lens) => ({
       lensid: lens.id,
       name: lens.name,
       namespace: lens.namespace,
-      label: lens.label
+      label: lens.label,
     }));
-    if (lenses.length) {
-      this.ux.styledHeader(messages.getMessage('lensesFound', [lenses.length]));
-    }
+    this.styledHeader(messages.getMessage('lensesFound', [lenses.length]));
+    this.table(lenses, {
+      lensid: { header: 'lensid' },
+      name: { header: 'name' },
+      namespace: { header: 'namespace' },
+      label: { header: 'label' },
+    });
     return lenses;
   }
 }
