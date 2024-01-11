@@ -9,7 +9,7 @@ import { Messages } from '@salesforce/core';
 
 import Recipe from '../../../lib/analytics/recipe/recipe.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'recipe');
 
 export default class List extends SfCommand<
@@ -29,8 +29,6 @@ export default class List extends SfCommand<
   public static readonly flags = {
     targetOrg: requiredOrgFlagWithDeprecations,
   };
-
-  protected static tableColumnData = ['recipeid', 'name', 'namespace', 'label', 'status'];
 
   public async run() {
     const { flags } = await this.parse(List);

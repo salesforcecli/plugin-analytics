@@ -4,7 +4,6 @@
  * Licensed under the BSD 3-Clause license.
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import { promises as fs } from 'node:fs';
 import { Flags, SfCommand, Ux, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
 import { Messages, SfError } from '@salesforce/core';
 
@@ -17,9 +16,9 @@ import {
   DEF_POLLING_INTERVAL,
   MIN_POLLING_INTERVAL,
 } from '../../../../lib/analytics/constants.js';
-import { throwWithData } from '../../../../lib/analytics/utils.js';
+import { fs, throwWithData } from '../../../../lib/analytics/utils.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'autoinstall');
 
 export default class Create extends SfCommand<AutoInstallRequestType | { id: string }> {
@@ -105,7 +104,7 @@ export default class Create extends SfCommand<AutoInstallRequestType | { id: str
     if (flags.appconfiguration) {
       const path = flags.appconfiguration;
       try {
-        json = JSON.parse(await fs.readFile(path, 'utf8'));
+        json = JSON.parse(await fs.readFile(path));
       } catch (e) {
         throw new SfError(
           `Error parsing ${path}`,

@@ -8,11 +8,11 @@
 import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
 import { Messages, SfError } from '@salesforce/core';
 import chalk from 'chalk';
-import moment = require('moment');
+import moment from 'moment';
 
 import DatasetSvc, { type DatasetType } from '../../../lib/analytics/dataset/dataset.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'dataset');
 
 function formatDate(s: string | undefined): string | undefined {

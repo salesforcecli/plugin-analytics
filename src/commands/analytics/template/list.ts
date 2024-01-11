@@ -10,7 +10,7 @@ import { Messages } from '@salesforce/core';
 
 import WaveTemplate from '../../../lib/analytics/template/wavetemplate.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'template');
 
 type TemplateInfo = {
@@ -46,16 +46,6 @@ export default class List extends SfCommand<TemplateInfo[]> {
       description: messages.getMessage('includeEmbeddedAppTemplatesFlagLongDescription'),
     }),
   };
-
-  protected static tableColumnData = [
-    'name',
-    'label',
-    'templateid',
-    'templatetype',
-    'folderid',
-    'namespace',
-    'templateversion',
-  ];
 
   public async run() {
     const { flags } = await this.parse(List);

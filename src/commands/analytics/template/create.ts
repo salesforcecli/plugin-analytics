@@ -10,7 +10,7 @@ import { Messages } from '@salesforce/core';
 
 import WaveTemplate from '../../../lib/analytics/template/wavetemplate.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'template');
 
 export default class Create extends SfCommand<string | undefined> {

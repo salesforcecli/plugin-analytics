@@ -5,11 +5,15 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
+import { Messages } from '@salesforce/core';
+import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js';
+import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
+import { expect } from 'chai';
+import List from '../../../src/commands/analytics/dataset/list.js';
+import { getStderr, getStdout, stubDefaultOrg } from '../../testutils.js';
 
-core.Messages.importMessagesDirectory(__dirname);
-const messages = core.Messages.loadMessages('@salesforce/analytics', 'dataset');
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
+const messages = Messages.loadMessages('@salesforce/analytics', 'dataset');
 
 const datasetJson = {
   createdBy: {
@@ -96,55 +100,72 @@ const nsDatasetJson = {
 };
 
 describe('analytics:dataset:list', () => {
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve({ datasets: [datasetJson, nsDatasetJson] }))
-    .stderr()
-    .stdout()
-    .command(['analytics:dataset:list'])
-    .it('runs analytics:dataset:list', (ctx) => {
-      expect(ctx.stderr, 'stderr').to.equal('');
-      expect(ctx.stdout, 'stdout').to.contain(messages.getMessage('datasetsFound', [2]));
-    });
+  const $$ = new TestContext();
+  const testOrg = new MockTestOrgData();
+  let sfCommandStubs: ReturnType<typeof stubSfCommandUx>;
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve({ datasets: [datasetJson, nsDatasetJson] }))
-    .stderr()
-    .stdout()
-    .command(['analytics:dataset:list', '--json'])
-    .it('runs analytics:dataset:list --json', (ctx) => {
-      expect(ctx.stderr, 'stderr').to.equal('');
-      expect(JSON.parse(ctx.stdout), 'stdout json').to.deep.equal({
-        status: 0,
-        result: [
-          {
-            id: datasetJson.id,
-            name: datasetJson.name,
-            label: datasetJson.label,
-            currentversionid: datasetJson.currentVersionId,
-            folderid: datasetJson.folder.id,
-          },
-          {
-            id: nsDatasetJson.id,
-            namespace: nsDatasetJson.namespace,
-            name: nsDatasetJson.name,
-            label: nsDatasetJson.label,
-            currentversionid: nsDatasetJson.currentVersionId,
-            folderid: nsDatasetJson.folder.id,
-          },
-        ],
-      });
-    });
+  beforeEach(() => {
+    sfCommandStubs = stubSfCommandUx($$.SANDBOX);
+  });
+  afterEach(() => {
+    $$.restore();
+  });
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve({ datasets: [] }))
-    .stderr()
-    .stdout()
-    .command(['analytics:dataset:list'])
-    .it('runs analytics:dataset:list (no results)', (ctx) => {
-      expect(ctx.stderr).to.equal('');
-      expect(ctx.stdout).to.contain('No results found.');
+  it('runs', async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = () => Promise.resolve({ datasets: [datasetJson, nsDatasetJson] });
+
+    await List.run([]);
+    expect(getStderr(sfCommandStubs), 'stderr').to.equal('');
+    const stdout = getStdout(sfCommandStubs);
+    expect(stdout, 'stdout').to.contain(messages.getMessage('datasetsFound', [2]));
+    expect(stdout, 'stdout').to.contain(datasetJson.id);
+    expect(stdout, 'stdout').to.contain(datasetJson.label);
+    expect(stdout, 'stdout').to.contain(nsDatasetJson.id);
+    expect(stdout, 'stdout').to.contain(nsDatasetJson.label);
+    expect(stdout, 'stdout').to.contain(nsDatasetJson.namespace);
+  });
+
+  it('run: --json', async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = () => Promise.resolve({ datasets: [datasetJson, nsDatasetJson] });
+
+    await List.run([]);
+    expect(getStderr(sfCommandStubs), 'stderr').to.equal('');
+    expect(JSON.parse(getStdout(sfCommandStubs)), 'stdout json').to.deep.equal({
+      status: 0,
+      result: [
+        {
+          id: datasetJson.id,
+          name: datasetJson.name,
+          label: datasetJson.label,
+          currentversionid: datasetJson.currentVersionId,
+          folderid: datasetJson.folder.id,
+        },
+        {
+          id: nsDatasetJson.id,
+          namespace: nsDatasetJson.namespace,
+          name: nsDatasetJson.name,
+          label: nsDatasetJson.label,
+          currentversionid: nsDatasetJson.currentVersionId,
+          folderid: nsDatasetJson.folder.id,
+        },
+      ],
     });
+  });
+
+  it('runs (no results)', async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = () => Promise.resolve({ datasets: [] });
+
+    await List.run([]);
+    expect(getStderr(sfCommandStubs), 'stderr').to.equal('');
+    const stdout = getStdout(sfCommandStubs);
+    expect(stdout, 'stdout').to.contain('No results found.');
+    expect(stdout, 'stdout').to.not.contain(datasetJson.id);
+    expect(stdout, 'stdout').to.not.contain(datasetJson.label);
+    expect(stdout, 'stdout').to.not.contain(nsDatasetJson.id);
+    expect(stdout, 'stdout').to.not.contain(nsDatasetJson.label);
+    expect(stdout, 'stdout').to.not.contain(nsDatasetJson.namespace);
+  });
 });

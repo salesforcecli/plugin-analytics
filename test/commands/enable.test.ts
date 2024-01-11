@@ -5,19 +5,23 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { UX } from '@salesforce/sf-plugins-core';
-import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
-import { SfError } from '@salesforce/core';
-import { JsonMap } from '@salesforce/ts-types';
-import { AutoInstallRequestType, AutoInstallStatus } from '../../src/lib/analytics/autoinstall/autoinstall';
+import { Messages, SfError } from '@salesforce/core';
+import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js';
+import { stubSfCommandUx, stubSpinner } from '@salesforce/sf-plugins-core';
+import { stubMethod } from '@salesforce/ts-sinon';
+import { JsonMap, ensureJsonMap } from '@salesforce/ts-types';
+import { expect } from 'chai';
+import { AutoInstallRequestType, AutoInstallStatus } from '../../src/lib/analytics/autoinstall/autoinstall.js';
+import Enable from '../../src/commands/analytics/enable.js';
+import { getJsonOutput, getStderr, getStdout, stubDefaultOrg } from '../testutils.js';
 
-core.Messages.importMessagesDirectory(__dirname);
-const messages = core.Messages.loadMessages('@salesforce/analytics', 'autoinstall');
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
+const messages = Messages.loadMessages('@salesforce/analytics', 'autoinstall');
 
-function requestWithStatus(status: AutoInstallStatus): AutoInstallRequestType & JsonMap {
+const DEFAULT_REQUEST_ID = '0UZ6g000000E9qDGAS';
+function requestWithStatus(status: AutoInstallStatus, id = DEFAULT_REQUEST_ID): AutoInstallRequestType & JsonMap {
   return {
-    id: '0UZ6g000000E9qDGAS',
+    id,
     requestType: 'WaveEnable',
     requestName: 'AutoInstallRequest WaveEnable',
     requestStatus: status,
@@ -29,34 +33,46 @@ function stubTimeout(callback?: () => unknown) {
 }
 
 describe('analytics:enable', () => {
-  // use this so we can have return different values from withConnectionRequest() to simulate polling
-  let requestNum: number;
+  const $$ = new TestContext();
+  const testOrg = new MockTestOrgData();
+  let sfCommandStubs: ReturnType<typeof stubSfCommandUx>;
+
   beforeEach(() => {
-    requestNum = 0;
+    sfCommandStubs = stubSfCommandUx($$.SANDBOX);
+    stubSpinner($$.SANDBOX);
+    // have the polling happen immediately
+    stubMethod($$.SANDBOX, global, 'setTimeout').callsFake(stubTimeout);
+  });
+  afterEach(() => {
+    $$.restore();
   });
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve(requestWithStatus('New')))
-    .stdout()
-    .command(['analytics:enable', '--async'])
-    .it('runs analytics:enable --async', (ctx) => {
-      expect(ctx.stdout).to.contain(messages.getMessage('enableRequestSuccess', ['0UZ6g000000E9qDGAS']));
-    });
+  it('runs: --async', async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = () => Promise.resolve(requestWithStatus('New'));
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve(requestWithStatus('New')))
-    .stdout()
-    // --wait 0 should be the same as --async so this should return right away
-    .command(['analytics:enable', '--wait', '0'])
-    .it('runs analytics:enable --wait 0', (ctx) => {
-      expect(ctx.stdout).to.contain(messages.getMessage('enableRequestSuccess', ['0UZ6g000000E9qDGAS']));
-    });
+    const result = await Enable.run(['--async']);
+    expect(result).to.equal(DEFAULT_REQUEST_ID);
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => {
+    const stdout = getStdout(sfCommandStubs);
+    expect(stdout, 'stdout').to.contain(messages.getMessage('enableRequestSuccess', [DEFAULT_REQUEST_ID]));
+  });
+
+  it('runs: --wait 0', async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = () => Promise.resolve(requestWithStatus('New'));
+
+    const result = await Enable.run(['--wait', '0']);
+    expect(result, 'result').to.equal(DEFAULT_REQUEST_ID);
+
+    const stdout = getStdout(sfCommandStubs);
+    expect(stdout, 'stdout').to.contain(messages.getMessage('enableRequestSuccess', [DEFAULT_REQUEST_ID]));
+  });
+
+  it('runs with Success status', async () => {
+    await stubDefaultOrg($$, testOrg);
+    let requestNum = 0;
+    $$.fakeConnectionRequest = () => {
       requestNum++;
       if (requestNum === 1) {
         return Promise.resolve(requestWithStatus('New'));
@@ -65,21 +81,21 @@ describe('analytics:enable', () => {
         return Promise.resolve(requestWithStatus('Success'));
       }
       return Promise.resolve(requestWithStatus('InProgress'));
-    })
-    // hide the output from the UX spinner, since it bypasses stdout()
-    .stub(UX.prototype, 'startSpinner', () => {})
-    .stub(UX.prototype, 'stopSpinner', () => {})
-    // skip the delay in setTimeout() so the test runs faster
-    .stub(global, 'setTimeout', stubTimeout)
-    .stdout()
-    .command(['analytics:enable'])
-    .it('runs analytics:enable with Success status', (ctx) => {
-      expect(ctx.stdout).to.contain(messages.getMessage('enableSuccess', ['0UZ6g000000E9qDGAS']));
-    });
+    };
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => {
+    const result = await Enable.run([]);
+    expect(typeof result, 'result type').to.equal('object');
+    expect((result as AutoInstallRequestType).id, 'request id').to.equal(DEFAULT_REQUEST_ID);
+    expect((result as AutoInstallRequestType).requestStatus, 'request status').to.equal('Success');
+
+    const stdout = getStdout(sfCommandStubs);
+    expect(stdout, 'stdout').to.contain(messages.getMessage('enableSuccess', [DEFAULT_REQUEST_ID]));
+  });
+
+  it('runs with Failed status', async () => {
+    await stubDefaultOrg($$, testOrg);
+    let requestNum = 0;
+    $$.fakeConnectionRequest = () => {
       requestNum++;
       if (requestNum === 1) {
         return Promise.resolve(requestWithStatus('New'));
@@ -88,20 +104,30 @@ describe('analytics:enable', () => {
         return Promise.resolve(requestWithStatus('Failed'));
       }
       return Promise.resolve(requestWithStatus('InProgress'));
-    })
-    .stub(UX.prototype, 'startSpinner', () => {})
-    .stub(UX.prototype, 'stopSpinner', () => {})
-    .stub(global, 'setTimeout', stubTimeout)
-    .stdout()
-    .stderr()
-    .command(['analytics:enable'])
-    .it('runs analytics:enable with Failed status', (ctx) => {
-      expect(ctx.stderr).to.contain(messages.getMessage('enableFailed', ['0UZ6g000000E9qDGAS']));
-    });
+    };
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => {
+    try {
+      await Enable.run(['--json']);
+      expect.fail('Expected an error');
+    } catch (e: unknown) {
+      expect(e, 'error').to.be.instanceOf(SfError);
+      expect((e as SfError).message, 'error message').to.contain(
+        messages.getMessage('enableFailed', [DEFAULT_REQUEST_ID])
+      );
+      // oclif strips out the data field from the original SfError for the error that gets thrown out of run(), but it
+      // does log it in the output json for --json
+      const json = getJsonOutput(sfCommandStubs);
+      expect(ensureJsonMap(json).data, 'json data field').to.include({
+        id: DEFAULT_REQUEST_ID,
+        requestStatus: 'Failed',
+      });
+    }
+  });
+
+  it('runs with Cancelled status', async () => {
+    await stubDefaultOrg($$, testOrg);
+    let requestNum = 0;
+    $$.fakeConnectionRequest = () => {
       requestNum++;
       if (requestNum === 1) {
         return Promise.resolve(requestWithStatus('New'));
@@ -110,54 +136,69 @@ describe('analytics:enable', () => {
         return Promise.resolve(requestWithStatus('Cancelled'));
       }
       return Promise.resolve(requestWithStatus('InProgress'));
-    })
-    .stub(UX.prototype, 'startSpinner', () => {})
-    .stub(UX.prototype, 'stopSpinner', () => {})
-    .stub(global, 'setTimeout', stubTimeout)
-    .stdout()
-    .stderr()
-    .command(['analytics:enable'])
-    .it('runs analytics:enable with Cancelled status', (ctx) => {
-      expect(ctx.stderr).to.contain(messages.getMessage('requestCancelled', ['0UZ6g000000E9qDGAS']));
-    });
+    };
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => {
+    try {
+      await Enable.run([]);
+      expect.fail('Expected an error');
+    } catch (error: unknown) {
+      expect(error, 'error').to.be.instanceOf(SfError);
+      expect((error as SfError).message, 'error message').to.contain(
+        messages.getMessage('requestCancelled', [DEFAULT_REQUEST_ID])
+      );
+    }
+  });
+
+  it('runs with timeout in polling', async () => {
+    await stubDefaultOrg($$, testOrg);
+    let requestNum = 0;
+    $$.fakeConnectionRequest = () => {
       requestNum++;
       if (requestNum === 1) {
         return Promise.resolve(requestWithStatus('New'));
       }
       return Promise.resolve(requestWithStatus('InProgress'));
-    })
-    .stub(UX.prototype, 'startSpinner', () => {})
-    .stub(UX.prototype, 'stopSpinner', () => {})
-    .stub(global, 'setTimeout', stubTimeout)
-    .stdout()
-    .stderr()
-    .command(['analytics:enable', '-w', '.001'])
-    .it('runs analytics:enable with timeout in polling', (ctx) => {
-      expect(ctx.stderr).to.contain(messages.getMessage('requestPollingTimeout', ['0UZ6g000000E9qDGAS', 'InProgress']));
-    });
+    };
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => {
+    try {
+      await Enable.run(['--wait', '.001']);
+      expect.fail('Expected exception');
+    } catch (error) {
+      expect(error, 'error').to.be.instanceOf(SfError);
+      expect((error as SfError).message, 'error message)').to.contain(
+        messages.getMessage('requestPollingTimeout', ['0UZ6g000000E9qDGAS', 'InProgress'])
+      );
+    }
+
+    const stderr = getStderr(sfCommandStubs);
+    expect(stderr, 'stderr').to.contain(
+      messages.getMessage('requestPollingTimeout', ['0UZ6g000000E9qDGAS', 'InProgress'])
+    );
+  });
+
+  it('runs with error during polling', async () => {
+    await stubDefaultOrg($$, testOrg);
+    let requestNum = 0;
+    const errorMessage = 'expected error in polling';
+    $$.fakeConnectionRequest = () => {
       requestNum++;
       if (requestNum === 1) {
         return Promise.resolve(requestWithStatus('New'));
       } else if (requestNum === 3) {
-        return Promise.reject(new SfError('expected error in polling'));
+        return Promise.reject(new SfError(errorMessage));
       }
       return Promise.resolve(requestWithStatus('InProgress'));
-    })
-    .stub(UX.prototype, 'startSpinner', () => {})
-    .stub(UX.prototype, 'stopSpinner', () => {})
-    .stub(global, 'setTimeout', stubTimeout)
-    .stdout()
-    .stderr()
-    .command(['analytics:enable'])
-    .it('runs analytics:enable with error during polling', (ctx) => {
-      expect(ctx.stderr).to.contain('expected error in polling');
-    });
+    };
+
+    try {
+      await Enable.run([]);
+      expect.fail('Expected exception');
+    } catch (error) {
+      expect(error, 'error').to.be.instanceOf(SfError);
+      expect((error as SfError).message, 'error message)').to.contain(errorMessage);
+    }
+
+    const stderr = getStderr(sfCommandStubs);
+    expect(stderr, 'stderr').to.contain(errorMessage);
+  });
 });

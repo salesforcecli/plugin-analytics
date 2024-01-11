@@ -9,7 +9,7 @@ import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/s
 import { Messages } from '@salesforce/core';
 import Dashboard from '../../../../lib/analytics/dashboard/dashboard.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'history');
 
 export default class Revert extends SfCommand<string | undefined> {

@@ -5,11 +5,15 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
+import { Messages } from '@salesforce/core';
+import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js';
+import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
+import { expect } from 'chai';
+import Display from '../../../src/commands/analytics/dataset/display.js';
+import { getStderr, getStdout, stubDefaultOrg } from '../../testutils.js';
 
-core.Messages.importMessagesDirectory(__dirname);
-const messages = core.Messages.loadMessages('@salesforce/analytics', 'dataset');
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
+const messages = Messages.loadMessages('@salesforce/analytics', 'dataset');
 
 const datasetJson = {
   createdBy: {
@@ -96,74 +100,84 @@ const liveDatasetJson = {
 };
 
 describe('analytics:dataset:display', () => {
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve(datasetJson))
-    .stdout()
-    .command(['analytics:dataset:display', '--datasetid', datasetJson.id])
-    .it(`runs analytics:dataset:display --datasetid ${datasetJson.id}`, (ctx) => {
-      expect(ctx.stdout).to.contain(messages.getMessage('displayDetailHeader'));
-      expect(ctx.stdout).to.contain(datasetJson.id);
-      expect(ctx.stdout).to.contain(datasetJson.name);
-      expect(ctx.stdout).to.contain(datasetJson.datasetType);
-      expect(ctx.stdout).to.contain(datasetJson.folder.id);
-      expect(ctx.stdout).to.contain(datasetJson.createdBy.name);
-      expect(ctx.stdout).to.contain(datasetJson.lastModifiedBy.name);
-      expect(ctx.stdout).to.not.contain('Live Connection Name');
-    });
+  const $$ = new TestContext();
+  const testOrg = new MockTestOrgData();
+  let sfCommandStubs: ReturnType<typeof stubSfCommandUx>;
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve(datasetJson))
-    .stdout()
-    .command(['analytics:dataset:display', '--datasetname', datasetJson.name])
-    .it(`runs analytics:dataset:display --datasetname ${datasetJson.name}`, (ctx) => {
-      expect(ctx.stdout).to.contain(messages.getMessage('displayDetailHeader'));
-      expect(ctx.stdout).to.contain(datasetJson.id);
-      expect(ctx.stdout).to.contain(datasetJson.name);
-      expect(ctx.stdout).to.contain(datasetJson.datasetType);
-      expect(ctx.stdout).to.contain(datasetJson.folder.id);
-      expect(ctx.stdout).to.contain(datasetJson.createdBy.name);
-      expect(ctx.stdout).to.contain(datasetJson.lastModifiedBy.name);
-    });
+  beforeEach(() => {
+    sfCommandStubs = stubSfCommandUx($$.SANDBOX);
+  });
+  afterEach(() => {
+    $$.restore();
+  });
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve(liveDatasetJson))
-    .stdout()
-    .command(['analytics:dataset:display', '-n', liveDatasetJson.name])
-    .it(`runs analytics:dataset:display -n ${liveDatasetJson.name} (live dataset)`, (ctx) => {
-      expect(ctx.stdout).to.contain(messages.getMessage('displayDetailHeader'));
-      expect(ctx.stdout).to.match(new RegExp(`^Id\\s+${liveDatasetJson.id}$`, 'm'));
-      expect(ctx.stdout).to.match(new RegExp(`^Namespace\\s+${liveDatasetJson.namespace}$`, 'm'));
-      expect(ctx.stdout).to.match(new RegExp(`^Name\\s+${liveDatasetJson.name}$`, 'm'));
-      expect(ctx.stdout).to.match(new RegExp(`^Label\\s+${liveDatasetJson.label}$`, 'm'));
-      expect(ctx.stdout).to.match(new RegExp(`^Type\\s+${liveDatasetJson.datasetType}$`, 'm'));
-      expect(ctx.stdout).to.match(new RegExp(`^Current Version Id\\s+${liveDatasetJson.currentVersionId}$`, 'm'));
-      expect(ctx.stdout).to.match(new RegExp(`^Folder Id\\s+${liveDatasetJson.folder.id}$`, 'm'));
-      expect(ctx.stdout).to.match(new RegExp(`^Folder Label\\s+${liveDatasetJson.folder.label}$`, 'm'));
-      expect(ctx.stdout).to.match(new RegExp(`^Created By\\s+${liveDatasetJson.createdBy.name}$`, 'm'));
-      expect(ctx.stdout).to.match(new RegExp(`^Last Modified By\\s+${liveDatasetJson.lastModifiedBy.name}$`, 'm'));
-      expect(ctx.stdout).to.match(
-        new RegExp(`^Live Connection Name\\s+${liveDatasetJson.liveConnection.connectionName}$`, 'm')
-      );
-      expect(ctx.stdout).to.match(
-        new RegExp(`^Live Connection Label\\s+${liveDatasetJson.liveConnection.connectionLabel}$`, 'm')
-      );
-      expect(ctx.stdout).to.match(
-        new RegExp(`^Live Connection Type\\s+${liveDatasetJson.liveConnection.connectionType}$`, 'm')
-      );
-      expect(ctx.stdout).to.match(
-        new RegExp(`^Live Connection Source Object\\s+${liveDatasetJson.liveConnection.sourceObjectName}$`, 'm')
-      );
-    });
+  it(`runs: --datasetid ${datasetJson.id}`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = () => Promise.resolve(datasetJson);
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.reject(new Error('Should not have been called')))
-    .stderr()
-    .command(['analytics:dataset:display'])
-    .it('runs analytics:dataset:display', (ctx) => {
-      expect(ctx.stderr).to.contain(messages.getMessage('missingRequiredField'));
-    });
+    await Display.run(['--datasetid', datasetJson.id]);
+    const stdout = getStdout(sfCommandStubs);
+    expect(stdout, 'stdout').to.contain(messages.getMessage('displayDetailHeader'));
+    expect(stdout, 'stdout').to.contain(datasetJson.id);
+    expect(stdout, 'stdout').to.contain(datasetJson.name);
+    expect(stdout, 'stdout').to.contain(datasetJson.datasetType);
+    expect(stdout, 'stdout').to.contain(datasetJson.folder.id);
+    expect(stdout, 'stdout').to.contain(datasetJson.createdBy.name);
+    expect(stdout, 'stdout').to.contain(datasetJson.lastModifiedBy.name);
+    expect(stdout, 'stdout').to.not.contain('Live Connection Name');
+  });
+
+  it(`runs: --datasetname ${datasetJson.name}`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = () => Promise.resolve(datasetJson);
+
+    await Display.run(['--datasetname', datasetJson.name]);
+    const stdout = getStdout(sfCommandStubs);
+    expect(stdout, 'stdout').to.contain(messages.getMessage('displayDetailHeader'));
+    expect(stdout, 'stdout').to.contain(datasetJson.id);
+    expect(stdout, 'stdout').to.contain(datasetJson.name);
+    expect(stdout, 'stdout').to.contain(datasetJson.datasetType);
+    expect(stdout, 'stdout').to.contain(datasetJson.folder.id);
+    expect(stdout, 'stdout').to.contain(datasetJson.createdBy.name);
+    expect(stdout, 'stdout').to.contain(datasetJson.lastModifiedBy.name);
+  });
+
+  it(`runs: -n ${liveDatasetJson.name}`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = () => Promise.resolve(datasetJson);
+
+    await Display.run(['-n', liveDatasetJson.name]);
+    const stdout = getStdout(sfCommandStubs);
+    expect(stdout, 'stdout').to.contain(messages.getMessage('displayDetailHeader'));
+    expect(stdout, 'stdout').to.match(new RegExp(`^Id\\s+${liveDatasetJson.id}$`, 'm'));
+    expect(stdout, 'stdout').to.match(new RegExp(`^Namespace\\s+${liveDatasetJson.namespace}$`, 'm'));
+    expect(stdout, 'stdout').to.match(new RegExp(`^Name\\s+${liveDatasetJson.name}$`, 'm'));
+    expect(stdout, 'stdout').to.match(new RegExp(`^Label\\s+${liveDatasetJson.label}$`, 'm'));
+    expect(stdout, 'stdout').to.match(new RegExp(`^Type\\s+${liveDatasetJson.datasetType}$`, 'm'));
+    expect(stdout, 'stdout').to.match(new RegExp(`^Current Version Id\\s+${liveDatasetJson.currentVersionId}$`, 'm'));
+    expect(stdout, 'stdout').to.match(new RegExp(`^Folder Id\\s+${liveDatasetJson.folder.id}$`, 'm'));
+    expect(stdout, 'stdout').to.match(new RegExp(`^Folder Label\\s+${liveDatasetJson.folder.label}$`, 'm'));
+    expect(stdout, 'stdout').to.match(new RegExp(`^Created By\\s+${liveDatasetJson.createdBy.name}$`, 'm'));
+    expect(stdout, 'stdout').to.match(new RegExp(`^Last Modified By\\s+${liveDatasetJson.lastModifiedBy.name}$`, 'm'));
+    expect(stdout, 'stdout').to.match(
+      new RegExp(`^Live Connection Name\\s+${liveDatasetJson.liveConnection.connectionName}$`, 'm')
+    );
+    expect(stdout, 'stdout').to.match(
+      new RegExp(`^Live Connection Label\\s+${liveDatasetJson.liveConnection.connectionLabel}$`, 'm')
+    );
+    expect(stdout, 'stdout').to.match(
+      new RegExp(`^Live Connection Type\\s+${liveDatasetJson.liveConnection.connectionType}$`, 'm')
+    );
+    expect(stdout, 'stdout').to.match(
+      new RegExp(`^Live Connection Source Object\\s+${liveDatasetJson.liveConnection.sourceObjectName}$`, 'm')
+    );
+  });
+
+  it('runs (missing required field', async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = () => Promise.reject(new Error('Should not have been called'));
+
+    await Display.run([]);
+    expect(getStderr(sfCommandStubs), 'stderr').to.contain(messages.getMessage('missingRequiredField'));
+  });
 });

@@ -5,42 +5,82 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
+import { Messages } from '@salesforce/core';
+import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js';
+import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
+import { expect } from 'chai';
+import { AnyJson, ensureJsonMap, ensureString } from '@salesforce/ts-types';
+import Update from '../../../src/commands/analytics/dashboard/update.js';
+import { getStdout, stubDefaultOrg } from '../../testutils.js';
 
-core.Messages.importMessagesDirectory(__dirname);
-const messages = core.Messages.loadMessages('@salesforce/analytics', 'dashboard');
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
+const messages = Messages.loadMessages('@salesforce/analytics', 'dashboard');
 const dashboardId = '0FKxx0000004GNwGAM';
 const currentHistoryId = '0Rmxx0000004IPkCAM';
 
 describe('analytics:dashboard:update', () => {
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve({ id: dashboardId }))
-    .stdout()
-    .command(['analytics:dashboard:update', '--dashboardid', dashboardId, '--currenthistoryid', currentHistoryId])
-    .it(
-      'runs analytics:dashboard:update  --dashboardid 0FKxx0000004GNwGAM --currenthistoryid 0Rmxx0000004IPkCAM',
-      (ctx) => {
-        expect(ctx.stdout).to.contain(messages.getMessage('updateSuccess', [currentHistoryId]));
+  const $$ = new TestContext();
+  const testOrg = new MockTestOrgData();
+  let sfCommandStubs: ReturnType<typeof stubSfCommandUx>;
+
+  beforeEach(() => {
+    sfCommandStubs = stubSfCommandUx($$.SANDBOX);
+  });
+  afterEach(() => {
+    $$.restore();
+  });
+
+  it(`runs: --dashboardid ${dashboardId} --currenthistoryid ${currentHistoryId}`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    let requestBody: AnyJson | undefined;
+    $$.fakeConnectionRequest = (request) => {
+      request = ensureJsonMap(request);
+      if (ensureString(request.method) === 'PATCH') {
+        requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
+        return Promise.resolve({ id: dashboardId });
       }
-    );
+      return Promise.reject();
+    };
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve({ id: dashboardId }))
-    .stdout()
-    .command(['analytics:dashboard:update', '--dashboardid', dashboardId, '--removecurrenthistory'])
-    .it('runs analytics:dashboard:update  --dashboardid 0FKxx0000004GNwGAM --removecurrenthistory', (ctx) => {
-      expect(ctx.stdout).to.contain(messages.getMessage('updateRemoveSuccess', []));
-    });
+    await Update.run(['--dashboardid', dashboardId, '--currenthistoryid', currentHistoryId]);
+    const stdout = getStdout(sfCommandStubs);
+    expect(stdout, 'stdout').to.contain(messages.getMessage('updateSuccess', [currentHistoryId]));
+    expect(requestBody, 'request body').to.deep.equal({ currentHistoryId });
+  });
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve({ id: dashboardId }))
-    .stdout()
-    .command(['analytics:dashboard:update', '--dashboardid', dashboardId])
-    .it('runs analytics:dashboard:update  --dashboardid 0FKxx0000004GNwGAM', (ctx) => {
-      expect(ctx.stdout).to.contain(messages.getMessage('updateRemoveSuccess', []));
-    });
+  it(`runs: --dashboardid ${dashboardId} --removecurrenthistory`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    let requestBody: AnyJson | undefined;
+    $$.fakeConnectionRequest = (request) => {
+      request = ensureJsonMap(request);
+      if (ensureString(request.method) === 'PATCH') {
+        requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
+        return Promise.resolve({ id: dashboardId });
+      }
+      return Promise.reject();
+    };
+
+    await Update.run(['--dashboardid', dashboardId, '--removecurrenthistory']);
+    const stdout = getStdout(sfCommandStubs);
+    expect(stdout, 'stdout').to.contain(messages.getMessage('updateRemoveSuccess', []));
+    expect(requestBody, 'request body').to.deep.equal({ currentHistoryId: '' });
+  });
+
+  it(`runs: --dashboardid ${dashboardId}`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    let requestBody: AnyJson | undefined;
+    $$.fakeConnectionRequest = (request) => {
+      request = ensureJsonMap(request);
+      if (ensureString(request.method) === 'PATCH') {
+        requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
+        return Promise.resolve({ id: dashboardId });
+      }
+      return Promise.reject();
+    };
+
+    await Update.run(['--dashboardid', dashboardId]);
+    const stdout = getStdout(sfCommandStubs);
+    expect(stdout, 'stdout').to.contain(messages.getMessage('updateRemoveSuccess', []));
+    expect(requestBody, 'request body').to.deep.equal({ currentHistoryId: '' });
+  });
 });

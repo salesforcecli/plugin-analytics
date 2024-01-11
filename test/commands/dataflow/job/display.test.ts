@@ -5,13 +5,16 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
+import { Messages } from '@salesforce/core';
+import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js';
+import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
+import { expect } from 'chai';
+import Display from '../../../../src/commands/analytics/dataflow/job/display.js';
+import { getStdout, stubDefaultOrg } from '../../../testutils.js';
 
-core.Messages.importMessagesDirectory(__dirname);
-const messages = core.Messages.loadMessages('@salesforce/analytics', 'dataflow');
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
+const messages = Messages.loadMessages('@salesforce/analytics', 'dataflow');
 
-const dataflowJobId = '030EE00000Cfj3uYAB';
 const dataflowJob = {
   id: '03CEE00000CBRKX2A5',
   label: 'mydf',
@@ -24,12 +27,25 @@ const dataflowJob = {
 };
 
 describe('analytics:dataflow:job:display', () => {
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve(dataflowJob))
-    .stdout()
-    .command(['analytics:dataflow:job:display', '--dataflowjobid', dataflowJobId])
-    .it('runs analytics:dataflow:job:display --dataflowjobid ' + dataflowJobId, (ctx) => {
-      expect(ctx.stdout).to.contain(messages.getMessage('displayDetailHeader'));
-    });
+  const $$ = new TestContext();
+  const testOrg = new MockTestOrgData();
+  let sfCommandStubs: ReturnType<typeof stubSfCommandUx>;
+
+  beforeEach(() => {
+    sfCommandStubs = stubSfCommandUx($$.SANDBOX);
+  });
+  afterEach(() => {
+    $$.restore();
+  });
+
+  it(`runs: --dataflowjobid ${dataflowJob.id}`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = () => Promise.resolve(dataflowJob);
+
+    await Display.run(['--dataflowjobid', dataflowJob.id]);
+    const stdout = getStdout(sfCommandStubs);
+    expect(stdout, 'stdout').to.contain(messages.getMessage('displayDetailHeader'));
+    expect(stdout, 'stdout').to.contain(dataflowJob.id);
+    expect(stdout, 'stdout').to.contain(dataflowJob.label);
+  });
 });

@@ -15,9 +15,6 @@ npm-error.log
 yarn-error.log
 lerna-debug.log
 
-# compiled source
-oclif.manifest.json
-
 # test artifacts
 *xunit.xml
 *checkstyle.xml
@@ -52,3 +49,6 @@ node_modules
 .idea
 *.swp
 .sfdx
+
+oclif.manifest.json
+oclif.lock

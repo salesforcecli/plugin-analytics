@@ -9,7 +9,7 @@ import { Messages } from '@salesforce/core';
 
 import AutoInstall from '../../../../lib/analytics/autoinstall/autoinstall.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'autoinstall');
 
 export default class Cancel extends SfCommand<void> {

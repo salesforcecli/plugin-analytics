@@ -14,7 +14,7 @@ import Folder, { CreateAppBody } from '../app/folder.js';
 import { throwWithData } from '../utils.js';
 import WaveAssetEvent from './waveAssetEvent.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'app');
 
 export type StreamingResult = {

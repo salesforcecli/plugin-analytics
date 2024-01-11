@@ -5,32 +5,47 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
+import { Messages } from '@salesforce/core';
+import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js';
+import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
+import { expect } from 'chai';
+import List from '../../../src/commands/analytics/dataflow/list.js';
+import { getStdout, stubDefaultOrg } from '../../testutils.js';
 
-core.Messages.importMessagesDirectory(__dirname);
-const messages = core.Messages.loadMessages('@salesforce/analytics', 'dataflow');
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
+const messages = Messages.loadMessages('@salesforce/analytics', 'dataflow');
 
 const dataflowValues = [
   { id: '02Kxx0000004DghEAE', name: 'mydf', namespace: 'testNS', label: 'my mydf', type: 'dataflow' },
 ];
 
 describe('analytics:dataflow:list', () => {
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve({ dataflows: dataflowValues }))
-    .stdout()
-    .command(['analytics:dataflow:list'])
-    .it('runs analytics:dataflow:list', (ctx) => {
-      expect(ctx.stdout).to.contain(messages.getMessage('dataflowsFound', [1]));
-    });
+  const $$ = new TestContext();
+  const testOrg = new MockTestOrgData();
+  let sfCommandStubs: ReturnType<typeof stubSfCommandUx>;
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve({ dataflows: [] }))
-    .stdout()
-    .command(['analytics:dataflow:list'])
-    .it('runs analytics:dataflow:list', (ctx) => {
-      expect(ctx.stdout).to.contain('No results found.');
-    });
+  beforeEach(() => {
+    sfCommandStubs = stubSfCommandUx($$.SANDBOX);
+  });
+  afterEach(() => {
+    $$.restore();
+  });
+
+  it('runs', async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = () => Promise.resolve({ dataflows: dataflowValues });
+
+    await List.run([]);
+    const stdout = getStdout(sfCommandStubs);
+    expect(stdout, 'stdout').to.contain(messages.getMessage('dataflowsFound', [1]));
+  });
+
+  it('runs (no results)', async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = () => Promise.resolve({ dataflows: [] });
+
+    await List.run([]);
+    const stdout = getStdout(sfCommandStubs);
+    expect(stdout, 'stdout').to.contain('No results found.');
+  });
 });

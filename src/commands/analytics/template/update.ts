@@ -11,7 +11,7 @@ import { Messages, Org, SfError } from '@salesforce/core';
 import Folder from '../../../lib/analytics/app/folder.js';
 import WaveTemplate from '../../../lib/analytics/template/wavetemplate.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'template');
 
 export default class Update extends SfCommand<
@@ -67,17 +67,6 @@ export default class Update extends SfCommand<
       description: messages.getMessage('assetVersionFlagLongDescription'),
     }),
   };
-
-  // protected static result: SfResult = {
-  //   tableColumnData: ['name', 'label', 'folderid'],
-  //   display() {
-  //     if (this.tableColumnData) {
-  //       if (Array.isArray(this.data) && this.data.length) {
-  //         this.table(this.data, this.tableColumnData);
-  //       }
-  //     }
-  //   },
-  // };
 
   public async run() {
     const { flags } = await this.parse(Update);

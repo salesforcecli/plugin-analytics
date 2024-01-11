@@ -12,7 +12,7 @@ import moment from 'moment';
 
 import Folder, { type AppFolder, AppStatus } from '../../../lib/analytics/app/folder.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'app');
 
 function formatDate(s: string | undefined): string | undefined {

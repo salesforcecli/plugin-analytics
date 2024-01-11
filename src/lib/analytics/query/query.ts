@@ -10,8 +10,9 @@ import { Connection, Messages, SfError } from '@salesforce/core';
 import { type AnyJson } from '@salesforce/ts-types';
 import DatasetSvc, { DatasetType } from '../dataset/dataset.js';
 import { connectRequest } from '../request.js';
+import { CommandUx } from '../utils.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'query');
 
 export const LIMIT_FLAG = Flags.integer({
@@ -206,19 +207,24 @@ export default class QuerySvc {
    */
   public async runQueryCommand(
     query: QueryRequest,
-    params: { ux?: Ux; limit?: number; resultformat?: string; dryrun?: false }
+    params: { ux?: CommandUx; limit?: number; resultformat?: string; dryrun?: false }
   ): Promise<QueryResponse>;
   public async runQueryCommand(
     query: QueryRequest,
-    params: { ux?: Ux; limit?: number; resultformat?: string; dryrun: true }
+    params: { ux?: CommandUx; limit?: number; resultformat?: string; dryrun: true }
   ): Promise<undefined>;
   public async runQueryCommand(
     query: QueryRequest,
-    { ux, limit, resultformat, dryrun }: { ux?: Ux; limit?: number; resultformat?: string; dryrun: boolean }
+    { ux, limit, resultformat, dryrun }: { ux?: CommandUx; limit?: number; resultformat?: string; dryrun: boolean }
   ): Promise<QueryResponse | undefined>;
   public async runQueryCommand(
     query: QueryRequest,
-    { ux, limit, resultformat, dryrun = false }: { ux?: Ux; limit?: number; resultformat?: string; dryrun?: boolean }
+    {
+      ux,
+      limit,
+      resultformat,
+      dryrun = false,
+    }: { ux?: CommandUx; limit?: number; resultformat?: string; dryrun?: boolean }
   ): Promise<QueryResponse | undefined> {
     if (dryrun) {
       ux?.log(messages.getMessage('dryrunHeader'));
@@ -238,19 +244,24 @@ export default class QuerySvc {
    */
   public async runExternalQueryCommand(
     query: ExternalQueryRequest,
-    params: { ux?: Ux; limit?: number; resultformat?: string; dryrun?: false }
+    params: { ux?: CommandUx; limit?: number; resultformat?: string; dryrun?: false }
   ): Promise<QueryResponse>;
   public async runExternalQueryCommand(
     query: ExternalQueryRequest,
-    params: { ux?: Ux; limit?: number; resultformat?: string; dryrun: true }
+    params: { ux?: CommandUx; limit?: number; resultformat?: string; dryrun: true }
   ): Promise<undefined>;
   public async runExternalQueryCommand(
     query: ExternalQueryRequest,
-    { ux, limit, resultformat, dryrun }: { ux?: Ux; limit?: number; resultformat?: string; dryrun: boolean }
+    { ux, limit, resultformat, dryrun }: { ux?: CommandUx; limit?: number; resultformat?: string; dryrun: boolean }
   ): Promise<QueryResponse | undefined>;
   public async runExternalQueryCommand(
     query: ExternalQueryRequest,
-    { ux, limit, resultformat, dryrun = false }: { ux?: Ux; limit?: number; resultformat?: string; dryrun?: boolean }
+    {
+      ux,
+      limit,
+      resultformat,
+      dryrun = false,
+    }: { ux?: CommandUx; limit?: number; resultformat?: string; dryrun?: boolean }
   ): Promise<QueryResponse | undefined> {
     if (dryrun) {
       ux?.log(messages.getMessage('dryrunHeader'));
@@ -270,7 +281,7 @@ export default class QuerySvc {
    */
   private processQueryCommandResponse(
     response: QueryResponse,
-    { ux, limit, resultformat }: { ux?: Ux; limit?: number; resultformat?: string }
+    { ux, limit, resultformat }: { ux?: CommandUx; limit?: number; resultformat?: string }
   ): QueryResponse {
     const results = getQueryResults(response);
     const records = results && Array.isArray(results?.records) ? results.records : [];
@@ -278,7 +289,7 @@ export default class QuerySvc {
       records.length = limit;
     }
 
-    if (ux) {
+    if (ux && !ux.jsonEnabled) {
       if (resultformat === 'json') {
         ux.styledJSON(response as AnyJson);
       } else {
@@ -312,7 +323,7 @@ export function convertRowValue(value: unknown): string {
   return Array.isArray(value) ? '[' + value.join(',') + ']' : typeof value === 'string' ? value : String(value);
 }
 
-function writeCsvLine(ux: Ux, values: unknown[], delim = ','): void {
+function writeCsvLine(ux: CommandUx, values: unknown[], delim = ','): void {
   let line = '';
   for (let i = 0; i < values.length; i++) {
     if (i !== 0) {

@@ -5,9 +5,36 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
+import { promises as _fs } from 'node:fs';
 import { SfError } from '@salesforce/core';
+import { SfCommand } from '@salesforce/sf-plugins-core';
 import _get from 'lodash.get';
 import chalk, { ChalkInstance } from 'chalk';
+
+export type CommandUx = Pick<SfCommand<unknown>, 'log' | 'logJson' | 'styledJSON' | 'styledHeader' | 'table'> & {
+  jsonEnabled: boolean;
+};
+/** Return an obejct that proxies to the ux methods on the command.
+ * This avoids making a new Ux and seems to work nicer with the test code.
+ */
+export function commandUx<T>(command: SfCommand<T>): CommandUx {
+  return {
+    jsonEnabled: command.jsonEnabled(),
+    log: command.log.bind(command),
+    logJson: command.logJson.bind(command),
+    styledJSON: command.styledJSON.bind(command),
+    styledHeader: command.styledHeader.bind(command),
+    table: command.table.bind(command),
+  };
+}
+
+/** Export file system utility methods.
+ * We need mostly for testing, since we can't stub the real node:fs since oclif uses that during testing.
+ * Also we need to export as an object since this is an ES module and you can't stub top-level function from those.
+ */
+export const fs = {
+  readFile: (path: string, charset: BufferEncoding = 'utf8') => _fs.readFile(path, charset),
+};
 
 export function throwWithData(mesg: string, data: unknown): never {
   const e = new SfError(mesg);

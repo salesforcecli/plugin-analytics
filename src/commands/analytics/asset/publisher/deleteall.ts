@@ -10,7 +10,7 @@ import { Messages } from '@salesforce/core';
 
 import Publisher from '../../../../lib/analytics/publisher/publisher.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'asset');
 
 export default class Deleteall extends SfCommand<string> {

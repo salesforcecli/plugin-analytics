@@ -10,6 +10,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 
+import { createRequire } from 'node:module';
 import { SfCommand } from '@salesforce/sf-plugins-core';
 
 const asciiSignature = (version: string) => `
@@ -58,6 +59,9 @@ export default class Analytics extends SfCommand<{ adxVersion: string }> {
   public static get version(): string {
     if (!this.cachedVersion) {
       try {
+        // no more direct require() in node 18+ w/ type: module, and an import with { type: 'json' } doesn't work
+        // with the way the tests build either, so do it manually
+        const require = createRequire(import.meta.url);
         const pkg = require('../../package.json') as Record<string, unknown>;
         Analytics.cachedVersion = (pkg && typeof pkg.version === 'string' && pkg.version.trim()) || '<unknown>';
       } catch (e) {

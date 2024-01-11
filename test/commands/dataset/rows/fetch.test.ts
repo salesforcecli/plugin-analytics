@@ -7,17 +7,20 @@
 // the test data is actual data from a server, which uses _ in field names
 /* eslint-disable camelcase */
 
-import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
-import { SfError } from '@salesforce/core';
+import { Messages, SfError } from '@salesforce/core';
+import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js';
+import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
+import { expect } from 'chai';
 import { AnyJson, JsonMap, ensureJsonMap, ensureString } from '@salesforce/ts-types';
-import { DatasetType } from '../../../../src/lib/analytics/dataset/dataset';
-import { QueryResponse } from '../../../../src/lib/analytics/query/query';
-import { xmdJson } from './fetch-xmd';
-import { liveDatasetFieldsJson, liveDatasetJson, liveSqlResponseJson } from './live-dataset-json';
+import Fetch from '../../../../src/commands/analytics/dataset/rows/fetch.js';
+import { DatasetType } from '../../../../src/lib/analytics/dataset/dataset.js';
+import { QueryResponse } from '../../../../src/lib/analytics/query/query.js';
+import { getStderr, getStdout, stubDefaultOrg } from '../../../testutils.js';
+import { xmdJson } from './fetch-xmd.js';
+import { liveDatasetFieldsJson, liveDatasetJson, liveSqlResponseJson } from './live-dataset-json.js';
 
-core.Messages.importMessagesDirectory(__dirname);
-const queryMessages = core.Messages.loadMessages('@salesforce/analytics', 'query');
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
+const queryMessages = Messages.loadMessages('@salesforce/analytics', 'query');
 
 const datasetJson: DatasetType & JsonMap = {
   createdBy: {
@@ -216,17 +219,17 @@ const saqlResponse: QueryResponse & JsonMap = {
     records: [
       {
         AVP: 'Bob Crowson',
-        Adjusted_COGS: 772506.99,
+        Adjusted_COGS: 772_506.99,
         DIVISION_NUM: 1,
         Division_Name: 'BCU',
         Location_Description: 'Billings MT Yard',
         Location_Name: 'ABC - BILLINGS, #409',
         Online_Code: 'BILLMTYD',
-        Regular_GM: 210685.9,
+        Regular_GM: 210_685.9,
         SVP: 'Debra Kesner',
-        Sales: 983192.89,
+        Sales: 983_192.89,
         State: 'MT',
-        Total_GM: 210685.9,
+        Total_GM: 210_685.9,
         Year: '1/1/17',
       },
     ],
@@ -237,83 +240,79 @@ const saqlResponse: QueryResponse & JsonMap = {
 };
 
 describe('analytics:dataset:rows:fetch', () => {
-  let requestBody: AnyJson | undefined;
-  function saveOffRequestBody(json: string | undefined) {
-    requestBody = undefined;
-    try {
-      requestBody = json && (JSON.parse(json) as AnyJson);
-    } catch (e) {
-      expect.fail('Error parsing request body: ' + (e instanceof Error ? e.message : String(e)));
-    }
-  }
+  const $$ = new TestContext();
+  const testOrg = new MockTestOrgData();
+  let sfCommandStubs: ReturnType<typeof stubSfCommandUx>;
 
   beforeEach(() => {
-    requestBody = undefined;
+    sfCommandStubs = stubSfCommandUx($$.SANDBOX);
+  });
+  afterEach(() => {
+    $$.restore();
   });
 
   // test regular dataset and xmd
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest((request) => {
+  it(`runs: -i ${datasetJson.id}`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    let requestBody: AnyJson | undefined;
+    $$.fakeConnectionRequest = (request) => {
       request = ensureJsonMap(request);
       const url = ensureString(request.url);
-      if (request.method === 'GET' && url.indexOf('/wave/datasets/') >= 0) {
-        if (url.indexOf('/xmds/main') >= 0) {
+      if (request.method === 'GET' && url.includes('/wave/datasets/')) {
+        if (url.includes('/xmds/main')) {
           return Promise.resolve(xmdJson);
         } else {
           return Promise.resolve(datasetJson);
         }
-      } else if (request.method === 'POST' && url.indexOf('/wave/query') >= 0) {
-        saveOffRequestBody(ensureString(request.body));
+      } else if (request.method === 'POST' && url.includes('/wave/query')) {
+        requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
         return Promise.resolve(saqlResponse);
       }
       return Promise.reject(new SfError('Invalid connection request'));
-    })
-    .stderr()
-    .stdout()
-    .command(['analytics:dataset:rows:fetch', '-i', datasetJson.id as string])
-    .it(`runs analytics:dataset:rows:fetch -i ${datasetJson.id}`, (ctx) => {
-      expect(ctx.stderr, 'stderr').to.equal('');
-      const fieldNames = [
-        'AVP',
-        'Adjusted_COGS',
-        'DIVISION_NUM',
-        'Division_Name',
-        'Location_Description',
-        'Location_Name',
-        'Online_Code',
-        'Regular_GM',
-        'SVP',
-        'Sales',
-        'State',
-        'Total_GM',
-        'Year',
-      ];
-      const headerRegex = fieldNames.reduce((r, name, i) => {
-        if (i !== 0) {
-          r += '\\s+';
-        }
-        r += name;
-        return r;
-      }, '');
-      expect(ctx.stdout, 'stdout').to.match(new RegExp(headerRegex));
-      fieldNames.forEach((name, i) => {
-        const value = saqlResponse.results.records[0][name];
-        const regex = i !== 0 ? `\\s+${value}` : `${value}\\s+`;
-        expect(ctx.stdout, 'stdout').to.match(new RegExp(regex));
-      });
-      expect(ctx.stdout, 'stdout').to.contain(
-        queryMessages.getMessage('rowsFound', [saqlResponse.results.records.length])
-      );
-      expect(requestBody, 'post request body').to.deep.equal({
-        query: saqlResponse.query,
-      });
+    };
+
+    await Fetch.run(['-i', datasetJson.id!]);
+    expect(getStderr(sfCommandStubs), 'stderr').to.equal('');
+    const fieldNames = [
+      'AVP',
+      'Adjusted_COGS',
+      'DIVISION_NUM',
+      'Division_Name',
+      'Location_Description',
+      'Location_Name',
+      'Online_Code',
+      'Regular_GM',
+      'SVP',
+      'Sales',
+      'State',
+      'Total_GM',
+      'Year',
+    ];
+    const headerRegex = fieldNames.reduce((r, name, i) => {
+      if (i !== 0) {
+        r += '\\s+';
+      }
+      r += name;
+      return r;
+    }, '');
+    const stdout = getStdout(sfCommandStubs);
+    expect(stdout, 'stdout').to.match(new RegExp(headerRegex));
+    fieldNames.forEach((name, i) => {
+      const value = saqlResponse.results.records[0][name];
+      const regex = i !== 0 ? `\\s+${value}` : `${value}\\s+`;
+      expect(stdout, 'stdout').to.match(new RegExp(regex));
     });
+    expect(stdout, 'stdout').to.contain(queryMessages.getMessage('rowsFound', [saqlResponse.results.records.length]));
+    expect(requestBody, 'post request body').to.deep.equal({
+      query: saqlResponse.query,
+    });
+  });
 
   // test live dataset
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest((request) => {
+  it(`runs: --limit 1000 -n ${liveDatasetJson.name}`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    let requestBody: AnyJson | undefined;
+    $$.fakeConnectionRequest = (request) => {
       request = ensureJsonMap(request);
       const url = ensureString(request.url);
       if (request.method === 'GET' && url.endsWith('/wave/datasets/AIRLINE_DELAYS')) {
@@ -324,66 +323,63 @@ describe('analytics:dataset:rows:fetch', () => {
       ) {
         return Promise.resolve(liveDatasetFieldsJson);
       } else if (request.method === 'POST' && url.endsWith('/wave/dataConnectors/SnowflakeOne/query')) {
-        saveOffRequestBody(ensureString(request.body));
+        requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
         return Promise.resolve(liveSqlResponseJson);
       }
       return Promise.reject(new SfError('Invalid connection request'));
-    })
-    .stderr()
-    .stdout()
-    .command(['analytics:dataset:rows:fetch', '--limit', '1000', '-n', liveDatasetJson.name as string])
-    .it(`runs analytics:dataset:rows:fetch --limit 1000 -n ${liveDatasetJson.name}`, (ctx) => {
-      expect(ctx.stderr, 'stderr').to.equal('');
-      const fieldNames = liveDatasetFieldsJson.fields.map((f) => f.name);
-      const headerRegex = fieldNames.reduce((r, name, i) => {
-        if (i !== 0) {
-          r += '\\s+';
-        }
-        r += name;
-        return r;
-      }, '');
-      expect(ctx.stdout, 'stdout').to.match(new RegExp(headerRegex));
-      liveSqlResponseJson.records.forEach((record) => {
-        fieldNames.forEach((name, i) => {
-          const value = record[name];
-          const regex = i !== 0 ? `\\s+${value}` : `${value}\\s+`;
-          expect(ctx.stdout, 'stdout').to.match(new RegExp(regex));
-        });
+    };
+
+    await Fetch.run(['--limit', '1000', '-n', liveDatasetJson.name!]);
+    expect(getStderr(sfCommandStubs), 'stderr').to.equal('');
+    const fieldNames = liveDatasetFieldsJson.fields.map((f) => f.name);
+    const headerRegex = fieldNames.reduce((r, name, i) => {
+      if (i !== 0) {
+        r += '\\s+';
+      }
+      r += name;
+      return r;
+    }, '');
+    const stdout = getStdout(sfCommandStubs);
+    expect(stdout, 'stdout').to.match(new RegExp(headerRegex));
+    liveSqlResponseJson.records.forEach((record) => {
+      fieldNames.forEach((name, i) => {
+        const value = record[name];
+        const regex = i !== 0 ? `\\s+${value}` : `${value}\\s+`;
+        expect(stdout, 'stdout').to.match(new RegExp(regex));
       });
-      expect(ctx.stdout, 'stdout').to.contain(
-        queryMessages.getMessage('rowsFound', [liveSqlResponseJson.records.length])
-      );
-      expect(ensureJsonMap(requestBody).query, 'post request body query').to.match(
-        /^SELECT "YEAR_MONTH" AS "YEAR_MONTH",.+FROM "AIRLINE_DELAYS" LIMIT 1000$/
-      );
     });
+    expect(stdout, 'stdout').to.contain(queryMessages.getMessage('rowsFound', [liveSqlResponseJson.records.length]));
+    expect(ensureJsonMap(requestBody).query, 'post request body query').to.match(
+      /^SELECT "YEAR_MONTH" AS "YEAR_MONTH",.+FROM "AIRLINE_DELAYS" LIMIT 1000$/
+    );
+  });
 
   // test the --limit 0 special case
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest((request) => {
+  it(`runs: -n ${datasetJson.name} --limit 0`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    let requestBody: AnyJson | undefined;
+    $$.fakeConnectionRequest = (request) => {
       request = ensureJsonMap(request);
       const url = ensureString(request.url);
-      if (request.method === 'GET' && url.indexOf('/wave/datasets/') >= 0) {
-        if (url.indexOf('/xmds/main') >= 0) {
+      if (request.method === 'GET' && url.includes('/wave/datasets/')) {
+        if (url.includes('/xmds/main')) {
           return Promise.resolve(xmdJson);
         } else {
           return Promise.resolve(datasetJson);
         }
-      } else if (request.method === 'POST' && url.indexOf('/wave/query') >= 0) {
-        saveOffRequestBody(ensureString(request.body));
+      } else if (request.method === 'POST' && url.includes('/wave/query')) {
+        requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
         return Promise.resolve(saqlResponse);
       }
       return Promise.reject(new SfError('Invalid connection request'));
-    })
-    .stderr()
-    .stdout()
-    .command(['analytics:dataset:rows:fetch', '-n', datasetJson.name as string, '--limit', '0'])
-    .it(`runs analytics:dataset:rows:fetch -n ${datasetJson.name} --limit 0`, (ctx) => {
-      expect(ctx.stderr, 'stderr').to.equal('');
-      expect(ctx.stdout, 'stdout').to.contain(queryMessages.getMessage('rowsFound', [0]));
-      expect(requestBody, 'post request body').to.deep.equal({
-        query: saqlResponse.query + ' q = limit q 1;',
-      });
+    };
+
+    await Fetch.run(['-n', datasetJson.name!, '--limit', '0']);
+    expect(getStderr(sfCommandStubs), 'stderr').to.equal('');
+    const stdout = getStdout(sfCommandStubs);
+    expect(stdout, 'stdout').to.contain(queryMessages.getMessage('rowsFound', [0]));
+    expect(requestBody, 'post request body').to.deep.equal({
+      query: saqlResponse.query + ' q = limit q 1;',
     });
+  });
 });

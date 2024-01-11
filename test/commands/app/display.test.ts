@@ -5,13 +5,18 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
+import { Messages } from '@salesforce/core';
+import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js';
+import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
+import { expect } from 'chai';
+import Display from '../../../src/commands/analytics/app/display.js';
+import { getStdout, stubDefaultOrg } from '../../testutils.js';
 
-core.Messages.importMessagesDirectory(__dirname);
-const messages = core.Messages.loadMessages('@salesforce/analytics', 'app');
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
+const messages = Messages.loadMessages('@salesforce/analytics', 'app');
 
 const ID = '00lxx000000j9PxAAI';
+
 function makeFolderJson(withAppLog: boolean, namespace?: string) {
   // this is what the folder json looks like (49+, at least)
   const json = {
@@ -110,18 +115,18 @@ function makeFolderJson(withAppLog: boolean, namespace?: string) {
 }
 
 function verifyAppDetails(stdout: string, namespace?: string) {
-  expect(stdout).to.match(/^Name\s+foobar$/m);
-  expect(stdout).to.match(/^Label\s+foo bar$/m);
-  expect(stdout).to.match(new RegExp(`^Id\\s+${ID}$`, 'm'));
-  expect(stdout).to.match(/^Created By\s+User User$/m);
+  expect(stdout, 'stdout').to.match(/^Name\s+foobar$/m);
+  expect(stdout, 'stdout').to.match(/^Label\s+foo bar$/m);
+  expect(stdout, 'stdout').to.match(new RegExp(`^Id\\s+${ID}$`, 'm'));
+  expect(stdout, 'stdout').to.match(/^Created By\s+User User$/m);
   // just make sure it looks like a date, to avoid issues with timezone conversion
-  expect(stdout).to.match(/^Created Date\s+2020-03-\d\d \d\d:\d\d:\d\d$/m);
-  expect(stdout).to.match(/^Last Modified By\s+User User$/m);
-  expect(stdout).to.match(/^Last Modified Date\s+2020-03-\d\d \d\d:\d\d:\d\d$/m);
-  expect(stdout).to.match(/^Template Source Id\s+0Nkxx0000004DDACA2$/m);
-  expect(stdout).to.match(/^Template Version\s+1\.1$/m);
+  expect(stdout, 'stdout').to.match(/^Created Date\s+2020-03-\d\d \d\d:\d\d:\d\d$/m);
+  expect(stdout, 'stdout').to.match(/^Last Modified By\s+User User$/m);
+  expect(stdout, 'stdout').to.match(/^Last Modified Date\s+2020-03-\d\d \d\d:\d\d:\d\d$/m);
+  expect(stdout, 'stdout').to.match(/^Template Source Id\s+0Nkxx0000004DDACA2$/m);
+  expect(stdout, 'stdout').to.match(/^Template Version\s+1\.1$/m);
   if (namespace) {
-    expect(stdout).to.match(new RegExp(`^Namespace\\s+${namespace}$`, 'm'));
+    expect(stdout, 'stdout').to.match(new RegExp(`^Namespace\\s+${namespace}$`, 'm'));
   }
 }
 
@@ -130,62 +135,73 @@ describe('analytics:app:display', () => {
   const folderJsonLog = makeFolderJson(true);
   const nsFolderJson = makeFolderJson(false, 'AnlyTxHack');
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve(folderJsonNoLog))
-    .stdout()
-    .command(['analytics:app:display', '--folderid', ID])
-    .it(`runs analytics:app:display --folderid ${ID} (with no appLog)`, (ctx) => {
-      verifyAppDetails(ctx.stdout);
-      expect(ctx.stdout).to.not.contain(messages.getMessage('displayLogHeader'));
-    });
+  const $$ = new TestContext();
+  const testOrg = new MockTestOrgData();
+  let sfCommandStubs: ReturnType<typeof stubSfCommandUx>;
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve(nsFolderJson))
-    .stdout()
-    .command(['analytics:app:display', '--folderid', ID])
-    .it(`runs analytics:app:display --folderid ${ID} (with namespace)`, (ctx) => {
-      verifyAppDetails(ctx.stdout, 'AnlyTxHack');
-      expect(ctx.stdout).to.not.contain(messages.getMessage('displayLogHeader'));
-    });
+  beforeEach(() => {
+    sfCommandStubs = stubSfCommandUx($$.SANDBOX);
+  });
+  afterEach(() => {
+    $$.restore();
+  });
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve(folderJsonNoLog))
-    .stdout()
-    .command(['analytics:app:display', '--folderid', ID, '--applog'])
-    .it(`runs analytics:app:display --folderid ${ID} --applog (with no appLog)`, (ctx) => {
-      verifyAppDetails(ctx.stdout);
-      // we did --applog but there's not appLog available
-      expect(ctx.stdout).to.contain(messages.getMessage('displayLogHeader'));
-      expect(ctx.stdout).to.contain(messages.getMessage('displayNoLogAvailable'));
-    });
+  it(`runs: --folderid ${ID}`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = () => Promise.resolve(folderJsonNoLog);
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve(folderJsonLog))
-    .stdout()
-    .command(['analytics:app:display', '-f', ID])
-    .it(`runs analytics:app:display  f ${ID} (with appLog)`, (ctx) => {
-      verifyAppDetails(ctx.stdout);
-      // no -a, so no applog output
-      expect(ctx.stdout).to.not.contain(messages.getMessage('displayLogHeader'));
-      folderJsonLog.appLog.forEach((line) => {
-        expect(ctx.stdout).to.not.contain(line);
-      });
-    });
+    await Display.run(['--folderid', ID]);
+    const stdout = getStdout(sfCommandStubs);
+    verifyAppDetails(stdout);
+    expect(stdout, 'stdout').to.not.contain(messages.getMessage('displayLogHeader'));
+  });
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve(folderJsonLog))
-    .stdout()
-    .command(['analytics:app:display', '-f', ID, '-a'])
-    .it(`runs analytics:app:display  -f ${ID} -a (with appLog)`, (ctx) => {
-      verifyAppDetails(ctx.stdout);
-      expect(ctx.stdout).to.contain(messages.getMessage('displayLogHeader'));
-      folderJsonLog.appLog.forEach((line) => {
-        expect(ctx.stdout).to.contain(line.message.trim());
-      });
+  it(`runs: --folderid ${ID} (with namespace)`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = () => Promise.resolve(nsFolderJson);
+
+    await Display.run(['--folderid', ID]);
+    const stdout = getStdout(sfCommandStubs);
+    verifyAppDetails(stdout, 'AnlyTxHack');
+    expect(stdout, 'stdout').to.not.contain(messages.getMessage('displayLogHeader'));
+  });
+
+  it(`runs: --folderid ${ID} --applog (with no applog)`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = () => Promise.resolve(folderJsonNoLog);
+
+    await Display.run(['--folderid', ID, '--applog']);
+    const stdout = getStdout(sfCommandStubs);
+    verifyAppDetails(stdout);
+    expect(stdout, 'stdout').to.contain(messages.getMessage('displayLogHeader'));
+    expect(stdout, 'stdout').to.contain(messages.getMessage('displayNoLogAvailable'));
+  });
+
+  it(`runs: -f ${ID} (with applog)`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = () => Promise.resolve(folderJsonLog);
+
+    await Display.run(['-f', ID]);
+    const stdout = getStdout(sfCommandStubs);
+    verifyAppDetails(stdout);
+    // no -a, so no applog output
+    expect(stdout, 'stdout').to.not.contain(messages.getMessage('displayLogHeader'));
+    folderJsonLog.appLog.forEach((line) => {
+      expect(stdout, 'stdout').to.not.contain(line);
     });
+  });
+
+  it(`runs: -f ${ID} -a (with applog)`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = () => Promise.resolve(folderJsonLog);
+
+    await Display.run(['-f', ID, '-a']);
+    const stdout = getStdout(sfCommandStubs);
+    verifyAppDetails(stdout);
+    // no -a, so no applog output
+    expect(stdout, 'stdout').to.contain(messages.getMessage('displayLogHeader'));
+    folderJsonLog.appLog.forEach((line) => {
+      expect(stdout, 'stdout').to.contain(line);
+    });
+  });
 });

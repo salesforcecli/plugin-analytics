@@ -5,15 +5,14 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { promises as fs } from 'node:fs';
 import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
 import { Messages, SfError } from '@salesforce/core';
 import chalk from 'chalk';
-import { colorize, getStatusIcon, COLORS } from '../../../lib/analytics/utils.js';
+import { colorize, getStatusIcon, COLORS, fs } from '../../../lib/analytics/utils.js';
 
 import TemplateValidate, { ValidateType } from '../../../lib/analytics/template/validate.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'validate');
 
 export default class Validate extends SfCommand<ValidateType | string> {
@@ -60,7 +59,7 @@ export default class Validate extends SfCommand<ValidateType | string> {
     if (flags.valuesfile) {
       const path = String(flags.valuesfile);
       try {
-        json = JSON.parse(await fs.readFile(path, 'utf8'));
+        json = JSON.parse(await fs.readFile(path));
       } catch (e) {
         throw new SfError(
           `Error parsing ${path}`,

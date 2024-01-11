@@ -10,7 +10,7 @@ import { Messages } from '@salesforce/core';
 
 import Recipe, { type RecipeType } from '../../../lib/analytics/recipe/recipe.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'recipe');
 
 export default class Start extends SfCommand<RecipeType | undefined> {

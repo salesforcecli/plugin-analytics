@@ -5,22 +5,43 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
+import { Messages } from '@salesforce/core';
+import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js';
+import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
+import { expect } from 'chai';
+import { ensureJsonMap } from '@salesforce/ts-types';
+import Revert from '../../../../src/commands/analytics/lens/history/revert.js';
+import { getStdout, stubDefaultOrg } from '../../../testutils.js';
 
-core.Messages.importMessagesDirectory(__dirname);
-const messages = core.Messages.loadMessages('@salesforce/analytics', 'history');
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
+const messages = Messages.loadMessages('@salesforce/analytics', 'history');
 
 const lensId = '0FK9A0000008SDWWA2';
 const lensHistoryId = '0Rm9A00000006yeSAA';
 
 describe('analytics:lens:history:revert', () => {
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve({ asset: { id: lensId } }))
-    .stdout()
-    .command(['analytics:lens:history:revert', '--lensid', lensId, '--historyid', lensHistoryId])
-    .it('runs analytics:lens:history:revert --lensid 0FK9A0000008SDWWA2 --historyid 0Rm9A00000006yeSAA', (ctx) => {
-      expect(ctx.stdout).to.contain(messages.getMessage('revertSuccess', [lensId, lensHistoryId]));
-    });
+  const $$ = new TestContext();
+  const testOrg = new MockTestOrgData();
+  let sfCommandStubs: ReturnType<typeof stubSfCommandUx>;
+
+  beforeEach(() => {
+    sfCommandStubs = stubSfCommandUx($$.SANDBOX);
+  });
+  afterEach(() => {
+    $$.restore();
+  });
+
+  it(`runs: --lensid ${lensId} --historyid ${lensHistoryId}`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = (request) => {
+      if (ensureJsonMap(request).method === 'PUT') {
+        return Promise.resolve({ asset: { id: lensId } });
+      }
+      return Promise.reject();
+    };
+
+    await Revert.run(['--lensids', lensId, '--historyid', lensHistoryId]);
+    const stdout = getStdout(sfCommandStubs);
+    expect(stdout, 'stdout').to.contain(messages.getMessage('revertSuccess', [lensId, lensHistoryId]));
+  });
 });

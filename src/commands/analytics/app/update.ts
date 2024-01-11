@@ -12,7 +12,7 @@ import AppStreaming, { type StreamingResult } from '../../../lib/analytics/event
 
 import Folder from '../../../lib/analytics/app/folder.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'app');
 
 export default class Update extends SfCommand<{ id?: string; events?: StreamingResult[] }> {

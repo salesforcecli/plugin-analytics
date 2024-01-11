@@ -16,7 +16,7 @@ import {
 } from '../../lib/analytics/constants.js';
 import { throwWithData } from '../../lib/analytics/utils.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'autoinstall');
 
 export default class Enable extends SfCommand<AutoInstallRequestType | string | undefined> {

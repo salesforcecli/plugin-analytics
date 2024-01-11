@@ -9,7 +9,7 @@ import { SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugi
 import { Messages } from '@salesforce/core';
 import DatasetSvc from '../../../lib/analytics/dataset/dataset.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'dataset');
 
 export default class List extends SfCommand<
@@ -30,8 +30,6 @@ export default class List extends SfCommand<
   public static readonly flags = {
     targetOrg: requiredOrgFlagWithDeprecations,
   };
-
-  protected static tableColumnData = ['id', 'namespace', 'name', 'label', 'currentversionid', 'folderid'];
 
   public async run() {
     const { flags } = await this.parse(List);

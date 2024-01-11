@@ -5,7 +5,7 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { Flags, SfCommand, Ux, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
 import { Messages, SfError } from '@salesforce/core';
 import DatasetSvc from '../../../../lib/analytics/dataset/dataset.js';
 import QuerySvc, {
@@ -14,8 +14,9 @@ import QuerySvc, {
   type QueryResponse,
   RESULT_FORMAT_FLAG,
 } from '../../../../lib/analytics/query/query.js';
+import { CommandUx, commandUx } from '../../../../lib/analytics/utils.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'dataset');
 
 export default class Fetch extends SfCommand<QueryResponse | undefined> {
@@ -55,8 +56,9 @@ export default class Fetch extends SfCommand<QueryResponse | undefined> {
     const svc = new DatasetSvc(connection);
     const dataset = await svc.fetch((flags.datasetid ?? flags.datasetname) as string);
 
+    const ux: CommandUx = commandUx(this);
     const options = {
-      ux: new Ux({ jsonEnabled: this.jsonEnabled() }),
+      ux,
       limit: flags.limit,
       resultformat: flags.resultformat,
       dryrun: flags.dryrun,

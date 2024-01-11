@@ -15,7 +15,7 @@ import AutoInstall, {
   AutoInstallStatus,
 } from '../../../lib/analytics/autoinstall/autoinstall.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'autoinstall');
 
 function blue(s: string): string {

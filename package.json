@@ -22,6 +22,7 @@
     "@salesforce/plugin-command-reference": "^3.0.61",
     "@salesforce/ts-sinon": "^1.4.19",
     "@types/lodash.get": "^4.4.9",
+    "eslint-plugin-mocha": "^10.2.0",
     "eslint-plugin-sf-plugin": "^1.17.1",
     "oclif": "^4",
     "shx": "0.3.4",
@@ -61,7 +62,7 @@
   "license": "BSD-3-Clause",
   "oclif": {
     "commands": "./lib/commands",
-    "bin": "sfdx",
+    "bin": "sf",
     "devPlugins": [
       "@oclif/plugin-help",
       "@oclif/plugin-command-snapshot",
@@ -133,7 +134,8 @@
           }
         }
       }
-    }
+    },
+    "topicSeparator": " "
   },
   "repository": "salesforcecli/plugin-analytics",
   "scripts": {
@@ -235,7 +237,7 @@
       "output": []
     },
     "test:command-reference": {
-      "command": "\"./bin/dev\" commandreference:generate --erroronwarnings",
+      "command": "node --loader ts-node/esm --no-warnings=ExperimentalWarning \"./bin/dev.js\" commandreference:generate --erroronwarnings",
       "files": [
         "src/**/*.ts",
         "messages/**",
@@ -246,7 +248,7 @@
       ]
     },
     "test:deprecation-policy": {
-      "command": "\"./bin/dev\" snapshot:compare",
+      "command": "node --loader ts-node/esm --no-warnings=ExperimentalWarning \"./bin/dev.js\" snapshot:compare",
       "files": [
         "src/**/*.ts"
       ],
@@ -256,7 +258,7 @@
       ]
     },
     "test:json-schema": {
-      "command": "\"./bin/dev\" schema:compare",
+      "command": "node --loader ts-node/esm --no-warnings=ExperimentalWarning \"./bin/dev.js\" schema:compare",
       "files": [
         "src/**/*.ts",
         "schemas"

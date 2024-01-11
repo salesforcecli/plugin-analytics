@@ -12,7 +12,7 @@ import { colorize, getStatusIcon, COLORS } from '../../../lib/analytics/utils.js
 
 import TemplateLint, { type LintType } from '../../../lib/analytics/template/lint.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'lint');
 
 export default class Lint extends SfCommand<LintType | string> {

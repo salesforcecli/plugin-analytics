@@ -5,25 +5,47 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
+import { Messages } from '@salesforce/core';
+import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js';
+import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
+import { expect } from 'chai';
+import { AnyJson, ensureJsonMap, ensureString } from '@salesforce/ts-types';
+import Revert from '../../../../src/commands/analytics/dataflow/history/revert.js';
+import { getStdout, stubDefaultOrg } from '../../../testutils.js';
 
-core.Messages.importMessagesDirectory(__dirname);
-const messages = core.Messages.loadMessages('@salesforce/analytics', 'history');
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
+const messages = Messages.loadMessages('@salesforce/analytics', 'history');
 
 const dataflowId = '0FK9A0000008SDWWA2';
 const dataflowHistoryId = '0Rm9A00000006yeSAA';
 
 describe('analytics:dataflow:history:revert', () => {
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve({ id: dataflowId }))
-    .stdout()
-    .command(['analytics:dataflow:history:revert', '--dataflowid', dataflowId, '--historyid', dataflowHistoryId])
-    .it(
-      'runs analytics:dataflow:history:revert --dataflowid 0FK9A0000008SDWWA2 --historyid 0Rm9A00000006yeSAA',
-      (ctx) => {
-        expect(ctx.stdout).to.contain(messages.getMessage('revertSuccess', [dataflowId, dataflowHistoryId]));
+  const $$ = new TestContext();
+  const testOrg = new MockTestOrgData();
+  let sfCommandStubs: ReturnType<typeof stubSfCommandUx>;
+
+  beforeEach(() => {
+    sfCommandStubs = stubSfCommandUx($$.SANDBOX);
+  });
+  afterEach(() => {
+    $$.restore();
+  });
+
+  it(`runs: --dataflowid ${dataflowId} --historyid ${dataflowHistoryId}`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    let requestBody: AnyJson | undefined;
+    $$.fakeConnectionRequest = (request) => {
+      request = ensureJsonMap(request);
+      if (ensureString(request.method) === 'PUT') {
+        requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
+        return Promise.resolve({ id: dataflowId });
       }
-    );
+      return Promise.reject();
+    };
+
+    await Revert.run(['--dataflowid', dataflowId, '--historyid', dataflowHistoryId]);
+    const stdout = getStdout(sfCommandStubs);
+    expect(stdout, 'stdout').to.contain(messages.getMessage('revertSuccess', [dataflowId, dataflowHistoryId]));
+    expect(requestBody, 'request body').to.deep.equal({ historyId: dataflowHistoryId });
+  });
 });

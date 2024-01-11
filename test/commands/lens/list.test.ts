@@ -5,11 +5,15 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
+import { Messages } from '@salesforce/core';
+import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js';
+import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
+import { expect } from 'chai';
+import List from '../../../src/commands/analytics/lens/list.js';
+import { getStderr, getStdout, stubDefaultOrg } from '../../testutils.js';
 
-core.Messages.importMessagesDirectory(__dirname);
-const messages = core.Messages.loadMessages('@salesforce/analytics', 'lens');
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
+const messages = Messages.loadMessages('@salesforce/analytics', 'lens');
 
 const lensValues = [
   { id: '0FKxx0000004D3UGAU', name: 'mylens', label: 'my lens' },
@@ -17,47 +21,64 @@ const lensValues = [
 ];
 
 describe('analytics:lens:list', () => {
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve({ lenses: lensValues }))
-    .stdout()
-    .command(['analytics:lens:list'])
-    .it('runs analytics:lens:list', (ctx) => {
-      expect(ctx.stdout).to.contain(messages.getMessage('lensesFound', [2]));
-    });
+  const $$ = new TestContext();
+  const testOrg = new MockTestOrgData();
+  let sfCommandStubs: ReturnType<typeof stubSfCommandUx>;
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve({ lenses: lensValues }))
-    .stderr()
-    .stdout()
-    .command(['analytics:lens:list', '--json'])
-    .it('runs analytics:lens:list --json', (ctx) => {
-      expect(ctx.stderr, 'stderr').to.equal('');
-      expect(JSON.parse(ctx.stdout), 'stdout json').to.deep.equal({
-        status: 0,
-        result: [
-          {
-            lensid: lensValues[0].id,
-            name: lensValues[0].name,
-            label: lensValues[0].label,
-          },
-          {
-            lensid: lensValues[1].id,
-            name: lensValues[1].name,
-            namespace: lensValues[1].namespace,
-            label: lensValues[1].label,
-          },
-        ],
-      });
-    });
+  beforeEach(() => {
+    sfCommandStubs = stubSfCommandUx($$.SANDBOX);
+  });
+  afterEach(() => {
+    $$.restore();
+  });
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve({ lenses: [] }))
-    .stdout()
-    .command(['analytics:lens:list'])
-    .it('runs analytics:lens:list', (ctx) => {
-      expect(ctx.stdout).to.contain('No results found.');
+  it('runs', async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = () => Promise.resolve({ lenses: lensValues });
+
+    await List.run([]);
+    const stdout = getStdout(sfCommandStubs);
+    expect(stdout, 'stdout').to.contain(messages.getMessage('lensesFound', [2]));
+    expect(stdout, 'stdout').to.contain(lensValues[0].id);
+    expect(stdout, 'stdout').to.contain(lensValues[0].label);
+    expect(stdout, 'stdout').to.contain(lensValues[1].id);
+    expect(stdout, 'stdout').to.contain(lensValues[1].label);
+  });
+
+  it('runs: --json', async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = () => Promise.resolve({ lenses: lensValues });
+
+    await List.run(['--json']);
+    expect(getStderr(sfCommandStubs), 'stderr').to.equal('');
+    expect(JSON.parse(getStdout(sfCommandStubs)), 'stdout json').to.deep.equal({
+      status: 0,
+      result: [
+        {
+          lensid: lensValues[0].id,
+          name: lensValues[0].name,
+          label: lensValues[0].label,
+        },
+        {
+          lensid: lensValues[1].id,
+          name: lensValues[1].name,
+          namespace: lensValues[1].namespace,
+          label: lensValues[1].label,
+        },
+      ],
     });
+  });
+
+  it('runs (no results)', async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = () => Promise.resolve({ lenses: lensValues });
+
+    await List.run([]);
+    const stdout = getStdout(sfCommandStubs);
+    expect(stdout, 'stdout').to.contain('No results found.');
+    expect(stdout, 'stdout').to.contain(lensValues[0].id);
+    expect(stdout, 'stdout').to.contain(lensValues[0].label);
+    expect(stdout, 'stdout').to.contain(lensValues[1].id);
+    expect(stdout, 'stdout').to.contain(lensValues[1].label);
+  });
 });

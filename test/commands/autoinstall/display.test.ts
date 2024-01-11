@@ -5,16 +5,20 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
+import { Messages } from '@salesforce/core';
+import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js';
+import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
+import { expect } from 'chai';
+import Display from '../../../src/commands/analytics/autoinstall/display.js';
+import { getStdout, stubDefaultOrg } from '../../testutils.js';
 
-core.Messages.importMessagesDirectory(__dirname);
-const messages = core.Messages.loadMessages('@salesforce/analytics', 'app');
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
+const messages = Messages.loadMessages('@salesforce/analytics', 'app');
 
 const ID = '0UZ9A000000Cz6bWAC';
 function makeAutoInstallJson() {
   // this is what the auto-install json is like
-  const json = {
+  return {
     configuration: {
       appConfiguration: {
         autoShareWithLicensedUsers: false,
@@ -45,28 +49,38 @@ function makeAutoInstallJson() {
     requestType: 'WaveEnable',
     url: '/services/data/v55.0/wave/auto-install-requests/0UZ9A000000Cz6bWAC',
   };
-  return json;
 }
 
 function verifyAppDetails(stdout: string) {
-  expect(stdout).to.match(new RegExp(`^Id\\s+${ID}$`, 'm'));
-  expect(stdout).to.match(/^Created By\s+Automated Process$/m);
+  expect(stdout, 'stdout').to.match(new RegExp(`^Id\\s+${ID}$`, 'm'));
+  expect(stdout, 'stdout').to.match(/^Created By\s+Automated Process$/m);
   // just make sure it looks like a date, to avoid issues with timezone conversion
-  expect(stdout).to.match(/^Created Date\s+2020-03-\d\d \d\d:\d\d:\d\d$/m);
-  expect(stdout).to.match(/^Last Modified By\s+Automated Process$/m);
-  expect(stdout).to.match(/^Last Modified Date\s+2020-03-\d\d \d\d:\d\d:\d\d$/m);
+  expect(stdout, 'stdout').to.match(/^Created Date\s+2020-03-\d\d \d\d:\d\d:\d\d$/m);
+  expect(stdout, 'stdout').to.match(/^Last Modified By\s+Automated Process$/m);
+  expect(stdout, 'stdout').to.match(/^Last Modified Date\s+2020-03-\d\d \d\d:\d\d:\d\d$/m);
 }
 
 describe('analytics:app:display', () => {
-  const displayJson = makeAutoInstallJson();
+  const $$ = new TestContext();
+  const testOrg = new MockTestOrgData();
+  let sfCommandStubs: ReturnType<typeof stubSfCommandUx>;
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve(displayJson))
-    .stdout()
-    .command(['analytics:autoinstall:display', '--autoinstallid', ID])
-    .it(`runs analytics:autoinstall:display --autoinstallid ${ID}`, (ctx) => {
-      verifyAppDetails(ctx.stdout);
-      expect(ctx.stdout).to.not.contain(messages.getMessage('displayLogHeader'));
-    });
+  beforeEach(() => {
+    sfCommandStubs = stubSfCommandUx($$.SANDBOX);
+  });
+  afterEach(() => {
+    $$.restore();
+  });
+
+  const autoInstallRequest = makeAutoInstallJson();
+
+  it(`runs: --autoinstallid ${ID}`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = () => Promise.resolve(autoInstallRequest);
+
+    await Display.run(['--autoinstallid', ID]);
+    const stdout = getStdout(sfCommandStubs);
+    verifyAppDetails(stdout);
+    expect(stdout, 'stdout').to.not.contain(messages.getMessage('displayLogHeader'));
+  });
 });

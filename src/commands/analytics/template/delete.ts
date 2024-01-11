@@ -11,7 +11,7 @@ import { Messages, Org } from '@salesforce/core';
 import Folder from '../../../lib/analytics/app/folder.js';
 import WaveTemplate from '../../../lib/analytics/template/wavetemplate.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'template');
 
 export default class Delete extends SfCommand<string | undefined> {

@@ -5,11 +5,12 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
+import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js';
+import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
+import { expect } from 'chai';
+import Validate from '../../../src/commands/analytics/template/validate.js';
+import { getStdout, stubDefaultOrg } from '../../testutils.js';
 
-core.Messages.importMessagesDirectory(__dirname);
-// const messages = core.Messages.loadMessages('@salesforce/analytics', 'validate');
 const ID = '0Nkxx000000000zCAA';
 const templateValues = {
   id: '0Nkxx000000000zCAA',
@@ -21,17 +22,6 @@ const templateValues = {
     },
   ],
 };
-describe('analytics:template:validate', () => {
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve({ result: templateValues }))
-    .stdout()
-    .command(['analytics:template:validate', '--templateid', ID])
-    .it(`runs analytics:template:validate --templateid ${ID}`, (ctx) => {
-      expect(ctx.stdout).to.contain('Command only available in api version 58.0 or later');
-    });
-});
-
 const templateWithFailedReadiness = {
   id: '0Nkxx000000000zCAA',
   tasks: [
@@ -42,17 +32,40 @@ const templateWithFailedReadiness = {
     },
   ],
 };
-describe('analytics:template:validate failure', () => {
-  const exitCode = process.exitCode;
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve(templateWithFailedReadiness))
-    .command(['analytics:template:validate', '--templateid', ID, '--apiversion', '58.0'])
-    .it(`runs analytics:template:validate --templateid ${ID}`, () => {
-      expect(process.exitCode).to.equal(1);
+
+describe('analytics:template:validate', () => {
+  const $$ = new TestContext();
+  const testOrg = new MockTestOrgData();
+  let sfCommandStubs: ReturnType<typeof stubSfCommandUx>;
+
+  beforeEach(() => {
+    sfCommandStubs = stubSfCommandUx($$.SANDBOX);
+  });
+  afterEach(() => {
+    $$.restore();
+  });
+
+  it(`runs: --templateid ${ID}`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = () => Promise.resolve(templateValues);
+
+    await Validate.run(['--templateid', ID]);
+    const stdout = getStdout(sfCommandStubs);
+    expect(stdout, 'stdout').to.contain('Command only available in api version 58.0 or later');
+  });
+
+  describe('(with failure)', () => {
+    const exitCode = process.exitCode;
+    after(() => {
+      process.exitCode = exitCode;
     });
 
-  after(() => {
-    process.exitCode = exitCode;
+    it(`runs: --templateid ${ID} --apiversion 58.0`, async () => {
+      await stubDefaultOrg($$, testOrg);
+      $$.fakeConnectionRequest = () => Promise.resolve(templateWithFailedReadiness);
+
+      await Validate.run(['--templateid', ID, '--apiversion', '58.0']);
+      expect(process.exitCode).to.equal(1);
+    });
   });
 });

@@ -5,13 +5,12 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { join } from 'node:path';
 import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
 import Folder, { type AppStatus } from '../../../lib/analytics/app/folder.js';
 
-Messages.importMessagesDirectory(join(__dirname, '..', '..', '..', '..'));
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'app');
 
 export default class List extends SfCommand<

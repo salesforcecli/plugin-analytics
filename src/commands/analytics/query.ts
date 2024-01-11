@@ -5,9 +5,8 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { promises as fs } from 'node:fs';
 import * as path from 'node:path';
-import { Flags, SfCommand, Ux, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
 import { Messages, SfError } from '@salesforce/core';
 import QuerySvc, {
   DRYRUN_FLAG,
@@ -17,8 +16,9 @@ import QuerySvc, {
   QueryResponse,
   RESULT_FORMAT_FLAG,
 } from '../../lib/analytics/query/query.js';
+import { CommandUx, commandUx, fs } from '../../lib/analytics/utils.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'query');
 
 export default class Query extends SfCommand<QueryResponse | undefined> {
@@ -74,11 +74,12 @@ export default class Query extends SfCommand<QueryResponse | undefined> {
     if (!flags.queryfile && !flags.query) {
       throw new SfError(messages.getMessage('missingRequiredField'));
     }
-    let queryStr = flags.queryfile ? await fs.readFile(flags.queryfile, 'utf8') : (flags.query as string);
+    let queryStr = flags.queryfile ? await fs.readFile(flags.queryfile) : (flags.query as string);
 
     const querySvc = new QuerySvc(flags.targetOrg.getConnection());
+    const ux: CommandUx = commandUx(this);
     const options = {
-      ux: new Ux({ jsonEnabled: this.jsonEnabled() }),
+      ux,
       limit: flags.limit,
       resultformat: flags.resultformat as string | undefined,
       dryrun: !!flags.dryrun,

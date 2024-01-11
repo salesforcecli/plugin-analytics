@@ -9,7 +9,7 @@ import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/s
 import { Messages } from '@salesforce/core';
 import Dataflow from '../../../../lib/analytics/dataflow/dataflow.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'dataflow');
 
 export default class List extends SfCommand<

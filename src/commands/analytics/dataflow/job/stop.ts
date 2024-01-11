@@ -10,7 +10,7 @@ import { Messages } from '@salesforce/core';
 
 import Dataflow, { type DataflowJobType } from '../../../../lib/analytics/dataflow/dataflow.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'dataflow');
 
 export default class Stop extends SfCommand<DataflowJobType> {

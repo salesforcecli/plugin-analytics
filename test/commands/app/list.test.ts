@@ -5,26 +5,44 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
+import { Messages } from '@salesforce/core';
+import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js';
+import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
+import { expect } from 'chai';
 import { ensureJsonMap, ensureString } from '@salesforce/ts-types';
+import List from '../../../src/commands/analytics/app/list.js';
+import { getStdout, stubDefaultOrg } from '../../testutils.js';
 
-core.Messages.importMessagesDirectory(__dirname);
-const messages = core.Messages.loadMessages('@salesforce/analytics', 'app');
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
+const messages = Messages.loadMessages('@salesforce/analytics', 'app');
 
+const folderId = '0llxx000000000zCAA';
 describe('analytics:app:list', () => {
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve({ folders: [] }))
-    .stdout()
-    .command(['analytics:app:list', '--folderid', '0llxx000000000zCAA'])
-    .it('runs analytics:app:list  --folderid 0llxx000000000zCAA', (ctx) => {
-      expect(ctx.stdout).to.contain('No results found.');
-    });
+  const $$ = new TestContext();
+  const testOrg = new MockTestOrgData();
+  let sfCommandStubs: ReturnType<typeof stubSfCommandUx>;
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest((request) => {
+  beforeEach(() => {
+    sfCommandStubs = stubSfCommandUx($$.SANDBOX);
+  });
+  afterEach(() => {
+    $$.restore();
+  });
+
+  it(`runs: --folderid ${folderId} (no results)`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = () => Promise.resolve({ folders: [] });
+
+    await List.run(['--folderid', folderId]);
+    const stdout = getStdout(sfCommandStubs);
+    expect(stdout, 'stdout').to.contain('No results found.');
+    expect(stdout, 'stdout').to.not.contain(folderId);
+    expect(stdout, 'stdout').to.not.contain('Shared App');
+  });
+
+  it('runs', async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = (request) => {
       request = ensureJsonMap(request);
       // make sure the entity encoding header gets sent along
       if (ensureJsonMap(request.headers)['X-Chatter-Entity-Encoding'] === 'false') {
@@ -33,27 +51,26 @@ describe('analytics:app:list', () => {
             {
               name: 'SharedApp',
               label: 'Shared App',
-              folderid: '00lT1000000DfqRIAS',
+              id: folderId,
               status: 'newstatus',
             },
           ],
         });
       }
       return Promise.reject(new Error('Missing X-Chatter-Entity-Encoding: false header'));
-    })
-    .stdout()
-    .stderr()
-    .command(['analytics:app:list'])
-    .it('runs analytics:app:list', (ctx) => {
-      // the reject() above will be in stderr if the header is missing
-      expect(ctx.stderr, 'stderr').to.equal('');
-      expect(ctx.stdout).to.contain(messages.getMessage('appsFound', [1]));
-    });
+    };
+
+    await List.run([]);
+    const stdout = getStdout(sfCommandStubs);
+    expect(stdout, 'stdout').to.contain(messages.getMessage('appsFound', [1]));
+    expect(stdout, 'stdout').to.contain(folderId);
+    expect(stdout, 'stdout').to.contain('Shared App');
+  });
 
   // test multiple pages
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest((request) => {
+  it('runs (multiple pages)', async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = (request) => {
       request = ensureJsonMap(request);
       const url = ensureString(request.url, 'request.url is not a string, got ' + String(request.url));
       // the initial (page 1) url is /wave/folders/
@@ -96,13 +113,13 @@ describe('analytics:app:list', () => {
       }
 
       return Promise.reject(`unknown url: ${url}`);
-    })
-    .stdout()
-    .stderr()
-    .command(['analytics:app:list'])
-    .it('runs analytics:app:list (with mulitple pages)', (ctx) => {
-      // the reject() above will be in stderr if the url doesn't come through
-      expect(ctx.stderr, 'stderr').to.equal('');
-      expect(ctx.stdout).to.contain(messages.getMessage('appsFound', [3]));
-    });
+    };
+
+    await List.run([]);
+    const stdout = getStdout(sfCommandStubs);
+    expect(stdout, 'stdout').to.contain(messages.getMessage('appsFound', [3]));
+    expect(stdout, 'stdout').to.contain('App1');
+    expect(stdout, 'stdout').to.contain('App2');
+    expect(stdout, 'stdout').to.contain('App3');
+  });
 });

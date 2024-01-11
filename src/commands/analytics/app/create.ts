@@ -5,7 +5,6 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { promises as fs } from 'node:fs';
 import { EOL } from 'node:os';
 import { Flags, SfCommand, Ux, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
 import { Messages, Org, SfError } from '@salesforce/core';
@@ -13,8 +12,9 @@ import Folder, { CreateAppBody } from '../../../lib/analytics/app/folder.js';
 import AppStreaming, { type StreamingResult } from '../../../lib/analytics/event/appStreaming.js';
 import { DEF_APP_CREATE_UPDATE_TIMEOUT } from '../../../lib/analytics/constants.js';
 import WaveTemplate from '../../../lib/analytics/template/wavetemplate.js';
+import { fs } from '../../../lib/analytics/utils.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'app');
 
 export default class Create extends SfCommand<{ id?: string; events?: StreamingResult[] }> {
@@ -136,7 +136,7 @@ async function generateCreateAppBody({
   } else if (definitionfile) {
     let json: unknown;
     try {
-      json = JSON.parse(await fs.readFile(definitionfile, 'utf8'));
+      json = JSON.parse(await fs.readFile(definitionfile));
     } catch (e) {
       throw new SfError(
         `Error parsing ${definitionfile}`,

@@ -5,22 +5,48 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
+import { Messages } from '@salesforce/core';
+import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js';
+import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
+import { expect } from 'chai';
+import { AnyJson, ensureJsonMap, ensureString } from '@salesforce/ts-types';
+import Start from '../../../src/commands/analytics/dataflow/start.js';
+import { getStdout, stubDefaultOrg } from '../../testutils.js';
 
-core.Messages.importMessagesDirectory(__dirname);
-const messages = core.Messages.loadMessages('@salesforce/analytics', 'dataflow');
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
+const messages = Messages.loadMessages('@salesforce/analytics', 'dataflow');
 
 const dataflowId = '0FK9A0000008SDWWA2';
 const dataflowJobId = '030EE00000Cfj3uYAB';
 const status = 'Queued';
+
 describe('analytics:dataflow:start', () => {
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve({ id: dataflowJobId, status: 'Queued' }))
-    .stdout()
-    .command(['analytics:dataflow:start', '--dataflowid', dataflowId])
-    .it('runs analytics:dataflow:start --dataflowid 0FK9A0000008SDWWA2', (ctx) => {
-      expect(ctx.stdout).to.contain(messages.getMessage('dataflowJobUpdate', [dataflowJobId, status]));
-    });
+  const $$ = new TestContext();
+  const testOrg = new MockTestOrgData();
+  let sfCommandStubs: ReturnType<typeof stubSfCommandUx>;
+
+  beforeEach(() => {
+    sfCommandStubs = stubSfCommandUx($$.SANDBOX);
+  });
+  afterEach(() => {
+    $$.restore();
+  });
+
+  it(`runs: --dataflowid ${dataflowId}`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    let requestBody: AnyJson | undefined;
+    $$.fakeConnectionRequest = (request) => {
+      request = ensureJsonMap(request);
+      if (request.method === 'POST') {
+        requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
+        return Promise.resolve({ id: dataflowJobId, status: 'Queued' });
+      }
+      return Promise.reject();
+    };
+
+    await Start.run(['--dataflowid', dataflowId]);
+    const stdout = getStdout(sfCommandStubs);
+    expect(stdout, 'stdout').to.contain(messages.getMessage('dataflowJobUpdate', [dataflowJobId, status]));
+    expect(requestBody, 'request body').to.deep.equal({ dataflowId, command: 'start' });
+  });
 });

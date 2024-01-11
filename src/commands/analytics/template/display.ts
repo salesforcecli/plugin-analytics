@@ -11,7 +11,7 @@ import chalk from 'chalk';
 
 import WaveTemplate, { type TemplateType } from '../../../lib/analytics/template/wavetemplate.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'template');
 
 function blue(s: string): string {

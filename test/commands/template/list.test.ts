@@ -5,11 +5,22 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/sf-plugins-core/lib/test';
+import { Messages } from '@salesforce/core';
+import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js';
+import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
+import { expect } from 'chai';
+import { JsonArray } from '@salesforce/ts-types';
+import List from '../../../src/commands/analytics/template/list.js';
+import {
+  expectToHaveElementValue,
+  getStdout,
+  getStyledHeaders,
+  getTableData,
+  stubDefaultOrg,
+} from '../../testutils.js';
 
-core.Messages.importMessagesDirectory(__dirname);
-const messages = core.Messages.loadMessages('@salesforce/analytics', 'template');
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
+const messages = Messages.loadMessages('@salesforce/analytics', 'template');
 
 const templateValues = [
   { name: 'foo', label: 'Foo Label', id: '0Nkxx000000000zCAA' },
@@ -17,55 +28,58 @@ const templateValues = [
 ];
 
 describe('analytics:template:list', () => {
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve({ templates: templateValues }))
-    .stdout()
-    .command(['analytics:template:list'])
-    .it('runs analytics:template:list', (ctx) => {
-      expect(ctx.stdout).to.contain(messages.getMessage('templatesFound', [1]));
-      expect(ctx.stdout).to.contain(templateValues[0].name);
-      expect(ctx.stdout).to.contain(templateValues[0].label);
-      expect(ctx.stdout).to.not.contain(templateValues[1].name);
-      expect(ctx.stdout).to.not.contain(templateValues[1].label);
-    });
+  const $$ = new TestContext();
+  const testOrg = new MockTestOrgData();
+  let sfCommandStubs: ReturnType<typeof stubSfCommandUx>;
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve({ templates: templateValues }))
-    .stdout()
-    .command(['analytics:template:list', '--includesalesforcetemplates'])
-    .it('runs analytics:template:list --includesalesforcetemplates', (ctx) => {
-      expect(ctx.stdout).to.contain(messages.getMessage('templatesFound', [2]));
-      expect(ctx.stdout).to.contain(templateValues[0].name);
-      expect(ctx.stdout).to.contain(templateValues[0].label);
-      expect(ctx.stdout).to.contain(templateValues[1].name);
-      expect(ctx.stdout).to.contain(templateValues[1].label);
-    });
+  beforeEach(() => {
+    sfCommandStubs = stubSfCommandUx($$.SANDBOX);
+  });
+  afterEach(() => {
+    $$.restore();
+  });
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve({ templates: templateValues }))
-    .stdout()
-    .command(['analytics:template:list', '--includembeddedtemplates'])
-    .it('runs analytics:template:list --includembeddedtemplates', (ctx) => {
-      expect(ctx.stdout).to.contain(messages.getMessage('templatesFound', [1]));
-      expect(ctx.stdout).to.contain(templateValues[0].name);
-      expect(ctx.stdout).to.contain(templateValues[0].label);
-    });
+  async function runAndVerify(args: string[], templates: JsonArray, verify: () => unknown) {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = () => Promise.resolve({ templates });
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve({ templates: [] }))
-    .stdout()
-    .command(['analytics:template:list'])
-    .it('runs analytics:template:list', (ctx) => {
-      expect(ctx.stdout).to.contain('No results found.');
-      expect(ctx.stdout).to.not.contain(templateValues[0].id);
-      expect(ctx.stdout).to.not.contain(templateValues[0].name);
-      expect(ctx.stdout).to.not.contain(templateValues[0].label);
-      expect(ctx.stdout).to.not.contain(templateValues[1].id);
-      expect(ctx.stdout).to.not.contain(templateValues[1].name);
-      expect(ctx.stdout).to.not.contain(templateValues[1].label);
+    await List.run(args);
+    verify();
+  }
+
+  it('runs', async () => {
+    await runAndVerify([], templateValues, () => {
+      expect(getStyledHeaders(sfCommandStubs), 'headers').to.contain(messages.getMessage('templatesFound', [1]));
+      const { data } = getTableData(sfCommandStubs);
+      expectToHaveElementValue(data, templateValues[0].name, 'table');
+      expectToHaveElementValue(data, templateValues[0].label, 'table');
     });
+  });
+
+  it('runs: --includesalesforcetemplates', async () => {
+    await runAndVerify(['--includesalesforcetemplates'], templateValues, () => {
+      expect(getStyledHeaders(sfCommandStubs), 'headers').to.contain(messages.getMessage('templatesFound', [2]));
+      const { data } = getTableData(sfCommandStubs);
+      expectToHaveElementValue(data, templateValues[0].name, 'table');
+      expectToHaveElementValue(data, templateValues[0].label, 'table');
+      expectToHaveElementValue(data, templateValues[1].name, 'table');
+      expectToHaveElementValue(data, templateValues[1].label, 'table');
+    });
+  });
+
+  it('runs: --includembeddedtemplates', async () => {
+    await runAndVerify([], templateValues, () => {
+      expect(getStyledHeaders(sfCommandStubs), 'headers').to.contain(messages.getMessage('templatesFound', [1]));
+      const { data } = getTableData(sfCommandStubs);
+      expectToHaveElementValue(data, templateValues[0].name, 'table');
+      expectToHaveElementValue(data, templateValues[0].label, 'table');
+    });
+  });
+
+  it('runs (no templates)', async () => {
+    await runAndVerify([], templateValues, () => {
+      expect(getStdout(sfCommandStubs), 'stdout').to.contain('No results found.');
+      expect(getTableData(sfCommandStubs).data, 'table data').to.be.undefined;
+    });
+  });
 });
