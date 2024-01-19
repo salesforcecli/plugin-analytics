@@ -5,7 +5,12 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import {
+  Flags,
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 import Dashboard from '../../../../lib/analytics/dashboard/dashboard.js';
 
@@ -21,7 +26,8 @@ export default class Revert extends SfCommand<string | undefined> {
   ];
 
   public static readonly flags = {
-    targetOrg: requiredOrgFlagWithDeprecations,
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
     dashboardid: Flags.salesforceId({
       char: 'i',
       required: true,
@@ -46,7 +52,7 @@ export default class Revert extends SfCommand<string | undefined> {
     const dashboardId = flags.dashboardid;
     const dashboardHistoryId = flags.historyid;
     const dashboardHistoryLabel = flags.label;
-    const dashboard = new Dashboard(flags.targetOrg);
+    const dashboard = new Dashboard(flags['target-org'].getConnection(flags['api-version']));
 
     const id = await dashboard.revertToHistory(dashboardId, dashboardHistoryId, dashboardHistoryLabel);
     const message = messages.getMessage('revertSuccess', [id, dashboardHistoryId]);

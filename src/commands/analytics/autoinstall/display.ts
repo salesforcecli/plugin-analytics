@@ -5,7 +5,12 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import {
+  Flags,
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 import chalk from 'chalk';
 import moment from 'moment';
@@ -51,7 +56,8 @@ export default class Display extends SfCommand<AutoInstallRequestType> {
   public static readonly examples = ['$ sfdx analytics:autoinstall:display -i id'];
 
   public static readonly flags = {
-    targetOrg: requiredOrgFlagWithDeprecations,
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
     autoinstallid: Flags.salesforceId({
       char: 'i',
       required: true,
@@ -69,7 +75,7 @@ export default class Display extends SfCommand<AutoInstallRequestType> {
 
   public async run() {
     const { flags } = await this.parse(Display);
-    const autoinstall = new AutoInstall(flags.targetOrg);
+    const autoinstall = new AutoInstall(flags['target-org'].getConnection(flags['api-version']));
     const autoinstallRep = await autoinstall.fetch(flags.autoinstallid);
 
     // force:org:display does a blue chalk on the headers, so do it here, too

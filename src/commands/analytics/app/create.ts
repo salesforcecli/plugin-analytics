@@ -6,8 +6,14 @@
  */
 
 import { EOL } from 'node:os';
-import { Flags, SfCommand, Ux, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
-import { Messages, Org, SfError } from '@salesforce/core';
+import {
+  Flags,
+  SfCommand,
+  Ux,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
+import { Connection, Messages, SfError } from '@salesforce/core';
 import Folder, { CreateAppBody } from '../../../lib/analytics/app/folder.js';
 import AppStreaming, { type StreamingResult } from '../../../lib/analytics/event/appStreaming.js';
 import { DEF_APP_CREATE_UPDATE_TIMEOUT } from '../../../lib/analytics/constants.js';
@@ -28,7 +34,8 @@ export default class Create extends SfCommand<{ id?: string; events?: StreamingR
   ];
 
   public static readonly flags = {
-    targetOrg: requiredOrgFlagWithDeprecations,
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
     definitionfile: Flags.file({
       char: 'f',
       summary: messages.getMessage('appDefinitionFileFlagDescription'),
@@ -77,11 +84,12 @@ export default class Create extends SfCommand<{ id?: string; events?: StreamingR
 
   public async run() {
     const { flags } = await this.parse(Create);
-    const folder = new Folder(flags.targetOrg);
-    const body = await generateCreateAppBody(flags);
+    const connection = flags['target-org'].getConnection(flags['api-version']);
+    const folder = new Folder(connection);
+    const body = await generateCreateAppBody({ connection, ...flags });
 
     const appStreaming = new AppStreaming(
-      flags.targetOrg,
+      flags['target-org'],
       flags.allevents,
       flags.wait,
       new Ux({ jsonEnabled: this.jsonEnabled() })
@@ -101,14 +109,14 @@ export default class Create extends SfCommand<{ id?: string; events?: StreamingR
 }
 
 async function generateCreateAppBody({
-  targetOrg,
+  connection,
   templateid,
   templatename,
   appdescription,
   appname,
   definitionfile,
 }: {
-  targetOrg: Org;
+  connection: Connection;
   templateid?: string;
   templatename?: string;
   appdescription?: string;
@@ -116,7 +124,7 @@ async function generateCreateAppBody({
   definitionfile?: string;
 }): Promise<CreateAppBody> {
   if (templateid ?? templatename) {
-    const templateSvc = new WaveTemplate(targetOrg);
+    const templateSvc = new WaveTemplate(connection);
     const matchedTemplate = templateid
       ? await templateSvc.fetch(templateid)
       : (await templateSvc.list()).find(

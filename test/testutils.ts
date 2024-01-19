@@ -59,12 +59,15 @@ export function getStyledHeaders(stubs: ReturnType<typeof stubSfCommandUx>): str
     .join('\n');
 }
 
-/** Get the table data & headers of a call to Command.table(). */
+/** Get the table data & headers keys & header labels of a call to Command.table(). */
 export function getTableData(stubs: ReturnType<typeof stubSfCommandUx>, callNum = 0) {
   const calls = stubs.table.getCalls();
+  const tableHeaders = calls.length > callNum && calls[callNum]?.args[1] ? calls[callNum].args[1] : undefined;
   return {
     data: calls.length > callNum ? calls[callNum]?.args[0] : undefined,
-    headers: calls.length > callNum && calls[callNum]?.args[1] ? Object.keys(calls[callNum].args[1]) : undefined,
+    headers: tableHeaders ? Object.keys(tableHeaders) : undefined,
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+    headerLabels: tableHeaders ? Object.keys(tableHeaders).map((name) => tableHeaders[name].header || name) : undefined,
   };
 }
 

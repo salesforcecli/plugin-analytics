@@ -5,7 +5,11 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import {
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
 import Dataflow from '../../../lib/analytics/dataflow/dataflow.js';
@@ -22,12 +26,13 @@ export default class List extends SfCommand<
   public static readonly examples = ['$ sfdx analytics:dataflow:list'];
 
   public static readonly flags = {
-    targetOrg: requiredOrgFlagWithDeprecations,
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
   };
 
   public async run() {
     const { flags } = await this.parse(List);
-    const dataflowSvc = new Dataflow(flags.targetOrg);
+    const dataflowSvc = new Dataflow(flags['target-org'].getConnection(flags['api-version']));
     const dataflows = ((await dataflowSvc.list()) || []).map((dataflow) => ({
       dataflowid: dataflow.id,
       namespace: dataflow.namespace,

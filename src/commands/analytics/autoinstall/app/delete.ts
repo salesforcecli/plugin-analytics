@@ -5,7 +5,13 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { Flags, SfCommand, Ux, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import {
+  Flags,
+  SfCommand,
+  Ux,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
 import { Messages, SfError } from '@salesforce/core';
 
 import AutoInstall, { type AutoInstallRequestType } from '../../../../lib/analytics/autoinstall/autoinstall.js';
@@ -26,7 +32,8 @@ export default class Delete extends SfCommand<AutoInstallRequestType | string | 
   public static readonly examples = ['$ sfdx analytics:autoinstall:app:delete -f folderid'];
 
   public static readonly flags = {
-    targetOrg: requiredOrgFlagWithDeprecations,
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
     folderid: Flags.salesforceId({
       char: 'f',
       required: true,
@@ -56,7 +63,7 @@ export default class Delete extends SfCommand<AutoInstallRequestType | string | 
 
   public async run() {
     const { flags } = await this.parse(Delete);
-    const autoinstall = new AutoInstall(flags.targetOrg);
+    const autoinstall = new AutoInstall(flags['target-org'].getConnection(flags['api-version']));
     const autoInstallId = await autoinstall.delete(flags.folderid);
     if (flags.async || flags.wait <= 0) {
       this.log(messages.getMessage('appDeleteRequestSuccess', [autoInstallId]));

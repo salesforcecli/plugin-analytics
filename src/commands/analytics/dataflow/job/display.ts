@@ -5,7 +5,12 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import {
+  Flags,
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 import chalk from 'chalk';
 import Dataflow, { type DataflowJobType } from '../../../../lib/analytics/dataflow/dataflow.js';
@@ -20,7 +25,8 @@ export default class Display extends SfCommand<DataflowJobType> {
   public static readonly examples = ['$ sfdx analytics:dataflow:job:display --dataflowjobid <dataflowjobid>'];
 
   public static readonly flags = {
-    targetOrg: requiredOrgFlagWithDeprecations,
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
     dataflowjobid: Flags.salesforceId({
       char: 'i',
       required: true,
@@ -32,7 +38,7 @@ export default class Display extends SfCommand<DataflowJobType> {
   public async run() {
     const { flags } = await this.parse(Display);
     const dataflowjobId = flags.dataflowjobid;
-    const dataflow = new Dataflow(flags.targetOrg);
+    const dataflow = new Dataflow(flags['target-org'].getConnection(flags['api-version']));
 
     const dataflowJob = await dataflow.getDataflowJob(dataflowjobId);
     this.styledHeader(chalk.blue(messages.getMessage('displayDetailHeader')));

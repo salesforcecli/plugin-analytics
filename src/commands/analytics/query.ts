@@ -6,7 +6,12 @@
  */
 
 import * as path from 'node:path';
-import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import {
+  Flags,
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
 import { Messages, SfError } from '@salesforce/core';
 import QuerySvc, {
   DRYRUN_FLAG,
@@ -32,7 +37,8 @@ export default class Query extends SfCommand<QueryResponse | undefined> {
   ];
 
   public static readonly flags = {
-    targetOrg: requiredOrgFlagWithDeprecations,
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
     queryfile: Flags.file({
       char: 'f',
       summary: messages.getMessage('queryfileDescription'),
@@ -76,7 +82,7 @@ export default class Query extends SfCommand<QueryResponse | undefined> {
     }
     let queryStr = flags.queryfile ? await fs.readFile(flags.queryfile) : (flags.query as string);
 
-    const querySvc = new QuerySvc(flags.targetOrg.getConnection());
+    const querySvc = new QuerySvc(flags['target-org'].getConnection(flags['api-version']));
     const ux: CommandUx = commandUx(this);
     const options = {
       ux,

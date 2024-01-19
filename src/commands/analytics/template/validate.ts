@@ -5,7 +5,12 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import {
+  Flags,
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
 import { Messages, SfError } from '@salesforce/core';
 import chalk from 'chalk';
 import { colorize, getStatusIcon, COLORS, fs } from '../../../lib/analytics/utils.js';
@@ -25,7 +30,8 @@ export default class Validate extends SfCommand<ValidateType | string> {
   ];
 
   public static readonly flags = {
-    targetOrg: requiredOrgFlagWithDeprecations,
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
     templateid: Flags.string({
       char: 't',
       summary: messages.getMessage('templateidFlagDescription'),
@@ -49,7 +55,7 @@ export default class Validate extends SfCommand<ValidateType | string> {
     const { flags } = await this.parse(Validate);
     const templateName = flags.templatename as string;
     const templateId = flags.templateid as string;
-    const validate = new TemplateValidate(flags.targetOrg);
+    const validate = new TemplateValidate(flags['target-org'].getConnection(flags['api-version']));
     if (!validate.appliesToThisServerVersion()) {
       const commandNotAvailable = 'Command only available in api version 58.0 or later';
       this.log(commandNotAvailable);

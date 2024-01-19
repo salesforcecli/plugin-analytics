@@ -5,7 +5,7 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { Connection, Org } from '@salesforce/core';
+import { Connection } from '@salesforce/core';
 import { connectRequest, fetchAllPages } from '../request.js';
 import { throwError } from '../utils.js';
 
@@ -50,11 +50,9 @@ export type CreateAppBody = {
 
 export default class Folder {
   public readonly serverVersion: number;
-  private readonly connection: Connection;
   private readonly foldersUrl: string;
 
-  public constructor(organization: Org) {
-    this.connection = organization.getConnection();
+  public constructor(private readonly connection: Connection) {
     this.foldersUrl = `${this.connection.baseUrl()}/wave/folders/`;
     this.serverVersion = +this.connection.getApiVersion();
   }

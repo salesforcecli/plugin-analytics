@@ -4,7 +4,13 @@
  * Licensed under the BSD 3-Clause license.
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import { Flags, SfCommand, Ux, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import {
+  Flags,
+  SfCommand,
+  Ux,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
 import { Messages, SfError } from '@salesforce/core';
 
 import AutoInstall, {
@@ -31,7 +37,8 @@ export default class Create extends SfCommand<AutoInstallRequestType | { id: str
   ];
 
   public static readonly flags = {
-    targetOrg: requiredOrgFlagWithDeprecations,
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
     templateid: Flags.salesforceId({
       char: 't',
       summary: messages.getMessage('templateidFlagDescription'),
@@ -91,7 +98,7 @@ export default class Create extends SfCommand<AutoInstallRequestType | { id: str
       throw new SfError(messages.getMessage('missingRequiredField'));
     }
 
-    const autoinstall = new AutoInstall(flags.targetOrg);
+    const autoinstall = new AutoInstall(flags['target-org'].getConnection(flags['api-version']));
 
     const defaultAppConfiguration: AutoInstallCreateAppConfigurationBody = {
       appName: flags.appname,

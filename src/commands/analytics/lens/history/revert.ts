@@ -5,7 +5,12 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import {
+  Flags,
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 import Lens from '../../../../lib/analytics/lens/lens.js';
 
@@ -21,7 +26,8 @@ export default class Revert extends SfCommand<string | undefined> {
   ];
 
   public static readonly flags = {
-    targetOrg: requiredOrgFlagWithDeprecations,
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
     lensid: Flags.salesforceId({
       char: 'i',
       required: true,
@@ -46,7 +52,7 @@ export default class Revert extends SfCommand<string | undefined> {
     const lensId = flags.lensid;
     const lensHistoryId = flags.historyid;
     const lensHistoryLabel = flags.label;
-    const lens = new Lens(flags.targetOrg);
+    const lens = new Lens(flags['target-org'].getConnection(flags['api-version']));
 
     const id = await lens.revertToHistory(lensId, lensHistoryId, lensHistoryLabel);
     const message = messages.getMessage('revertSuccess', [id, lensHistoryId]);

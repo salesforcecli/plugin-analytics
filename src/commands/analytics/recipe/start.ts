@@ -5,7 +5,12 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import {
+  Flags,
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
 import Recipe, { type RecipeType } from '../../../lib/analytics/recipe/recipe.js';
@@ -20,7 +25,8 @@ export default class Start extends SfCommand<RecipeType | undefined> {
   public static readonly examples = ['$ sfdx analytics:recipe:start --recipeid <recipeid>'];
 
   public static readonly flags = {
-    targetOrg: requiredOrgFlagWithDeprecations,
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
     recipeid: Flags.salesforceId({
       char: 'i',
       required: true,
@@ -32,7 +38,7 @@ export default class Start extends SfCommand<RecipeType | undefined> {
   public async run() {
     const { flags } = await this.parse(Start);
     const recipeId = flags.recipeid;
-    const recipe = new Recipe(flags.targetOrg);
+    const recipe = new Recipe(flags['target-org'].getConnection(flags['api-version']));
 
     const recipeJob = await recipe.startRecipe(recipeId);
     const message = messages.getMessage('recipeJobUpdate', [recipeJob?.id, recipeJob?.status]);

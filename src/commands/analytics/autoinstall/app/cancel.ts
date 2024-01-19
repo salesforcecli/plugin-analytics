@@ -4,7 +4,12 @@
  * Licensed under the BSD 3-Clause license.
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import {
+  Flags,
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
 import AutoInstall from '../../../../lib/analytics/autoinstall/autoinstall.js';
@@ -19,7 +24,8 @@ export default class Cancel extends SfCommand<void> {
   public static readonly examples = ['$ sfdx analytics:autoinstall:app:cancel -i id'];
 
   public static readonly flags = {
-    targetOrg: requiredOrgFlagWithDeprecations,
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
     autoinstallid: Flags.salesforceId({
       char: 'i',
       required: true,
@@ -30,7 +36,7 @@ export default class Cancel extends SfCommand<void> {
 
   public async run() {
     const { flags } = await this.parse(Cancel);
-    const autoinstall = new AutoInstall(flags.targetOrg);
+    const autoinstall = new AutoInstall(flags['target-org'].getConnection(flags['api-version']));
     await autoinstall.cancel(flags.autoinstallid);
     this.log(messages.getMessage('appAutoInstallCancelRequestSuccess', [flags.autoinstallid]));
   }

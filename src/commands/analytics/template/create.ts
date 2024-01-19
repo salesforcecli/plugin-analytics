@@ -5,7 +5,12 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import {
+  Flags,
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
 import WaveTemplate from '../../../lib/analytics/template/wavetemplate.js';
@@ -24,7 +29,8 @@ export default class Create extends SfCommand<string | undefined> {
   ];
 
   public static readonly flags = {
-    targetOrg: requiredOrgFlagWithDeprecations,
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
     folderid: Flags.salesforceId({
       char: 'f',
       required: true,
@@ -61,7 +67,7 @@ export default class Create extends SfCommand<string | undefined> {
 
   public async run() {
     const { flags } = await this.parse(Create);
-    const template = new WaveTemplate(flags.targetOrg);
+    const template = new WaveTemplate(flags['target-org'].getConnection(flags['api-version']));
     // Create the wave template from an app/folder id
     const waveTemplateId = await template.create(flags.folderid, {
       label: flags.label,

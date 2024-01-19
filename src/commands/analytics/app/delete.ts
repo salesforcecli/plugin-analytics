@@ -5,7 +5,12 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import {
+  Flags,
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
 import Folder from '../../../lib/analytics/app/folder.js';
@@ -20,7 +25,8 @@ export default class Delete extends SfCommand<string> {
   public static readonly examples = ['$ sfdx analytics:app:delete -f folderid'];
 
   public static readonly flags = {
-    targetOrg: requiredOrgFlagWithDeprecations,
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
     folderid: Flags.salesforceId({
       char: 'f',
       required: true,
@@ -37,7 +43,7 @@ export default class Delete extends SfCommand<string> {
   public async run() {
     const { flags } = await this.parse(Delete);
     if (flags.noprompt || (await this.confirm({ message: messages.getMessage('confirmDeleteYesNo') }))) {
-      const folder = new Folder(flags.targetOrg);
+      const folder = new Folder(flags['target-org'].getConnection(flags['api-version']));
       await folder.deleteFolder(flags.folderid);
       this.log(messages.getMessage('deleteAppSuccess', [flags.folderid]));
     }

@@ -5,7 +5,12 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import {
+  Flags,
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
 import Lens from '../../../../lib/analytics/lens/lens.js';
@@ -22,7 +27,8 @@ export default class List extends SfCommand<
   public static readonly examples = ['$ sfdx analytics:lens:history:list --lensid <lensid> '];
 
   public static readonly flags = {
-    targetOrg: requiredOrgFlagWithDeprecations,
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
     lensid: Flags.salesforceId({
       char: 'i',
       required: true,
@@ -33,7 +39,7 @@ export default class List extends SfCommand<
 
   public async run() {
     const { flags } = await this.parse(List);
-    const lens = new Lens(flags.targetOrg);
+    const lens = new Lens(flags['target-org'].getConnection(flags['api-version']));
     const lensId = flags.lensid;
     const histories = ((await lens.getHistories(lensId)) || []).map((history) => ({
       historyid: history.id,

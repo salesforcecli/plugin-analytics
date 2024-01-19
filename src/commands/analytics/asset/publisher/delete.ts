@@ -5,7 +5,12 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import {
+  Flags,
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
 import Publisher from '../../../../lib/analytics/publisher/publisher.js';
@@ -20,7 +25,8 @@ export default class Delete extends SfCommand<void> {
   public static readonly examples = ['$ sfdx analytics:asset:publisher:delete -a assetId -i assetPublisherId'];
 
   public static readonly flags = {
-    targetOrg: requiredOrgFlagWithDeprecations,
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
     id: Flags.salesforceId({
       char: 'i',
       required: true,
@@ -37,7 +43,7 @@ export default class Delete extends SfCommand<void> {
 
   public async run() {
     const { flags } = await this.parse(Delete);
-    const publisher = new Publisher(flags.targetOrg);
+    const publisher = new Publisher(flags['target-org'].getConnection(flags['api-version']));
     await publisher.delete(flags.assetid, flags.id);
     this.log(messages.getMessage('deletePublisherSuccess', [flags.id]));
   }

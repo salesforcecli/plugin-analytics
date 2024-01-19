@@ -5,7 +5,12 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import {
+  Flags,
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
 import { Messages, SfError } from '@salesforce/core';
 import chalk from 'chalk';
 
@@ -28,7 +33,8 @@ export default class Display extends SfCommand<TemplateType> {
   ];
 
   public static readonly flags = {
-    targetOrg: requiredOrgFlagWithDeprecations,
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
     templateid: Flags.salesforceId({
       char: 't',
       summary: messages.getMessage('templateidFlagDescription'),
@@ -49,7 +55,7 @@ export default class Display extends SfCommand<TemplateType> {
     if (templateInput == null) {
       throw new SfError(messages.getMessage('missingRequiredField'));
     }
-    const template = new WaveTemplate(flags.targetOrg);
+    const template = new WaveTemplate(flags['target-org'].getConnection(flags['api-version']));
     const templateRep = await template.fetch(templateInput);
 
     // force:org:display does a blue chalk on the headers, so do it here, too

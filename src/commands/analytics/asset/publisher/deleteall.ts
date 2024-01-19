@@ -5,7 +5,12 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import {
+  Flags,
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
 import Publisher from '../../../../lib/analytics/publisher/publisher.js';
@@ -20,7 +25,8 @@ export default class Deleteall extends SfCommand<string> {
   public static readonly examples = ['$ sfdx analytics:asset:publisher:deleteall -i assetId'];
 
   public static readonly flags = {
-    targetOrg: requiredOrgFlagWithDeprecations,
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
     assetid: Flags.salesforceId({
       char: 'i',
       required: true,
@@ -37,7 +43,7 @@ export default class Deleteall extends SfCommand<string> {
   public async run() {
     const { flags } = await this.parse(Deleteall);
     if (flags.noprompt || (await this.confirm({ message: messages.getMessage('confirmDeleteYesNo') }))) {
-      const publisher = new Publisher(flags.targetOrg);
+      const publisher = new Publisher(flags['target-org'].getConnection(flags['api-version']));
       await publisher.deleteAll(flags.assetid);
       this.log(messages.getMessage('deletePublishersSuccess', [flags.assetid]));
     }

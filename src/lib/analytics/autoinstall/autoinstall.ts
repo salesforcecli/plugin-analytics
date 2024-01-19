@@ -4,7 +4,7 @@
  * Licensed under the BSD 3-Clause license.
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import { Connection, Org } from '@salesforce/core';
+import { Connection } from '@salesforce/core';
 import { Ux } from '@salesforce/sf-plugins-core';
 import { connectRequest, fetchAllPages } from '../request.js';
 import { throwError, waitFor } from '../utils.js';
@@ -87,11 +87,9 @@ const cancelStatusType = 'Cancelled';
 
 export default class AutoInstall {
   public readonly serverVersion: number;
-  private readonly connection: Connection;
   private readonly autoInstallUrl: string;
 
-  public constructor(organization: Org) {
-    this.connection = organization.getConnection();
+  public constructor(private readonly connection: Connection) {
     this.serverVersion = +this.connection.getApiVersion();
     this.autoInstallUrl = `${this.connection.baseUrl()}/wave/auto-install-requests/`;
   }

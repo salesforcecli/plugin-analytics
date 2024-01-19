@@ -5,7 +5,12 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import {
+  Flags,
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
 import { Messages, Org } from '@salesforce/core';
 
 import Folder from '../../../lib/analytics/app/folder.js';
@@ -21,7 +26,8 @@ export default class Delete extends SfCommand<string | undefined> {
   public static readonly examples = ['$ sfdx analytics:template:delete -t templateid'];
 
   public static readonly flags = {
-    targetOrg: requiredOrgFlagWithDeprecations,
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
     templateid: Flags.salesforceId({
       char: 't',
       required: true,
@@ -58,17 +64,24 @@ export default class Delete extends SfCommand<string | undefined> {
     return flags.templateid;
   }
 
-  private async executeCommand(flags: { targetOrg: Org; templateid: string; forcedelete: boolean; decouple: boolean }) {
+  private async executeCommand(flags: {
+    'target-org': Org;
+    'api-version': string | undefined;
+    templateid: string;
+    forcedelete: boolean;
+    decouple: boolean;
+  }) {
     const templateid = flags.templateid;
     const forceDelete = flags.forcedelete;
     const decouple = flags.decouple;
 
-    const wavetemplate = new WaveTemplate(flags.targetOrg);
+    const connection = flags['target-org'].getConnection(flags['api-version']);
+    const wavetemplate = new WaveTemplate(connection);
     // make sure we can find this template and if not let it error from the api
     await wavetemplate.fetch(templateid);
 
     if (forceDelete || decouple) {
-      const folderSvc = new Folder(flags.targetOrg);
+      const folderSvc = new Folder(connection);
       const folders = (await folderSvc.list()).filter((folder) => folder.templateSourceId === templateid && folder.id);
 
       if (folders && folders.length > 0) {

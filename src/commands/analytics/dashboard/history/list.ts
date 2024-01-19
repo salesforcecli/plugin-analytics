@@ -5,7 +5,12 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import {
+  Flags,
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
 import Dashboard from '../../../../lib/analytics/dashboard/dashboard.js';
@@ -28,7 +33,8 @@ export default class List extends SfCommand<
   public static readonly examples = ['$ sfdx analytics:dashboard:history:list --dashboardid <dashboardid>'];
 
   public static readonly flags = {
-    targetOrg: requiredOrgFlagWithDeprecations,
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
     dashboardid: Flags.salesforceId({
       char: 'i',
       required: true,
@@ -39,7 +45,7 @@ export default class List extends SfCommand<
 
   public async run() {
     const { flags } = await this.parse(List);
-    const dashboard = new Dashboard(flags.targetOrg);
+    const dashboard = new Dashboard(flags['target-org'].getConnection(flags['api-version']));
     const dashboardId = flags.dashboardid;
     const histories = ((await dashboard.getHistories(dashboardId)) || []).map((history) => ({
       historyid: history.id,

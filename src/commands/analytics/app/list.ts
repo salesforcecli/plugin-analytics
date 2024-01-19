@@ -5,7 +5,12 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import {
+  Flags,
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
 import Folder, { type AppStatus } from '../../../lib/analytics/app/folder.js';
@@ -30,7 +35,8 @@ export default class List extends SfCommand<
   public static readonly examples = ['$ sfdx analytics:app:list'];
 
   public static readonly flags = {
-    targetOrg: requiredOrgFlagWithDeprecations,
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
     folderid: Flags.string({
       char: 'f',
       summary: messages.getMessage('folderidFlagDescription'),
@@ -40,7 +46,7 @@ export default class List extends SfCommand<
 
   public async run() {
     const { flags } = await this.parse(List);
-    const folderSvc = new Folder(flags.targetOrg);
+    const folderSvc = new Folder(flags['target-org'].getConnection(flags['api-version']));
     const folderid = flags.folderid;
     const folders = ((await folderSvc.list()) || [])
       .filter((folder) => !folderid || folder.id === folderid)

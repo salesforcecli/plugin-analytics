@@ -5,7 +5,11 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import {
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
 import Lens from '../../../lib/analytics/lens/lens.js';
@@ -22,12 +26,13 @@ export default class List extends SfCommand<
   public static readonly examples = ['$ sfdx analytics:lens:list'];
 
   public static readonly flags = {
-    targetOrg: requiredOrgFlagWithDeprecations,
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
   };
 
   public async run() {
     const { flags } = await this.parse(List);
-    const lensSvc = new Lens(flags.targetOrg);
+    const lensSvc = new Lens(flags['target-org'].getConnection(flags['api-version']));
     const lenses = ((await lensSvc.list()) || []).map((lens) => ({
       lensid: lens.id,
       name: lens.name,

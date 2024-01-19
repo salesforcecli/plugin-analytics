@@ -5,7 +5,7 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { Connection, Org } from '@salesforce/core';
+import { Connection } from '@salesforce/core';
 import { connectRequest, fetchAllPages } from '../request.js';
 import { throwError } from '../utils.js';
 
@@ -33,11 +33,9 @@ type DashboardBundleType = Record<string, unknown> & {
 };
 
 export default class Dashboard {
-  private readonly connection: Connection;
   private readonly dashboardsUrl: string;
 
-  public constructor(organization: Org) {
-    this.connection = organization.getConnection();
+  public constructor(private readonly connection: Connection) {
     this.dashboardsUrl = `${this.connection.baseUrl()}/wave/dashboards/`;
   }
 

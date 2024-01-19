@@ -5,7 +5,12 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import {
+  Flags,
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 import Dataflow from '../../../../lib/analytics/dataflow/dataflow.js';
 
@@ -21,7 +26,8 @@ export default class Revert extends SfCommand<string | undefined> {
   ];
 
   public static readonly flags = {
-    targetOrg: requiredOrgFlagWithDeprecations,
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
     dataflowid: Flags.salesforceId({
       char: 'i',
       required: true,
@@ -46,7 +52,7 @@ export default class Revert extends SfCommand<string | undefined> {
     const dataflowId = flags.dataflowid;
     const dataflowHistoryId = flags.historyid;
     const dataflowHistoryLabel = flags.label;
-    const dataflow = new Dataflow(flags.targetOrg);
+    const dataflow = new Dataflow(flags['target-org'].getConnection(flags['api-version']));
 
     const id = await dataflow.revertToHistory(dataflowId, dataflowHistoryId, dataflowHistoryLabel);
     const message = messages.getMessage('revertSuccess', [id, dataflowHistoryId]);

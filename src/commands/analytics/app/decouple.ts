@@ -5,7 +5,12 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import {
+  Flags,
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
 import Folder from '../../../lib/analytics/app/folder.js';
@@ -20,7 +25,8 @@ export default class Decouple extends SfCommand<string> {
   public static readonly examples = ['$ sfdx analytics:app:decouple -f folderId -t templateId'];
 
   public static readonly flags = {
-    targetOrg: requiredOrgFlagWithDeprecations,
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
     folderid: Flags.salesforceId({
       char: 'f',
       required: true,
@@ -37,7 +43,7 @@ export default class Decouple extends SfCommand<string> {
 
   public async run() {
     const { flags } = await this.parse(Decouple);
-    const folder = new Folder(flags.targetOrg);
+    const folder = new Folder(flags['target-org'].getConnection(flags['api-version']));
     const folderId = await folder.decouple(flags.folderid, flags.templateid);
     this.log(messages.getMessage('decoupleSuccess', [folderId ?? flags.folderid, flags.templateid]));
     return folderId ?? flags.folderid;

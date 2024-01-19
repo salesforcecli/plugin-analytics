@@ -5,7 +5,13 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { Flags, SfCommand, Ux, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import {
+  Flags,
+  SfCommand,
+  Ux,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 import { DEF_APP_CREATE_UPDATE_TIMEOUT } from '../../../lib/analytics/constants.js';
 import AppStreaming, { type StreamingResult } from '../../../lib/analytics/event/appStreaming.js';
@@ -22,7 +28,8 @@ export default class Update extends SfCommand<{ id?: string; events?: StreamingR
   public static readonly examples = ['$ sfdx analytics:app:update -f folderId -t templateId'];
 
   public static readonly flags = {
-    targetOrg: requiredOrgFlagWithDeprecations,
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
     templateid: Flags.string({
       char: 't',
       required: true,
@@ -56,7 +63,7 @@ export default class Update extends SfCommand<{ id?: string; events?: StreamingR
 
   public async run() {
     const { flags } = await this.parse(Update);
-    const folder = new Folder(flags.targetOrg);
+    const folder = new Folder(flags['target-org'].getConnection(flags['api-version']));
     if (flags.async || flags.wait <= 0) {
       const waveAppId = await folder.update(flags.folderid, flags.templateid);
       // If error occurs here fails out in the update call and reports back, otherwise success
@@ -64,7 +71,7 @@ export default class Update extends SfCommand<{ id?: string; events?: StreamingR
       return { id: waveAppId };
     } else {
       const appStreaming = new AppStreaming(
-        flags.targetOrg,
+        flags['target-org'],
         flags.allevents,
         flags.wait,
         new Ux({ jsonEnabled: this.jsonEnabled() })

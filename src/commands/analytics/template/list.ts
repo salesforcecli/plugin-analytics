@@ -5,7 +5,12 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import {
+  Flags,
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
 import WaveTemplate from '../../../lib/analytics/template/wavetemplate.js';
@@ -34,7 +39,8 @@ export default class List extends SfCommand<TemplateInfo[]> {
   ];
 
   public static readonly flags = {
-    targetOrg: requiredOrgFlagWithDeprecations,
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
     includesalesforcetemplates: Flags.boolean({
       char: 'a',
       summary: messages.getMessage('includeSalesforceTemplatesFlagDescription'),
@@ -49,7 +55,7 @@ export default class List extends SfCommand<TemplateInfo[]> {
 
   public async run() {
     const { flags } = await this.parse(List);
-    const wavetemplate = new WaveTemplate(flags.targetOrg);
+    const wavetemplate = new WaveTemplate(flags['target-org'].getConnection(flags['api-version']));
     const templates = ((await wavetemplate.list(flags.includembeddedtemplates)) || [])
       .filter((template) => flags.includesalesforcetemplates || template.id?.startsWith('0Nk'))
       .map((template) => ({

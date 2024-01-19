@@ -4,7 +4,7 @@
  * Licensed under the BSD 3-Clause license.
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import { Connection, Org } from '@salesforce/core';
+import { Connection } from '@salesforce/core';
 import { connectRequest } from '../request.js';
 import { throwError } from '../utils.js';
 
@@ -15,12 +15,10 @@ export type PublisherType = {
 };
 
 export default class Publisher {
-  private readonly connection: Connection;
   private readonly publishersUrl: string;
   private readonly endpointName: string;
 
-  public constructor(organization: Org) {
-    this.connection = organization.getConnection();
+  public constructor(private readonly connection: Connection) {
     this.publishersUrl = `${this.connection.baseUrl()}/wave/dashboards/`;
     this.endpointName = 'publishers';
   }

@@ -4,7 +4,7 @@
  * Licensed under the BSD 3-Clause license.
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import { Connection, Org } from '@salesforce/core';
+import { Connection } from '@salesforce/core';
 import { connectRequest, fetchAllPages } from '../request.js';
 import { throwError } from '../utils.js';
 
@@ -58,12 +58,10 @@ export type DataflowJobType = Record<string, unknown> & {
 };
 
 export default class Dataflow {
-  private readonly connection: Connection;
   private readonly dataflowsUrl: string;
   private readonly dataflowsJobsUrl: string;
 
-  public constructor(organization: Org) {
-    this.connection = organization.getConnection();
+  public constructor(private readonly connection: Connection) {
     this.dataflowsUrl = `${this.connection.baseUrl()}/wave/dataflows/`;
     this.dataflowsJobsUrl = `${this.connection.baseUrl()}/wave/dataflowjobs/`;
   }

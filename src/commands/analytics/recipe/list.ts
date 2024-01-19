@@ -4,7 +4,11 @@
  * Licensed under the BSD 3-Clause license.
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import { SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import {
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
 import Recipe from '../../../lib/analytics/recipe/recipe.js';
@@ -27,12 +31,13 @@ export default class List extends SfCommand<
   public static readonly examples = ['$ sfdx analytics:recipe:list'];
 
   public static readonly flags = {
-    targetOrg: requiredOrgFlagWithDeprecations,
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
   };
 
   public async run() {
     const { flags } = await this.parse(List);
-    const recipeSvc = new Recipe(flags.targetOrg);
+    const recipeSvc = new Recipe(flags['target-org'].getConnection(flags['api-version']));
     const recipes = ((await recipeSvc.list()) || []).map((recipe) => ({
       recipeid: recipe.id,
       name: recipe.name,

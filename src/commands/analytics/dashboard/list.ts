@@ -4,7 +4,11 @@
  * Licensed under the BSD 3-Clause license.
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import { SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import {
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
 import Dashboard from '../../../lib/analytics/dashboard/dashboard.js';
@@ -29,12 +33,13 @@ export default class List extends SfCommand<
   public static readonly examples = ['$ sfdx analytics:dashboard:list'];
 
   public static readonly flags = {
-    targetOrg: requiredOrgFlagWithDeprecations,
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
   };
 
   public async run() {
     const { flags } = await this.parse(List);
-    const dashboardSvc = new Dashboard(flags.targetOrg);
+    const dashboardSvc = new Dashboard(flags['target-org'].getConnection(flags['api-version']));
     const dashboards = ((await dashboardSvc.list()) || []).map((dashboard) => ({
       dashboardid: dashboard.id,
       name: dashboard.name,

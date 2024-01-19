@@ -5,7 +5,11 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import {
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 import DatasetSvc from '../../../lib/analytics/dataset/dataset.js';
 
@@ -28,12 +32,13 @@ export default class List extends SfCommand<
   public static readonly examples = ['$ sfdx analytics:dataset:list'];
 
   public static readonly flags = {
-    targetOrg: requiredOrgFlagWithDeprecations,
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
   };
 
   public async run() {
     const { flags } = await this.parse(List);
-    const svc = new DatasetSvc(flags.targetOrg.getConnection());
+    const svc = new DatasetSvc(flags['target-org'].getConnection(flags['api-version']));
     const datasets = ((await svc.list()) || []).map((dataset) => ({
       id: dataset.id,
       name: dataset.name,

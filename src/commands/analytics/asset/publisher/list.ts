@@ -5,7 +5,12 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import {
+  Flags,
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
 import Publisher from '../../../../lib/analytics/publisher/publisher.js';
@@ -27,7 +32,8 @@ export default class List extends SfCommand<
   public static readonly examples = ['$ sfdx analytics:asset:publisher:list -i assetId'];
 
   public static readonly flags = {
-    targetOrg: requiredOrgFlagWithDeprecations,
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
     assetid: Flags.salesforceId({
       char: 'i',
       required: true,
@@ -38,7 +44,7 @@ export default class List extends SfCommand<
 
   public async run() {
     const { flags } = await this.parse(List);
-    const publisherSvc = new Publisher(flags.targetOrg);
+    const publisherSvc = new Publisher(flags['target-org'].getConnection(flags['api-version']));
     const assetId = flags.assetid;
     const publishers = ((await publisherSvc.list(assetId)) ?? []).map((publisher) => ({
       id: publisher.id,

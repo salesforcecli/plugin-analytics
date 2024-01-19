@@ -5,8 +5,13 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
-import { Messages, Org, SfError } from '@salesforce/core';
+import {
+  Flags,
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
+import { Messages, SfError } from '@salesforce/core';
 
 import Folder from '../../../lib/analytics/app/folder.js';
 import WaveTemplate from '../../../lib/analytics/template/wavetemplate.js';
@@ -27,7 +32,8 @@ export default class Update extends SfCommand<
   ];
 
   public static readonly flags = {
-    targetOrg: requiredOrgFlagWithDeprecations,
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
     templateid: Flags.salesforceId({
       char: 't',
       summary: messages.getMessage('templateidFlagDescription'),
@@ -79,7 +85,7 @@ export default class Update extends SfCommand<
     const recipeIds = flags.recipeids;
     const datatransformIds = flags.datatransformids;
 
-    const template = new WaveTemplate(flags.targetOrg);
+    const template = new WaveTemplate(flags['target-org'].getConnection(flags['api-version']));
 
     // no folder id provided, first see if we can find in on the folderSource of the template
     if (!folderid) {
@@ -95,7 +101,7 @@ export default class Update extends SfCommand<
 
     // if we can't get the folder id from the folderSource, throw error and search for options to show in error message
     if (!folderid) {
-      const folderSvc = new Folder(flags.org as Org);
+      const folderSvc = new Folder(flags['target-org'].getConnection(flags['api-version']));
       // calling list first because PUT with a wrong id doens't fail correctly
       const folders = ((await folderSvc.list()) || [])
         .filter((folder) => folder.templateSourceId === templateInput)

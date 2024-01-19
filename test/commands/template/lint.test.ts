@@ -8,8 +8,18 @@
 import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js';
 import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
 import { expect } from 'chai';
+import { Messages, SfError } from '@salesforce/core';
 import Lint from '../../../src/commands/analytics/template/lint.js';
-import { getStdout, stubDefaultOrg } from '../../testutils.js';
+import {
+  expectToHaveElementInclude,
+  getStdout,
+  getStyledHeaders,
+  getTableData,
+  stubDefaultOrg,
+} from '../../testutils.js';
+
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
+const messages = Messages.loadMessages('@salesforce/analytics', 'lint');
 
 const ID = '0Nkxx000000000zCAA';
 const templateValues = {
@@ -24,7 +34,7 @@ const templateValues = {
   ],
 };
 const templateWithFailedReadiness = {
-  id: '0Nkxx000000000zCAA',
+  label: '0Nkxx000000000zCAA',
   score: 85.6,
   tasks: [
     {
@@ -49,25 +59,35 @@ describe('analytics:template:lint', () => {
 
   it(`runs: --templateid ${ID}`, async () => {
     await stubDefaultOrg($$, testOrg);
-    $$.fakeConnectionRequest = () => Promise.resolve({ result: templateValues });
+    $$.fakeConnectionRequest = () => Promise.resolve(templateValues);
 
     await Lint.run(['--templateid', ID]);
     const stdout = getStdout(sfCommandStubs);
     expect(stdout, 'stdout').to.contain('Command only available in api version 58.0 or later');
   });
 
-  describe('with failure', () => {
-    const exitCode = process.exitCode;
-    after(() => {
-      process.exitCode = exitCode;
-    });
+  it(`runs: --templateid ${ID} --apiversion 58.0`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = () => Promise.resolve(templateWithFailedReadiness);
 
-    it(`runs: --templateid ${ID} --apiversion 58.0`, async () => {
-      await stubDefaultOrg($$, testOrg);
-      $$.fakeConnectionRequest = () => Promise.resolve({ result: templateWithFailedReadiness });
-
+    try {
       await Lint.run(['--templateid', ID, '--apiversion', '58.0']);
-      expect(process.exitCode).to.equal(1);
-    });
+    } catch (error) {
+      expect(error, 'error').to.be.instanceOf(SfError);
+      expect((error as SfError).message, 'error message').to.equal(messages.getMessage('lintFailed'));
+
+      const { data, headers, headerLabels } = getTableData(sfCommandStubs);
+      expect(headers, 'headers').to.deep.equal(['label', 'readinessStatus', 'message']);
+      expect(headerLabels, 'headers').to.deep.equal(['Task', 'Status', 'Message']);
+      expectToHaveElementInclude(data, templateWithFailedReadiness.tasks[0], 'table');
+      expect(getStyledHeaders(sfCommandStubs), 'style headers').to.contain(
+        messages.getMessage('tasksFound', [
+          templateWithFailedReadiness.label,
+          String(templateWithFailedReadiness.score),
+        ])
+      );
+      return;
+    }
+    expect.fail('Expected error');
   });
 });

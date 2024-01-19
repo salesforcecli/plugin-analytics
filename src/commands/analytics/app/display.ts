@@ -5,7 +5,12 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import {
+  Flags,
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 import chalk from 'chalk';
 import moment from 'moment';
@@ -48,7 +53,8 @@ export default class Display extends SfCommand<AppFolder> {
   public static readonly examples = ['$ sfdx analytics:app:display -f folderId -a'];
 
   public static readonly flags = {
-    targetOrg: requiredOrgFlagWithDeprecations,
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
     folderid: Flags.salesforceId({
       char: 'f',
       required: true,
@@ -66,7 +72,7 @@ export default class Display extends SfCommand<AppFolder> {
 
   public async run() {
     const { flags } = await this.parse(Display);
-    const folder = new Folder(flags.targetOrg);
+    const folder = new Folder(flags['target-org'].getConnection(flags['api-version']));
     const app = await folder.fetch(flags.folderid, flags.applog);
 
     // force:org:display does a blue chalk on the headers, so do it here, too

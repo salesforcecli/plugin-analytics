@@ -5,7 +5,12 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import {
+  Flags,
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
 import { Messages, SfError } from '@salesforce/core';
 import chalk from 'chalk';
 import moment from 'moment';
@@ -40,7 +45,8 @@ export default class Display extends SfCommand<DatasetType> {
   ];
 
   public static readonly flags = {
-    targetOrg: requiredOrgFlagWithDeprecations,
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
     datasetid: Flags.salesforceId({
       char: 'i',
       summary: messages.getMessage('datasetidFlagDescription'),
@@ -60,7 +66,7 @@ export default class Display extends SfCommand<DatasetType> {
     if (!flags.datasetid && !flags.datasetname) {
       throw new SfError(messages.getMessage('missingRequiredField'));
     }
-    const svc = new DatasetSvc(flags.targetOrg.getConnection());
+    const svc = new DatasetSvc(flags['target-org'].getConnection(flags['api-version']));
     const dataset = await svc.fetch((flags.datasetid ?? flags.datasetname) as string);
 
     // force:org:display does a blue chalk on the headers, so do it here, too

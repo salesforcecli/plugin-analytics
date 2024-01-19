@@ -5,7 +5,12 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { Flags, SfCommand, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import {
+  Flags,
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
 import { Messages, SfError } from '@salesforce/core';
 import DatasetSvc from '../../../../lib/analytics/dataset/dataset.js';
 import QuerySvc, {
@@ -29,7 +34,8 @@ export default class Fetch extends SfCommand<QueryResponse | undefined> {
   ];
 
   public static readonly flags = {
-    targetOrg: requiredOrgFlagWithDeprecations,
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
     datasetid: Flags.salesforceId({
       char: 'i',
       summary: messages.getMessage('datasetidFlagDescription'),
@@ -52,7 +58,7 @@ export default class Fetch extends SfCommand<QueryResponse | undefined> {
     if (!flags.datasetid && !flags.datasetname) {
       throw new SfError(messages.getMessage('missingRequiredField'));
     }
-    const connection = flags.targetOrg.getConnection();
+    const connection = flags['target-org'].getConnection(flags['api-version']);
     const svc = new DatasetSvc(connection);
     const dataset = await svc.fetch((flags.datasetid ?? flags.datasetname) as string);
 
