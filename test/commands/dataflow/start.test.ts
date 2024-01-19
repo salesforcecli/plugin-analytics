@@ -41,7 +41,7 @@ describe('analytics:dataflow:start', () => {
         requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
         return Promise.resolve({ id: dataflowJobId, status: 'Queued' });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
 
     await Start.run(['--dataflowid', dataflowId]);

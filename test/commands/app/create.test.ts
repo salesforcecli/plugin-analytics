@@ -52,7 +52,7 @@ describe('analytics:app:create', () => {
         requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
         return Promise.resolve({ id: appId });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
 
     await Create.run(['--templateid', testTemplateJson.id, '--async']);
@@ -77,7 +77,7 @@ describe('analytics:app:create', () => {
       if (ensureString(request.method) === 'POST') {
         return Promise.resolve({ id: appId });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
 
     await Create.run(['--templateid', testTemplateJson.id, '--async', '--json']);
@@ -104,7 +104,7 @@ describe('analytics:app:create', () => {
         requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
         return Promise.resolve({ id: appId });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
 
     // --wait=0 should be the same as --async so this should return right away
@@ -135,7 +135,7 @@ describe('analytics:app:create', () => {
         requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
         return Promise.resolve({ id: appId });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
 
     await Create.run(['--templatename', 'Sustainability', '--async']);
@@ -164,7 +164,7 @@ describe('analytics:app:create', () => {
         requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
         return Promise.resolve({ id: appId });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
 
     await Create.run([
@@ -196,7 +196,7 @@ describe('analytics:app:create', () => {
         requestBody = JSON.parse(request.body as string) as AnyJson;
         return Promise.resolve({ id: appId });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
     stubMethod($$.SANDBOX, fs, 'readFile').callsFake(() =>
       Promise.resolve(
@@ -230,7 +230,7 @@ describe('analytics:app:create', () => {
         requestBody = JSON.parse(request.body as string) as AnyJson;
         return Promise.resolve({ id: appId });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
     stubMethod($$.SANDBOX, fs, 'readFile').callsFake(() =>
       Promise.resolve(
@@ -264,7 +264,7 @@ describe('analytics:app:create', () => {
         requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
         return Promise.resolve({ id: appId });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
     stubMethod($$.SANDBOX, fs, 'readFile').callsFake(() =>
       Promise.resolve(
@@ -297,7 +297,7 @@ describe('analytics:app:create', () => {
       if (ensureString(request.method) === 'POST') {
         return Promise.resolve({ id: appId });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
     stubMethod($$.SANDBOX, StreamingClient, 'create').callsFake(async (options?: StreamingClient.Options) => ({
       handshake: async () => StreamingClient.ConnectionState.CONNECTED,
@@ -336,7 +336,7 @@ describe('analytics:app:create', () => {
       if (ensureString(request.method) === 'POST') {
         return Promise.resolve({ id: appId });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
     stubMethod($$.SANDBOX, StreamingClient, 'create').callsFake(async (options?: StreamingClient.Options) => ({
       handshake: async () => StreamingClient.ConnectionState.CONNECTED,
@@ -390,7 +390,7 @@ describe('analytics:app:create', () => {
       if (ensureString(request.method) === 'POST') {
         return Promise.resolve({ id: appId });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
     stubMethod($$.SANDBOX, StreamingClient, 'create').callsFake(async (options?: StreamingClient.Options) => ({
       handshake: async () => StreamingClient.ConnectionState.CONNECTED,
@@ -433,7 +433,7 @@ describe('analytics:app:create', () => {
       if (ensureString(request.method) === 'POST') {
         return Promise.resolve({ id: appId });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
     stubMethod($$.SANDBOX, StreamingClient, 'create').callsFake(async (options?: StreamingClient.Options) => ({
       handshake: async () => StreamingClient.ConnectionState.CONNECTED,

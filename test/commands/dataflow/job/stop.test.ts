@@ -43,7 +43,7 @@ describe('analytics:dataflow:job:stop', () => {
         requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
         return Promise.resolve({ dataflowjobId, status: 'Failure' });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
 
     await Stop.run(['--dataflowjobid', dataflowjobId]);

@@ -39,7 +39,7 @@ describe('analytics:dashboard:update', () => {
         requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
         return Promise.resolve({ id: dashboardId });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
 
     await Update.run(['--dashboardid', dashboardId, '--currenthistoryid', currentHistoryId]);
@@ -57,7 +57,7 @@ describe('analytics:dashboard:update', () => {
         requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
         return Promise.resolve({ id: dashboardId });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
 
     await Update.run(['--dashboardid', dashboardId, '--removecurrenthistory']);
@@ -75,7 +75,7 @@ describe('analytics:dashboard:update', () => {
         requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
         return Promise.resolve({ id: dashboardId });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
 
     await Update.run(['--dashboardid', dashboardId]);

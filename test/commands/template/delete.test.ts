@@ -56,7 +56,7 @@ describe('analytics:template:delete', () => {
         templateDeletes++;
         return Promise.resolve({ id: templateId });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
 
     await Delete.run(['-t', templateId, '--noprompt']);
@@ -84,7 +84,7 @@ describe('analytics:template:delete', () => {
         templateDeletes++;
         return Promise.resolve({ id: templateId });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
 
     await Delete.run(['-t', templateId, '--noprompt', '--forcedelete']);
@@ -117,7 +117,7 @@ describe('analytics:template:delete', () => {
         templateDeletes++;
         return Promise.resolve({ id: templateId });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
 
     await Delete.run(['-t', templateId, '--noprompt', '--forcedelete']);
@@ -144,15 +144,15 @@ describe('analytics:template:delete', () => {
           folders: [{ id: appId, templateSourceId: templateId, label: appLabel }],
         });
       }
-      if (request.method === 'DELETE' && url.includes('/wave/folders/')) {
-        folderDeletes++;
+      if (request.method === 'PUT' && url.includes('/wave/folders/')) {
+        folderPuts++;
         return Promise.resolve({ id: appId });
       }
       if (request.method === 'DELETE' && url.includes('/wave/templates/')) {
         templateDeletes++;
         return Promise.resolve({ id: templateId });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
 
     await Delete.run(['--noprompt', '--decouple', '--templateid', templateId]);

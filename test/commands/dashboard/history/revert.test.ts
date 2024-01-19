@@ -40,7 +40,7 @@ describe('analytics:dashboard:history:revert', () => {
         requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
         return Promise.resolve({ asset: { id: dashboardId } });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
 
     await Revert.run(['--dashboardid', dashboardId, '--historyid', dashboardHistoryId]);

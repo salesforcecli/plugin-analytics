@@ -40,7 +40,7 @@ describe('analytics:app:decouple', () => {
         requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
         return Promise.resolve({ id: folderId });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
 
     await Decouple.run(['--folderid', folderId, '--templateid', templateId]);

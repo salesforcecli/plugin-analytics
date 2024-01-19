@@ -36,7 +36,7 @@ describe('analytics:app:delete', () => {
       if (ensureString(request.method) === 'DELETE') {
         return Promise.resolve({ id: appId });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
 
     await Delete.run(['--noprompt', '--folderid', appId]);

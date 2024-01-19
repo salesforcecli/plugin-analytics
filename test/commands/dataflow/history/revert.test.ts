@@ -40,7 +40,7 @@ describe('analytics:dataflow:history:revert', () => {
         requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
         return Promise.resolve({ id: dataflowId });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
 
     await Revert.run(['--dataflowid', dataflowId, '--historyid', dataflowHistoryId]);

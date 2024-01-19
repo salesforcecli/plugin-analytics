@@ -39,7 +39,7 @@ describe('analytics:template:create', () => {
         requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
         return Promise.resolve({ id: templateId });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
 
     await Create.run(['--folderid', folderId]);
@@ -57,7 +57,7 @@ describe('analytics:template:create', () => {
         requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
         return Promise.resolve({ id: templateId });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
 
     await Create.run(['-f', folderId, '--label', 'testlabel']);
@@ -75,7 +75,7 @@ describe('analytics:template:create', () => {
         requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
         return Promise.resolve({ id: templateId });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
 
     await Create.run(['-f', folderId, '--description', 'test description']);
@@ -96,7 +96,7 @@ describe('analytics:template:create', () => {
         requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
         return Promise.resolve({ id: templateId });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
 
     await Create.run(['-f', folderId, '--label', 'testlabel', '--description', 'test description']);
@@ -118,7 +118,7 @@ describe('analytics:template:create', () => {
         requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
         return Promise.resolve({ id: templateId });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
 
     await Create.run(['-f', folderId, '-r', '05vxx0000004CAeAAM, 05vxx0000004CAeAAM']);
@@ -139,7 +139,7 @@ describe('analytics:template:create', () => {
         requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
         return Promise.resolve({ id: templateId });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
 
     await Create.run(['-f', folderId, '-d', '1dtxxx000000001, 1dtxxx000000002', '--apiversion', '59.0']);
@@ -160,7 +160,7 @@ describe('analytics:template:create', () => {
         requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
         return Promise.resolve({ id: templateId });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
 
     await Create.run([

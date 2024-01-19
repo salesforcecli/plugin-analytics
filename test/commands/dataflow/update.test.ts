@@ -41,7 +41,7 @@ describe('analytics:dataflow:update', () => {
         requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
         return Promise.resolve({ dataflowId, name: dataflowName });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
 
     await Update.run(['--dataflowid', dataflowId, '--dataflowstr', dataflowStr]);

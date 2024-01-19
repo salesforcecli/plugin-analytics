@@ -41,7 +41,7 @@ describe('analytics:template:update', () => {
       if (request.method === 'POST') {
         return Promise.resolve({ id: templateId });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
 
     await Update.run(['--templateid', templateId]);
@@ -62,7 +62,7 @@ describe('analytics:template:update', () => {
       if (request.method === 'PUT') {
         return Promise.resolve({ id: templateId, name: templateName });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
 
     await Update.run(['--templateid', templateId, '--folderid', folderId]);
@@ -79,7 +79,7 @@ describe('analytics:template:update', () => {
         requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
         return Promise.resolve({ id: templateId, name: templateName, assetVersion: 50 });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
 
     await Update.run([
@@ -107,7 +107,7 @@ describe('analytics:template:update', () => {
       if (request.method === 'PUT') {
         return Promise.resolve({ id: templateId, name: templateName });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
 
     await Update.run(['--templatename', templateName, '--folderid', folderId]);
@@ -122,7 +122,7 @@ describe('analytics:template:update', () => {
       if (request.method === 'GET') {
         return Promise.resolve({ folders: [], templates: [] });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
 
     await Update.run(['--templatename', templateName]);
@@ -130,7 +130,7 @@ describe('analytics:template:update', () => {
     expect(stdout, 'stdout').to.contain(messages.getMessage('errorNoFolderFound', [templateName]));
   });
 
-  it(`runs: --folderid ${folderId} --templateId ${templateId} -r "05vxx0000004CAeAAM, 05vxx0000004CAeAAM" --apiversion 54.0`, async () => {
+  it(`runs: --folderid ${folderId} --templateId ${templateId} -r "05vxx0000004CAeAAM, 05vxx0000004CAeAAM" --apiversion 55.0`, async () => {
     await stubDefaultOrg($$, testOrg);
     let requestBody: AnyJson | undefined;
     $$.fakeConnectionRequest = (request) => {
@@ -139,7 +139,7 @@ describe('analytics:template:update', () => {
         requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
         return Promise.resolve({ id: templateId, name: templateName, assetVersion: 50 });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
 
     await Update.run([
@@ -160,7 +160,7 @@ describe('analytics:template:update', () => {
     });
   });
 
-  it(`runs: --folderid ${folderId} --templateId ${templateId} -d "1dtxxx000000001, 1dtxxx000000002" --apiversion 55.0`, async () => {
+  it(`runs: --folderid ${folderId} --templateId ${templateId} -d "1dtxxx000000001, 1dtxxx000000002" --apiversion 59.0`, async () => {
     await stubDefaultOrg($$, testOrg);
     let requestBody: AnyJson | undefined;
     $$.fakeConnectionRequest = (request) => {
@@ -169,7 +169,7 @@ describe('analytics:template:update', () => {
         requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
         return Promise.resolve({ id: templateId, name: templateName, assetVersion: 50 });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
 
     await Update.run([
@@ -180,7 +180,7 @@ describe('analytics:template:update', () => {
       '-d',
       '1dtxxx000000001, 1dtxxx000000002',
       '--apiversion',
-      '55.0',
+      '59.0',
     ]);
     const stdout = getStdout(sfCommandStubs);
     expect(stdout, 'stdout').to.contain(messages.getMessage('updateSuccess', [templateName, templateId, folderId]));
@@ -199,7 +199,7 @@ describe('analytics:template:update', () => {
         requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
         return Promise.resolve({ id: templateId, name: templateName, assetVersion: 50 });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
 
     await Update.run([

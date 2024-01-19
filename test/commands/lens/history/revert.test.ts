@@ -37,7 +37,7 @@ describe('analytics:lens:history:revert', () => {
       if (ensureJsonMap(request).method === 'PUT') {
         return Promise.resolve({ asset: { id: lensId } });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
 
     await Revert.run(['--lensids', lensId, '--historyid', lensHistoryId]);

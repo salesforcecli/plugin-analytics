@@ -37,7 +37,7 @@ describe('analytics:asset:publisher:deleteall', () => {
       if (ensureString(request.method) === 'DELETE') {
         return Promise.resolve({ id: assetId });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
 
     await DeleteAll.run(['--assetid', assetId, '--noprompt']);
