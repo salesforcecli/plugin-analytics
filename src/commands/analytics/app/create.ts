@@ -9,7 +9,6 @@ import { EOL } from 'node:os';
 import {
   Flags,
   SfCommand,
-  Ux,
   orgApiVersionFlagWithDeprecations,
   requiredOrgFlagWithDeprecations,
 } from '@salesforce/sf-plugins-core';
@@ -18,7 +17,7 @@ import Folder, { CreateAppBody } from '../../../lib/analytics/app/folder.js';
 import AppStreaming, { type StreamingResult } from '../../../lib/analytics/event/appStreaming.js';
 import { DEF_APP_CREATE_UPDATE_TIMEOUT } from '../../../lib/analytics/constants.js';
 import WaveTemplate from '../../../lib/analytics/template/wavetemplate.js';
-import { fs } from '../../../lib/analytics/utils.js';
+import { CommandUx, commandUx, fs } from '../../../lib/analytics/utils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'app');
@@ -88,12 +87,8 @@ export default class Create extends SfCommand<{ id?: string; events?: StreamingR
     const folder = new Folder(connection);
     const body = await generateCreateAppBody({ connection, ...flags });
 
-    const appStreaming = new AppStreaming(
-      flags['target-org'],
-      flags.allevents,
-      flags.wait,
-      new Ux({ jsonEnabled: this.jsonEnabled() })
-    );
+    const ux: CommandUx = commandUx(this);
+    const appStreaming = new AppStreaming(flags['target-org'], flags.allevents, flags.wait, ux);
 
     // if they're not creating from a template (i.e. an empty app), then don't listen for events since there won't be
     // any and this will just hang until the timeout

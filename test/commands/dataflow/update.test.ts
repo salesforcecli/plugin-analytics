@@ -37,7 +37,7 @@ describe('analytics:dataflow:update', () => {
     let requestBody: AnyJson | undefined;
     $$.fakeConnectionRequest = (request) => {
       request = ensureJsonMap(request);
-      if (request.method === 'PUT') {
+      if (request.method === 'PATCH') {
         requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
         return Promise.resolve({ dataflowId, name: dataflowName });
       }
@@ -47,6 +47,6 @@ describe('analytics:dataflow:update', () => {
     await Update.run(['--dataflowid', dataflowId, '--dataflowstr', dataflowStr]);
     const stdout = getStdout(sfCommandStubs);
     expect(stdout, 'stdout').to.contain(messages.getMessage('updateDataflow', [dataflowName, dataflowId]));
-    expect(requestBody, 'request body').to.deep.equal(JSON.parse(dataflowStr));
+    expect(requestBody, 'request body').to.deep.equal({ definition: JSON.parse(dataflowStr) as AnyJson });
   });
 });

@@ -5,14 +5,14 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { Messages, StreamingClient } from '@salesforce/core';
+import { Messages, SfError, StreamingClient } from '@salesforce/core';
 import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js';
 import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
 import { expect } from 'chai';
 import { AnyJson, ensureJsonMap, ensureString } from '@salesforce/ts-types';
 import { stubMethod } from '@salesforce/ts-sinon';
 import Create from '../../../src/commands/analytics/app/create.js';
-import { getStderr, getStdout, stubDefaultOrg } from '../../testutils.js';
+import { getJsonOutput, getStdout, getStyledHeaders, stubDefaultOrg } from '../../testutils.js';
 import { fs } from '../../../src/lib/analytics/utils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
@@ -56,8 +56,10 @@ describe('analytics:app:create', () => {
     };
 
     await Create.run(['--templateid', testTemplateJson.id, '--async']);
-    const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
+    expect(getStyledHeaders(sfCommandStubs), 'styled headers').to.contain(
+      messages.getMessage('startAppCreation', [appId])
+    );
+    expect(getStdout(sfCommandStubs), 'stdout').to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
     expect(requestBody, 'requestBody').to.include({
       templateSourceId: testTemplateJson.id,
       label: testTemplateJson.label,
@@ -81,10 +83,7 @@ describe('analytics:app:create', () => {
     };
 
     await Create.run(['--templateid', testTemplateJson.id, '--async', '--json']);
-    const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.not.equal('');
-    expect(JSON.parse(stdout), 'result').to.deep.include({
-      status: 0,
+    expect(getJsonOutput(sfCommandStubs), 'result').to.deep.include({
       result: {
         id: appId,
       },
@@ -109,8 +108,7 @@ describe('analytics:app:create', () => {
 
     // --wait=0 should be the same as --async so this should return right away
     await Create.run(['-t', testTemplateJson.id, '-n', 'customname', '--wait', '0']);
-    const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
+    expect(getStdout(sfCommandStubs), 'stdout').to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
     expect(requestBody, 'requestBody').to.include({
       // request body should have values from the template GET
       templateSourceId: testTemplateJson.id,
@@ -139,8 +137,7 @@ describe('analytics:app:create', () => {
     };
 
     await Create.run(['--templatename', 'Sustainability', '--async']);
-    const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
+    expect(getStdout(sfCommandStubs), 'stdout').to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
     // request body should have values from the templates GET
     expect(requestBody, 'requestBody').to.include({
       templateSourceId: sustainabilityTemplateJson.id,
@@ -176,11 +173,11 @@ describe('analytics:app:create', () => {
       'customdesc',
       '--async',
     ]);
-    const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
-    // request body should have values from the templates GET
+    expect(getStdout(sfCommandStubs), 'stdout').to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
     expect(requestBody, 'requestBody').to.include({
+      // this should come from the template GET
       templateSourceId: sustainabilityTemplateJson.id,
+      // these should come from the args
       label: 'customname',
       name: 'customname',
       description: 'customdesc',
@@ -210,8 +207,7 @@ describe('analytics:app:create', () => {
     );
 
     await Create.run(['--definitionfile', 'config/foo.json', '--async']);
-    const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
+    expect(getStdout(sfCommandStubs), 'stdout').to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
     expect(requestBody, 'requestBody').to.include({
       // request body should have fields from the readFile()
       templateSourceId: testTemplateJson.id,
@@ -242,9 +238,8 @@ describe('analytics:app:create', () => {
       )
     );
 
-    await Create.run(['--definitionfile', 'config/foo.json', '--async']);
-    const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
+    await Create.run(['--definitionfile', 'config/foo.json', '-n', 'customname', '-a']);
+    expect(getStdout(sfCommandStubs), 'stdout').to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
     expect(requestBody, 'requestBody').to.include({
       // request body should have fields from the readFile()
       templateSourceId: testTemplateJson.id,
@@ -276,10 +271,12 @@ describe('analytics:app:create', () => {
         })
       )
     );
+    stubMethod($$.SANDBOX, StreamingClient, 'create').callsFake(() =>
+      Promise.reject(new SfError('StreamingClient.create() should not be called'))
+    );
 
     await Create.run(['-f', 'config/emptyapp.json']);
-    const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
+    expect(getStdout(sfCommandStubs), 'stdout').to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
     expect(requestBody, 'requestBody').to.include({
       // request body should have fields from the readFile()
       assetIcon: '16.png',
@@ -300,9 +297,14 @@ describe('analytics:app:create', () => {
       return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
     stubMethod($$.SANDBOX, StreamingClient, 'create').callsFake(async (options?: StreamingClient.Options) => ({
+      init: async () => {},
       handshake: async () => StreamingClient.ConnectionState.CONNECTED,
-      replay: async () => -1,
-      subscribe: async () =>
+      replay: async () => {},
+      subscribe: async (streamInit?: () => Promise<void>) => {
+        // the streamInit is what creates the app and sets the app id
+        if (streamInit) {
+          await streamInit();
+        }
         options?.streamProcessor({
           payload: {
             EventType: 'Application',
@@ -312,7 +314,8 @@ describe('analytics:app:create', () => {
             Message: 'Success',
           },
           event: { replayId: 20 },
-        }),
+        });
+      },
     }));
     stubMethod($$.SANDBOX, fs, 'readFile').callsFake(() =>
       Promise.resolve(
@@ -324,8 +327,10 @@ describe('analytics:app:create', () => {
     );
 
     await Create.run(['--definitionfile', 'config/foo.json']);
-    const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.contain(messages.getMessage('finishAppCreation', ['foo']));
+    expect(getStyledHeaders(sfCommandStubs), 'styled headers').to.contain(
+      messages.getMessage('startAppCreation', [appId])
+    );
+    expect(getStdout(sfCommandStubs), 'stdout').to.contain(messages.getMessage('finishAppCreation', ['foo']));
   });
 
   // verify that we get the appId and streaming events when doing --json
@@ -341,7 +346,11 @@ describe('analytics:app:create', () => {
     stubMethod($$.SANDBOX, StreamingClient, 'create').callsFake(async (options?: StreamingClient.Options) => ({
       handshake: async () => StreamingClient.ConnectionState.CONNECTED,
       replay: async () => -1,
-      subscribe: async () =>
+      subscribe: async (streamInit?: () => Promise<void>) => {
+        // the streamInit is what creates the app and sets the app id
+        if (streamInit) {
+          await streamInit();
+        }
         options?.streamProcessor({
           payload: {
             EventType: 'Application',
@@ -351,7 +360,8 @@ describe('analytics:app:create', () => {
             Message: 'Success',
           },
           event: { replayId: 20 },
-        }),
+        });
+      },
     }));
     stubMethod($$.SANDBOX, fs, 'readFile').callsFake(() =>
       Promise.resolve(
@@ -363,10 +373,7 @@ describe('analytics:app:create', () => {
     );
 
     await Create.run(['--definitionfile', 'config/foo.json', '--json']);
-    const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.not.equal('');
-    expect(JSON.parse(stdout), 'result').to.deep.include({
-      status: 0,
+    expect(getJsonOutput(sfCommandStubs), 'result').to.deep.include({
       result: {
         id: appId,
         events: [
@@ -395,7 +402,11 @@ describe('analytics:app:create', () => {
     stubMethod($$.SANDBOX, StreamingClient, 'create').callsFake(async (options?: StreamingClient.Options) => ({
       handshake: async () => StreamingClient.ConnectionState.CONNECTED,
       replay: async () => -1,
-      subscribe: async () =>
+      subscribe: async (streamInit?: () => Promise<void>) => {
+        // the streamInit is what creates the app and sets the app id
+        if (streamInit) {
+          await streamInit();
+        }
         options?.streamProcessor({
           payload: {
             EventType: 'Application',
@@ -405,7 +416,8 @@ describe('analytics:app:create', () => {
             Message: 'failed',
           },
           event: { replayId: 20 },
-        }),
+        });
+      },
     }));
     stubMethod($$.SANDBOX, fs, 'readFile').callsFake(() =>
       Promise.resolve(
@@ -416,17 +428,20 @@ describe('analytics:app:create', () => {
       )
     );
 
-    await Create.run(['--definitionfile', 'config/foo.json']);
-    const stdout = getStdout(sfCommandStubs);
-    // this is in the list of events output
-    expect(stdout, 'stdout').to.contain(messages.getMessage('finishAppCreationFailure', ['failed']));
-    const stderr = getStderr(sfCommandStubs);
-    // and this is from the command failing
-    expect(stderr, 'stderr').to.contain(messages.getMessage('finishAppCreationFailure', ['failed']));
+    try {
+      await Create.run(['--definitionfile', 'config/foo.json']);
+    } catch (error) {
+      expect(error, 'error').to.be.instanceOf(SfError);
+      expect((error as SfError).message, 'message').to.contain(
+        messages.getMessage('finishAppCreationFailure', ['failed'])
+      );
+      return;
+    }
+    expect.fail('Expecpted an error');
   });
 
   // verify --json on failure returns the app id and the events
-  it('runs: --definitionfile config/foo.json (with failure) --json', async () => {
+  it('runs: --definitionfile config/foo.json --json (with failure)', async () => {
     await stubDefaultOrg($$, testOrg);
     $$.fakeConnectionRequest = (request) => {
       request = ensureJsonMap(request);
@@ -438,7 +453,11 @@ describe('analytics:app:create', () => {
     stubMethod($$.SANDBOX, StreamingClient, 'create').callsFake(async (options?: StreamingClient.Options) => ({
       handshake: async () => StreamingClient.ConnectionState.CONNECTED,
       replay: async () => -1,
-      subscribe: async () =>
+      subscribe: async (streamInit?: () => Promise<void>) => {
+        // the streamInit is what creates the app and sets the app id
+        if (streamInit) {
+          await streamInit();
+        }
         options?.streamProcessor({
           payload: {
             EventType: 'Application',
@@ -448,7 +467,8 @@ describe('analytics:app:create', () => {
             Message: 'failed',
           },
           event: { replayId: 20 },
-        }),
+        });
+      },
     }));
     stubMethod($$.SANDBOX, fs, 'readFile').callsFake(() =>
       Promise.resolve(
@@ -459,26 +479,34 @@ describe('analytics:app:create', () => {
       )
     );
 
-    await Create.run(['--definitionfile', 'config/foo.json', '--json']);
-    const stderr = getStderr(sfCommandStubs);
-    expect(stderr, 'stderr').to.not.equal('');
-    expect(JSON.parse(stderr), 'results').to.deep.include({
-      status: 1,
-      exitCode: 1,
-      message: messages.getMessage('finishAppCreationFailure', ['failed']),
-      result: {
-        id: appId,
-        events: [
-          {
-            EventType: 'Application',
-            Index: 0,
-            ItemLabel: 'foo',
-            Message: 'failed',
-            Status: 'Failed',
-            Total: 0,
-          },
-        ],
-      },
-    });
+    try {
+      await Create.run(['--definitionfile', 'config/foo.json', '--json']);
+    } catch (error) {
+      expect(error, 'error').to.be.instanceOf(SfError);
+      expect((error as SfError).message, 'message').to.contain(
+        messages.getMessage('finishAppCreationFailure', ['failed'])
+      );
+      const json = getJsonOutput(sfCommandStubs);
+      expect(json, 'json results').to.deep.include({
+        status: 1,
+        exitCode: 1,
+        message: messages.getMessage('finishAppCreationFailure', ['failed']),
+        data: {
+          id: appId,
+          events: [
+            {
+              EventType: 'Application',
+              Index: 0,
+              ItemLabel: 'foo',
+              Message: 'failed',
+              Status: 'Failed',
+              Total: 0,
+            },
+          ],
+        },
+      });
+      return;
+    }
+    expect.fail('Expecpted an error');
   });
 });

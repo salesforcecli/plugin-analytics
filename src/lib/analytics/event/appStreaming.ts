@@ -9,9 +9,8 @@ import { Logger, Messages, Org, StatusResult, StreamingClient } from '@salesforc
 import { type JsonMap } from '@salesforce/ts-types';
 import chalk from 'chalk';
 import { Duration } from '@salesforce/kit';
-import { Ux } from '@salesforce/sf-plugins-core';
 import Folder, { CreateAppBody } from '../app/folder.js';
-import { throwWithData } from '../utils.js';
+import { CommandUx, throwWithData } from '../utils.js';
 import WaveAssetEvent from './waveAssetEvent.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
@@ -40,12 +39,12 @@ export default class AppStreaming {
   public streamingResults = [] as StreamingResult[];
 
   protected logger: Logger | undefined;
-  protected ux: Ux;
+  protected ux: CommandUx;
   protected allEvents = false;
   protected org: Org;
   protected wait: number;
 
-  public constructor(organization: Org, allEvents: boolean, wait: number, ux: Ux) {
+  public constructor(organization: Org, allEvents: boolean, wait: number, ux: CommandUx) {
     this.allEvents = allEvents;
     this.org = organization;
     this.wait = wait;
@@ -180,12 +179,11 @@ export default class AppStreaming {
       case 'Application': {
         this.createEventJson(waveAssetEvent);
         if (waveAssetEvent.status === 'Success') {
-          this.ux.log(getStreamResultMark(true), messages.getMessage('finishAppCreation', [waveAssetEvent.label]));
+          this.ux.log(getStreamResultMark(true) + messages.getMessage('finishAppCreation', [waveAssetEvent.label]));
         } else {
           // failed or cancelled
           this.ux.log(
-            getStreamResultMark(false),
-            messages.getMessage('finishAppCreationFailure', [waveAssetEvent.message])
+            getStreamResultMark(false) + messages.getMessage('finishAppCreationFailure', [waveAssetEvent.message])
           );
           throwWithData(messages.getMessage('finishAppCreationFailure', [waveAssetEvent.message]), {
             id: folderId,
@@ -203,48 +201,47 @@ export default class AppStreaming {
       this.createEventJson(event);
       if (event.status === 'Success') {
         this.ux.log(
-          getStreamResultMark(true),
-          messages.getMessage('verboseAppCreateEventSuccess', [
-            messages.getMessage('appCreateSuccessfulLabel'),
-            eventDisplayName,
-            event.index,
-            event.total,
-            event.label,
-          ])
+          getStreamResultMark(true) +
+            messages.getMessage('verboseAppCreateEventSuccess', [
+              messages.getMessage('appCreateSuccessfulLabel'),
+              eventDisplayName,
+              event.index,
+              event.total,
+              event.label,
+            ])
         );
       } else {
         this.ux.log(
-          getStreamResultMark(false),
-          messages.getMessage('appCreateEventFail', [
-            messages.getMessage('appCreateEventFailureLabel'),
-            eventDisplayName,
-            event.index,
-            event.total,
-            event.label,
-            event.message,
-          ])
+          getStreamResultMark(false) +
+            messages.getMessage('appCreateEventFail', [
+              messages.getMessage('appCreateEventFailureLabel'),
+              eventDisplayName,
+              event.index,
+              event.total,
+              event.label,
+              event.message,
+            ])
         );
       }
     } else {
       if (event.status === 'Success' && event.total > 0 && event.total === event.index) {
         this.createEventJson(event);
         this.ux.log(
-          getStreamResultMark(true),
-          messages.getMessage('appCreateEvent', [event.total, eventDisplayName, action])
+          getStreamResultMark(true) + messages.getMessage('appCreateEvent', [event.total, eventDisplayName, action])
         );
       }
       if (event.status !== 'Success') {
         this.createEventJson(event);
         this.ux.log(
-          getStreamResultMark(true),
-          messages.getMessage('appCreateEventFail', [
-            messages.getMessage('appCreateEventFailureLabel'),
-            eventDisplayName,
-            event.index,
-            event.total,
-            event.label,
-            event.message,
-          ])
+          getStreamResultMark(true) +
+            messages.getMessage('appCreateEventFail', [
+              messages.getMessage('appCreateEventFailureLabel'),
+              eventDisplayName,
+              event.index,
+              event.total,
+              event.label,
+              event.message,
+            ])
         );
       }
     }

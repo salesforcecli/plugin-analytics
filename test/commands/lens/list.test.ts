@@ -10,7 +10,15 @@ import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js'
 import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
 import { expect } from 'chai';
 import List from '../../../src/commands/analytics/lens/list.js';
-import { getStderr, getStdout, stubDefaultOrg } from '../../testutils.js';
+import {
+  expectToHaveElementValue,
+  getJsonOutput,
+  getStderr,
+  getStdout,
+  getStyledHeaders,
+  getTableData,
+  stubDefaultOrg,
+} from '../../testutils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'lens');
@@ -37,12 +45,12 @@ describe('analytics:lens:list', () => {
     $$.fakeConnectionRequest = () => Promise.resolve({ lenses: lensValues });
 
     await List.run([]);
-    const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.contain(messages.getMessage('lensesFound', [2]));
-    expect(stdout, 'stdout').to.contain(lensValues[0].id);
-    expect(stdout, 'stdout').to.contain(lensValues[0].label);
-    expect(stdout, 'stdout').to.contain(lensValues[1].id);
-    expect(stdout, 'stdout').to.contain(lensValues[1].label);
+    expect(getStyledHeaders(sfCommandStubs), 'styled headers').to.contain(messages.getMessage('lensesFound', [2]));
+    const { data } = getTableData(sfCommandStubs);
+    expectToHaveElementValue(data, lensValues[0].id, 'table');
+    expectToHaveElementValue(data, lensValues[0].label, 'table');
+    expectToHaveElementValue(data, lensValues[1].id, 'table');
+    expectToHaveElementValue(data, lensValues[1].label, 'table');
   });
 
   it('runs: --json', async () => {
@@ -51,8 +59,7 @@ describe('analytics:lens:list', () => {
 
     await List.run(['--json']);
     expect(getStderr(sfCommandStubs), 'stderr').to.equal('');
-    expect(JSON.parse(getStdout(sfCommandStubs)), 'stdout json').to.deep.equal({
-      status: 0,
+    expect(getJsonOutput(sfCommandStubs), 'stdout json').to.deep.include({
       result: [
         {
           lensid: lensValues[0].id,
@@ -71,14 +78,12 @@ describe('analytics:lens:list', () => {
 
   it('runs (no results)', async () => {
     await stubDefaultOrg($$, testOrg);
-    $$.fakeConnectionRequest = () => Promise.resolve({ lenses: lensValues });
+    $$.fakeConnectionRequest = () => Promise.resolve({ lenses: [] });
 
     await List.run([]);
     const stdout = getStdout(sfCommandStubs);
     expect(stdout, 'stdout').to.contain(messages.getMessage('noResultsFound'));
-    expect(stdout, 'stdout').to.contain(lensValues[0].id);
-    expect(stdout, 'stdout').to.contain(lensValues[0].label);
-    expect(stdout, 'stdout').to.contain(lensValues[1].id);
-    expect(stdout, 'stdout').to.contain(lensValues[1].label);
+    const { data } = getTableData(sfCommandStubs);
+    expect(data, 'table').to.be.undefined;
   });
 });

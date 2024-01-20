@@ -10,7 +10,13 @@ import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js'
 import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
 import { expect } from 'chai';
 import List from '../../../src/commands/analytics/recipe/list.js';
-import { getStdout, stubDefaultOrg } from '../../testutils.js';
+import {
+  expectToHaveElementValue,
+  getStdout,
+  getStyledHeaders,
+  getTableData,
+  stubDefaultOrg,
+} from '../../testutils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'recipe');
@@ -36,10 +42,10 @@ describe('analytics:recipe:list', () => {
     $$.fakeConnectionRequest = () => Promise.resolve({ recipes: recipeValues });
 
     await List.run([]);
-    const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.contain(messages.getMessage('recipesFound', [1]));
-    expect(stdout, 'stdout').to.contain(recipeValues[0].id);
-    expect(stdout, 'stdout').to.contain(recipeValues[0].name);
+    expect(getStyledHeaders(sfCommandStubs), 'styled headers').to.contain(messages.getMessage('recipesFound', [1]));
+    const { data } = getTableData(sfCommandStubs);
+    expectToHaveElementValue(data, recipeValues[0].id, 'table');
+    expectToHaveElementValue(data, recipeValues[0].name, 'table');
   });
 
   it('runs (no results)', async () => {

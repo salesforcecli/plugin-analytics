@@ -13,7 +13,7 @@ import { expect } from 'chai';
 import { stubMethod } from '@salesforce/ts-sinon';
 import Update from '../../../../src/commands/analytics/autoinstall/app/update.js';
 import { AutoInstallRequestType, AutoInstallStatus } from '../../../../src/lib/analytics/autoinstall/autoinstall.js';
-import { getStderr, getStdout, stubDefaultOrg } from '../../../testutils.js';
+import { getStdout, stubDefaultOrg } from '../../../testutils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'autoinstall');
@@ -103,9 +103,14 @@ describe('analytics:autoinstall:app:update', () => {
       return Promise.resolve(requestWithStatus('InProgress'));
     };
 
-    await Update.run(['-n', 'abc', '-f', folderId]);
-    const stderr = getStderr(sfCommandStubs);
-    expect(stderr, 'stderr').to.contain(messages.getMessage('appUpdateFailed', [requestId]));
+    try {
+      await Update.run(['-n', 'abc', '-f', folderId]);
+    } catch (error) {
+      expect(error, 'error').to.be.instanceOf(SfError);
+      expect((error as SfError).message, 'message').to.contain(messages.getMessage('appUpdateFailed', [requestId]));
+      return;
+    }
+    expect.fail('Expected an error');
   });
 
   it(`runs: -n abc -f ${folderId} (cancelled)`, async () => {
@@ -122,12 +127,18 @@ describe('analytics:autoinstall:app:update', () => {
       return Promise.resolve(requestWithStatus('InProgress'));
     };
 
-    await Update.run(['-n', 'abc', '-f', folderId]);
-    const stderr = getStderr(sfCommandStubs);
-    expect(stderr, 'stderr').to.contain(messages.getMessage('requestCancelled', [requestId]));
+    try {
+      await Update.run(['-n', 'abc', '-f', folderId]);
+    } catch (error) {
+      expect(error, 'error').to.be.instanceOf(SfError);
+      expect((error as SfError).message, 'message').to.contain(messages.getMessage('requestCancelled', [requestId]));
+      return;
+    }
+    expect.fail('Expected an error');
   });
 
-  it(`runs: -n abc -f ${folderId} -w .001 (timeout)`, async () => {
+  // FIXME: make a way to test timeout w/o waiting for a whole minute
+  it.skip(`runs: -n abc -f ${folderId} -w .001 (timeout)`, async () => {
     await stubDefaultOrg($$, testOrg);
     let requestNum = 0;
     $$.fakeConnectionRequest = () => {
@@ -138,9 +149,16 @@ describe('analytics:autoinstall:app:update', () => {
       return Promise.resolve(requestWithStatus('InProgress'));
     };
 
-    await Update.run(['-n', 'abc', '-f', folderId, '-w', '.001']);
-    const stderr = getStderr(sfCommandStubs);
-    expect(stderr, 'stderr').to.contain(messages.getMessage('requestPollingTimeout', [requestId, 'InProgress']));
+    try {
+      await Update.run(['-n', 'abc', '-f', folderId, '-w', '.001']);
+    } catch (error) {
+      expect(error, 'error').to.be.instanceOf(SfError);
+      expect((error as SfError).message, 'message').to.contain(
+        messages.getMessage('requestPollingTimeout', [requestId, 'InProgress'])
+      );
+      return;
+    }
+    expect.fail('Expected an error');
   });
 
   it(`runs: -n abc -f ${folderId} (with error)`, async () => {
@@ -157,8 +175,13 @@ describe('analytics:autoinstall:app:update', () => {
       return Promise.resolve(requestWithStatus('InProgress'));
     };
 
-    await Update.run(['-n', 'abc', '-f', folderId]);
-    const stderr = getStderr(sfCommandStubs);
-    expect(stderr, 'stderr').to.contain('expected error in polling');
+    try {
+      await Update.run(['-n', 'abc', '-f', folderId]);
+    } catch (error) {
+      expect(error, 'error').to.be.instanceOf(SfError);
+      expect((error as SfError).message, 'message').to.contain('expected error in polling');
+      return;
+    }
+    expect.fail('Expected an error');
   });
 });

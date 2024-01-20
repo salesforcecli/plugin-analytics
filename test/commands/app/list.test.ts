@@ -11,7 +11,13 @@ import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
 import { expect } from 'chai';
 import { ensureJsonMap, ensureString } from '@salesforce/ts-types';
 import List from '../../../src/commands/analytics/app/list.js';
-import { getStdout, stubDefaultOrg } from '../../testutils.js';
+import {
+  expectToHaveElementValue,
+  getStdout,
+  getStyledHeaders,
+  getTableData,
+  stubDefaultOrg,
+} from '../../testutils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'app');
@@ -36,8 +42,7 @@ describe('analytics:app:list', () => {
     await List.run(['--folderid', folderId]);
     const stdout = getStdout(sfCommandStubs);
     expect(stdout, 'stdout').to.contain(messages.getMessage('noResultsFound'));
-    expect(stdout, 'stdout').to.not.contain(folderId);
-    expect(stdout, 'stdout').to.not.contain('Shared App');
+    expect(getTableData(sfCommandStubs).data, 'table').to.be.undefined;
   });
 
   it('runs', async () => {
@@ -61,10 +66,10 @@ describe('analytics:app:list', () => {
     };
 
     await List.run([]);
-    const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.contain(messages.getMessage('appsFound', [1]));
-    expect(stdout, 'stdout').to.contain(folderId);
-    expect(stdout, 'stdout').to.contain('Shared App');
+    expect(getStyledHeaders(sfCommandStubs), 'styled headers').to.contain(messages.getMessage('appsFound', [1]));
+    const { data } = getTableData(sfCommandStubs);
+    expectToHaveElementValue(data, folderId, 'table');
+    expectToHaveElementValue(data, 'Shared App', 'table');
   });
 
   // test multiple pages
@@ -116,10 +121,10 @@ describe('analytics:app:list', () => {
     };
 
     await List.run([]);
-    const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.contain(messages.getMessage('appsFound', [3]));
-    expect(stdout, 'stdout').to.contain('App1');
-    expect(stdout, 'stdout').to.contain('App2');
-    expect(stdout, 'stdout').to.contain('App3');
+    expect(getStyledHeaders(sfCommandStubs), 'styled headers').to.contain(messages.getMessage('appsFound', [3]));
+    const { data } = getTableData(sfCommandStubs);
+    expectToHaveElementValue(data, 'SharedApp', 'table');
+    expectToHaveElementValue(data, 'App2', 'table');
+    expectToHaveElementValue(data, 'App3', 'table');
   });
 });

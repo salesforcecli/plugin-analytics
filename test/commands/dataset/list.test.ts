@@ -10,7 +10,15 @@ import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js'
 import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
 import { expect } from 'chai';
 import List from '../../../src/commands/analytics/dataset/list.js';
-import { getStderr, getStdout, stubDefaultOrg } from '../../testutils.js';
+import {
+  expectToHaveElementValue,
+  getJsonOutput,
+  getStderr,
+  getStdout,
+  getStyledHeaders,
+  getTableData,
+  stubDefaultOrg,
+} from '../../testutils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'dataset');
@@ -117,23 +125,23 @@ describe('analytics:dataset:list', () => {
 
     await List.run([]);
     expect(getStderr(sfCommandStubs), 'stderr').to.equal('');
-    const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.contain(messages.getMessage('datasetsFound', [2]));
-    expect(stdout, 'stdout').to.contain(datasetJson.id);
-    expect(stdout, 'stdout').to.contain(datasetJson.label);
-    expect(stdout, 'stdout').to.contain(nsDatasetJson.id);
-    expect(stdout, 'stdout').to.contain(nsDatasetJson.label);
-    expect(stdout, 'stdout').to.contain(nsDatasetJson.namespace);
+    expect(getStyledHeaders(sfCommandStubs), 'styled headers').to.contain(messages.getMessage('datasetsFound', [2]));
+    const { data } = getTableData(sfCommandStubs);
+    expectToHaveElementValue(data, datasetJson.id, 'table');
+    expectToHaveElementValue(data, datasetJson.label, 'table');
+    expectToHaveElementValue(data, nsDatasetJson.id, 'table');
+    expectToHaveElementValue(data, nsDatasetJson.label, 'table');
+    expectToHaveElementValue(data, nsDatasetJson.namespace, 'table');
   });
 
   it('run: --json', async () => {
     await stubDefaultOrg($$, testOrg);
     $$.fakeConnectionRequest = () => Promise.resolve({ datasets: [datasetJson, nsDatasetJson] });
 
-    await List.run([]);
+    await List.run(['--json']);
     expect(getStderr(sfCommandStubs), 'stderr').to.equal('');
-    expect(JSON.parse(getStdout(sfCommandStubs)), 'stdout json').to.deep.equal({
-      status: 0,
+    // expect(getStyledHeaders(sfCommandStubs)).to.equal('');
+    expect(getJsonOutput(sfCommandStubs), 'stdout json').to.deep.include({
       result: [
         {
           id: datasetJson.id,
@@ -162,10 +170,6 @@ describe('analytics:dataset:list', () => {
     expect(getStderr(sfCommandStubs), 'stderr').to.equal('');
     const stdout = getStdout(sfCommandStubs);
     expect(stdout, 'stdout').to.contain(messages.getMessage('noResultsFound'));
-    expect(stdout, 'stdout').to.not.contain(datasetJson.id);
-    expect(stdout, 'stdout').to.not.contain(datasetJson.label);
-    expect(stdout, 'stdout').to.not.contain(nsDatasetJson.id);
-    expect(stdout, 'stdout').to.not.contain(nsDatasetJson.label);
-    expect(stdout, 'stdout').to.not.contain(nsDatasetJson.namespace);
+    expect(getTableData(sfCommandStubs).data, 'table').to.be.undefined;
   });
 });

@@ -8,7 +8,7 @@
 import { OrgConfigProperties } from '@salesforce/core';
 import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js';
 import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
-import { AnyJson, JsonPrimitive, ensureAnyJson } from '@salesforce/ts-types';
+import { AnyJson, ensureAnyJson } from '@salesforce/ts-types';
 import { assert, expect } from 'chai';
 
 /** Stub the specified org and set it as the default org for a test. */
@@ -115,7 +115,8 @@ export function expectToHaveElementInclude<T extends Record<string, unknown>>(
 /** Expect an array to contain an object that at least one value matching the specified value. */
 export function expectToHaveElementValue<T extends Record<string, unknown>>(
   a: readonly T[] | undefined,
-  expected: RegExp | JsonPrimitive,
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+  expected: RegExp | AnyJson,
   prefix?: string
 ) {
   expectToHaveElementMatching(
@@ -123,11 +124,13 @@ export function expectToHaveElementValue<T extends Record<string, unknown>>(
     (e) => {
       // iterate over the values of the array element
       const values = Object.values(e);
-      if (typeof expected === 'object') {
+      if (expected instanceof RegExp) {
         // expected should be a regex
-        if (!values.find((value) => String(value).match(expected as RegExp))) {
+        if (!values.find((value) => String(value).match(expected))) {
           throw new Error('no match');
         }
+      } else if (typeof expected === 'object') {
+        expect(values, prefix).to.deep.include(expected);
       } else {
         // expected should be a simple string
         expect(values, prefix).contains(expected);
@@ -135,11 +138,7 @@ export function expectToHaveElementValue<T extends Record<string, unknown>>(
     },
     {
       prefix,
-      message: () =>
-        'Expected element value matching ' +
-        (typeof expected === 'string' ? `"${expected}"` : expected) +
-        ' in array ' +
-        JSON.stringify(a),
+      message: () => 'Expected element value matching ' + JSON.stringify(expected) + ' in array ' + JSON.stringify(a),
     }
   );
 }

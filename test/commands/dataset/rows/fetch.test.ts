@@ -15,7 +15,13 @@ import { AnyJson, JsonMap, ensureJsonMap, ensureString } from '@salesforce/ts-ty
 import Fetch from '../../../../src/commands/analytics/dataset/rows/fetch.js';
 import { DatasetType } from '../../../../src/lib/analytics/dataset/dataset.js';
 import { QueryResponse } from '../../../../src/lib/analytics/query/query.js';
-import { getStderr, getStdout, stubDefaultOrg } from '../../../testutils.js';
+import {
+  expectToHaveElementInclude,
+  getStderr,
+  getStyledHeaders,
+  getTableData,
+  stubDefaultOrg,
+} from '../../../testutils.js';
 import { xmdJson } from './fetch-xmd.js';
 import { liveDatasetFieldsJson, liveDatasetJson, liveSqlResponseJson } from './live-dataset-json.js';
 
@@ -288,21 +294,15 @@ describe('analytics:dataset:rows:fetch', () => {
       'Total_GM',
       'Year',
     ];
-    const headerRegex = fieldNames.reduce((r, name, i) => {
-      if (i !== 0) {
-        r += '\\s+';
-      }
-      r += name;
-      return r;
-    }, '');
-    const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.match(new RegExp(headerRegex));
+    const { data, headers } = getTableData(sfCommandStubs);
+    expect(headers, 'headers').to.deep.equal(fieldNames);
     fieldNames.forEach((name, i) => {
       const value = saqlResponse.results.records[0][name];
-      const regex = i !== 0 ? `\\s+${value}` : `${value}\\s+`;
-      expect(stdout, 'stdout').to.match(new RegExp(regex));
+      expectToHaveElementInclude(data, { [fieldNames[i]]: value }, 'table');
     });
-    expect(stdout, 'stdout').to.contain(queryMessages.getMessage('rowsFound', [saqlResponse.results.records.length]));
+    expect(getStyledHeaders(sfCommandStubs), 'styled headers').to.contain(
+      queryMessages.getMessage('rowsFound', [saqlResponse.results.records.length])
+    );
     expect(requestBody, 'post request body').to.deep.equal({
       query: saqlResponse.query,
     });
@@ -332,23 +332,17 @@ describe('analytics:dataset:rows:fetch', () => {
     await Fetch.run(['--limit', '1000', '-n', liveDatasetJson.name!]);
     expect(getStderr(sfCommandStubs), 'stderr').to.equal('');
     const fieldNames = liveDatasetFieldsJson.fields.map((f) => f.name);
-    const headerRegex = fieldNames.reduce((r, name, i) => {
-      if (i !== 0) {
-        r += '\\s+';
-      }
-      r += name;
-      return r;
-    }, '');
-    const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.match(new RegExp(headerRegex));
+    const { data, headers } = getTableData(sfCommandStubs);
+    expect(headers, 'headers').to.deep.equal(fieldNames);
     liveSqlResponseJson.records.forEach((record) => {
-      fieldNames.forEach((name, i) => {
+      fieldNames.forEach((name) => {
         const value = record[name];
-        const regex = i !== 0 ? `\\s+${value}` : `${value}\\s+`;
-        expect(stdout, 'stdout').to.match(new RegExp(regex));
+        expectToHaveElementInclude(data, { [name]: value }, 'table');
       });
     });
-    expect(stdout, 'stdout').to.contain(queryMessages.getMessage('rowsFound', [liveSqlResponseJson.records.length]));
+    expect(getStyledHeaders(sfCommandStubs), 'styled headers').to.contain(
+      queryMessages.getMessage('rowsFound', [liveSqlResponseJson.records.length])
+    );
     expect(ensureJsonMap(requestBody).query, 'post request body query').to.match(
       /^SELECT "YEAR_MONTH" AS "YEAR_MONTH",.+FROM "AIRLINE_DELAYS" LIMIT 1000$/
     );
@@ -376,8 +370,8 @@ describe('analytics:dataset:rows:fetch', () => {
 
     await Fetch.run(['-n', datasetJson.name!, '--limit', '0']);
     expect(getStderr(sfCommandStubs), 'stderr').to.equal('');
-    const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.contain(queryMessages.getMessage('rowsFound', [0]));
+    expect(getStyledHeaders(sfCommandStubs), 'table').to.contain(queryMessages.getMessage('rowsFound', [0]));
+    expect(getTableData(sfCommandStubs).data, 'data').to.have.length(0);
     expect(requestBody, 'post request body').to.deep.equal({
       query: saqlResponse.query + ' q = limit q 1;',
     });

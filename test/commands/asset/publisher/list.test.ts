@@ -10,7 +10,13 @@ import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js'
 import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
 import { expect } from 'chai';
 import List from '../../../../src/commands/analytics/asset/publisher/list.js';
-import { getStdout, stubDefaultOrg } from '../../../testutils.js';
+import {
+  expectToHaveElementValue,
+  getStdout,
+  getStyledHeaders,
+  getTableData,
+  stubDefaultOrg,
+} from '../../../testutils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'asset');
@@ -44,10 +50,12 @@ describe('analytics:asset:publisher:list', () => {
     $$.fakeConnectionRequest = () => Promise.resolve({ publishers: publisherValues });
 
     await List.run(['--assetid', assetId]);
-    const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.contain(messages.getMessage('publishersFound', [1, assetId]));
-    expect(stdout, 'stdout').to.contain(publisherValues[0].id);
-    expect(stdout, 'stdout').to.contain(publisherValues[0].publisherUser.name);
+    expect(getStyledHeaders(sfCommandStubs), 'styled headers').to.contain(
+      messages.getMessage('publishersFound', [1, assetId])
+    );
+    const { data } = getTableData(sfCommandStubs);
+    expectToHaveElementValue(data, publisherValues[0].id, 'table');
+    expectToHaveElementValue(data, publisherValues[0].publisherUser.name, 'table');
   });
 
   it(`runs: --assetid ${assetId} (no results)`, async () => {
@@ -57,7 +65,6 @@ describe('analytics:asset:publisher:list', () => {
     await List.run(['--assetid', assetId]);
     const stdout = getStdout(sfCommandStubs);
     expect(stdout, 'stdout').to.contain(messages.getMessage('noResultsFound'));
-    expect(stdout, 'stdout').to.not.contain(publisherValues[0].id);
-    expect(stdout, 'stdout').to.not.contain(publisherValues[0].publisherUser.name);
+    expect(getTableData(sfCommandStubs).data, 'table').to.be.undefined;
   });
 });

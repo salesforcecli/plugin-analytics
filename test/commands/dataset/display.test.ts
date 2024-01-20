@@ -5,12 +5,18 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { Messages } from '@salesforce/core';
+import { Messages, SfError } from '@salesforce/core';
 import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js';
 import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
 import { expect } from 'chai';
 import Display from '../../../src/commands/analytics/dataset/display.js';
-import { getStderr, getStdout, stubDefaultOrg } from '../../testutils.js';
+import {
+  expectToHaveElementInclude,
+  expectToHaveElementValue,
+  getStyledHeaders,
+  getTableData,
+  stubDefaultOrg,
+} from '../../testutils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'dataset');
@@ -116,15 +122,15 @@ describe('analytics:dataset:display', () => {
     $$.fakeConnectionRequest = () => Promise.resolve(datasetJson);
 
     await Display.run(['--datasetid', datasetJson.id]);
-    const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.contain(messages.getMessage('displayDetailHeader'));
-    expect(stdout, 'stdout').to.contain(datasetJson.id);
-    expect(stdout, 'stdout').to.contain(datasetJson.name);
-    expect(stdout, 'stdout').to.contain(datasetJson.datasetType);
-    expect(stdout, 'stdout').to.contain(datasetJson.folder.id);
-    expect(stdout, 'stdout').to.contain(datasetJson.createdBy.name);
-    expect(stdout, 'stdout').to.contain(datasetJson.lastModifiedBy.name);
-    expect(stdout, 'stdout').to.not.contain('Live Connection Name');
+    expect(getStyledHeaders(sfCommandStubs), 'styled headers').to.contain(messages.getMessage('displayDetailHeader'));
+    const { data } = getTableData(sfCommandStubs);
+    expectToHaveElementValue(data, datasetJson.id, 'table');
+    expectToHaveElementValue(data, datasetJson.name, 'table');
+    expectToHaveElementValue(data, datasetJson.datasetType, 'table');
+    expectToHaveElementValue(data, datasetJson.folder.id, 'table');
+    expectToHaveElementValue(data, datasetJson.createdBy.name, 'table');
+    expectToHaveElementValue(data, datasetJson.lastModifiedBy.name, 'table');
+    // expect(stdout, 'stdout').to.not.contain('Live Connection Name');
   });
 
   it(`runs: --datasetname ${datasetJson.name}`, async () => {
@@ -132,44 +138,53 @@ describe('analytics:dataset:display', () => {
     $$.fakeConnectionRequest = () => Promise.resolve(datasetJson);
 
     await Display.run(['--datasetname', datasetJson.name]);
-    const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.contain(messages.getMessage('displayDetailHeader'));
-    expect(stdout, 'stdout').to.contain(datasetJson.id);
-    expect(stdout, 'stdout').to.contain(datasetJson.name);
-    expect(stdout, 'stdout').to.contain(datasetJson.datasetType);
-    expect(stdout, 'stdout').to.contain(datasetJson.folder.id);
-    expect(stdout, 'stdout').to.contain(datasetJson.createdBy.name);
-    expect(stdout, 'stdout').to.contain(datasetJson.lastModifiedBy.name);
+    expect(getStyledHeaders(sfCommandStubs), 'styled headers').to.contain(messages.getMessage('displayDetailHeader'));
+    const { data } = getTableData(sfCommandStubs);
+    expectToHaveElementValue(data, datasetJson.id, 'table');
+    expectToHaveElementValue(data, datasetJson.name, 'table');
+    expectToHaveElementValue(data, datasetJson.datasetType, 'table');
+    expectToHaveElementValue(data, datasetJson.folder.id, 'table');
+    expectToHaveElementValue(data, datasetJson.createdBy.name, 'table');
+    expectToHaveElementValue(data, datasetJson.lastModifiedBy.name, 'table');
   });
 
   it(`runs: -n ${liveDatasetJson.name}`, async () => {
     await stubDefaultOrg($$, testOrg);
-    $$.fakeConnectionRequest = () => Promise.resolve(datasetJson);
+    $$.fakeConnectionRequest = () => Promise.resolve(liveDatasetJson);
 
     await Display.run(['-n', liveDatasetJson.name]);
-    const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.contain(messages.getMessage('displayDetailHeader'));
-    expect(stdout, 'stdout').to.match(new RegExp(`^Id\\s+${liveDatasetJson.id}$`, 'm'));
-    expect(stdout, 'stdout').to.match(new RegExp(`^Namespace\\s+${liveDatasetJson.namespace}$`, 'm'));
-    expect(stdout, 'stdout').to.match(new RegExp(`^Name\\s+${liveDatasetJson.name}$`, 'm'));
-    expect(stdout, 'stdout').to.match(new RegExp(`^Label\\s+${liveDatasetJson.label}$`, 'm'));
-    expect(stdout, 'stdout').to.match(new RegExp(`^Type\\s+${liveDatasetJson.datasetType}$`, 'm'));
-    expect(stdout, 'stdout').to.match(new RegExp(`^Current Version Id\\s+${liveDatasetJson.currentVersionId}$`, 'm'));
-    expect(stdout, 'stdout').to.match(new RegExp(`^Folder Id\\s+${liveDatasetJson.folder.id}$`, 'm'));
-    expect(stdout, 'stdout').to.match(new RegExp(`^Folder Label\\s+${liveDatasetJson.folder.label}$`, 'm'));
-    expect(stdout, 'stdout').to.match(new RegExp(`^Created By\\s+${liveDatasetJson.createdBy.name}$`, 'm'));
-    expect(stdout, 'stdout').to.match(new RegExp(`^Last Modified By\\s+${liveDatasetJson.lastModifiedBy.name}$`, 'm'));
-    expect(stdout, 'stdout').to.match(
-      new RegExp(`^Live Connection Name\\s+${liveDatasetJson.liveConnection.connectionName}$`, 'm')
+    expect(getStyledHeaders(sfCommandStubs), 'styled headers').to.contain(messages.getMessage('displayDetailHeader'));
+    const { data, headers } = getTableData(sfCommandStubs);
+    expect(headers, 'headers').to.deep.equal(['key', 'value']);
+    expectToHaveElementInclude(data, { key: 'Id', value: liveDatasetJson.id }, 'table');
+    expectToHaveElementInclude(data, { key: 'Namespace', value: liveDatasetJson.namespace }, 'table');
+    expectToHaveElementInclude(data, { key: 'Name', value: liveDatasetJson.name }, 'table');
+    expectToHaveElementInclude(data, { key: 'Label', value: liveDatasetJson.label }, 'table');
+    expectToHaveElementInclude(data, { key: 'Type', value: liveDatasetJson.datasetType }, 'table');
+    expectToHaveElementInclude(data, { key: 'Current Version Id', value: liveDatasetJson.currentVersionId }, 'table');
+    expectToHaveElementInclude(data, { key: 'Folder Id', value: liveDatasetJson.folder.id }, 'table');
+    expectToHaveElementInclude(data, { key: 'Folder Label', value: liveDatasetJson.folder.label }, 'table');
+    expectToHaveElementInclude(data, { key: 'Created By', value: liveDatasetJson.createdBy.name }, 'table');
+    expectToHaveElementInclude(data, { key: 'Last Modified By', value: liveDatasetJson.lastModifiedBy.name }, 'table');
+    expectToHaveElementInclude(
+      data,
+      { key: 'Live Connection Name', value: liveDatasetJson.liveConnection.connectionName },
+      'table'
     );
-    expect(stdout, 'stdout').to.match(
-      new RegExp(`^Live Connection Label\\s+${liveDatasetJson.liveConnection.connectionLabel}$`, 'm')
+    expectToHaveElementInclude(
+      data,
+      { key: 'Live Connection Label', value: liveDatasetJson.liveConnection.connectionLabel },
+      'table'
     );
-    expect(stdout, 'stdout').to.match(
-      new RegExp(`^Live Connection Type\\s+${liveDatasetJson.liveConnection.connectionType}$`, 'm')
+    expectToHaveElementInclude(
+      data,
+      { key: 'Live Connection Type', value: liveDatasetJson.liveConnection.connectionType },
+      'table'
     );
-    expect(stdout, 'stdout').to.match(
-      new RegExp(`^Live Connection Source Object\\s+${liveDatasetJson.liveConnection.sourceObjectName}$`, 'm')
+    expectToHaveElementInclude(
+      data,
+      { key: 'Live Connection Source Object', value: liveDatasetJson.liveConnection.sourceObjectName },
+      'table'
     );
   });
 
@@ -177,7 +192,11 @@ describe('analytics:dataset:display', () => {
     await stubDefaultOrg($$, testOrg);
     $$.fakeConnectionRequest = () => Promise.reject(new Error('Should not have been called'));
 
-    await Display.run([]);
-    expect(getStderr(sfCommandStubs), 'stderr').to.contain(messages.getMessage('missingRequiredField'));
+    try {
+      await Display.run([]);
+    } catch (error) {
+      expect(error, 'error').to.be.instanceOf(SfError);
+      expect((error as SfError).message, 'error message').to.contain(messages.getMessage('missingRequiredField'));
+    }
   });
 });

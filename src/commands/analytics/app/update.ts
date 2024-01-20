@@ -8,7 +8,6 @@
 import {
   Flags,
   SfCommand,
-  Ux,
   orgApiVersionFlagWithDeprecations,
   requiredOrgFlagWithDeprecations,
 } from '@salesforce/sf-plugins-core';
@@ -17,6 +16,7 @@ import { DEF_APP_CREATE_UPDATE_TIMEOUT } from '../../../lib/analytics/constants.
 import AppStreaming, { type StreamingResult } from '../../../lib/analytics/event/appStreaming.js';
 
 import Folder from '../../../lib/analytics/app/folder.js';
+import { CommandUx, commandUx } from '../../../lib/analytics/utils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'app');
@@ -70,12 +70,8 @@ export default class Update extends SfCommand<{ id?: string; events?: StreamingR
       this.log(messages.getMessage('updateSuccess', [waveAppId]));
       return { id: waveAppId };
     } else {
-      const appStreaming = new AppStreaming(
-        flags['target-org'],
-        flags.allevents,
-        flags.wait,
-        new Ux({ jsonEnabled: this.jsonEnabled() })
-      );
+      const ux: CommandUx = commandUx(this);
+      const appStreaming = new AppStreaming(flags['target-org'], flags.allevents, flags.wait, ux);
       const waveAppId = await appStreaming.streamUpdateEvent(folder, flags.folderid, flags.templateid);
       return { id: waveAppId, events: appStreaming.getStreamingResults() };
     }

@@ -10,7 +10,13 @@ import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js'
 import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
 import { expect } from 'chai';
 import List from '../../../src/commands/analytics/dashboard/list.js';
-import { getStdout, stubDefaultOrg } from '../../testutils.js';
+import {
+  expectToHaveElementValue,
+  getStdout,
+  getStyledHeaders,
+  getTableData,
+  stubDefaultOrg,
+} from '../../testutils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'dashboard');
@@ -42,10 +48,10 @@ describe('analytics:dashboard:list', () => {
     $$.fakeConnectionRequest = () => Promise.resolve({ dashboards: dashBoardValues });
 
     await List.run([]);
-    const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.contain(messages.getMessage('dashboardsFound', [1]));
-    expect(stdout, 'stdout').to.contain(dashBoardValues[0].id);
-    expect(stdout, 'stdout').to.contain(dashBoardValues[0].label);
+    expect(getStyledHeaders(sfCommandStubs), 'styled headers').to.contain(messages.getMessage('dashboardsFound', [1]));
+    const { data } = getTableData(sfCommandStubs);
+    expectToHaveElementValue(data, dashBoardValues[0].id, 'table');
+    expectToHaveElementValue(data, dashBoardValues[0].label, 'table');
   });
 
   it('runs (no results)', async () => {
@@ -55,7 +61,6 @@ describe('analytics:dashboard:list', () => {
     await List.run([]);
     const stdout = getStdout(sfCommandStubs);
     expect(stdout, 'stdout').to.contain(messages.getMessage('noResultsFound'));
-    expect(stdout, 'stdout').to.not.contain(dashBoardValues[0].id);
-    expect(stdout, 'stdout').to.not.contain(dashBoardValues[0].label);
+    expect(getTableData(sfCommandStubs).data, 'table').to.be.undefined;
   });
 });

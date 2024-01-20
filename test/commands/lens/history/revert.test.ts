@@ -40,7 +40,7 @@ describe('analytics:lens:history:revert', () => {
       return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
     };
 
-    await Revert.run(['--lensids', lensId, '--historyid', lensHistoryId]);
+    await Revert.run(['--lensid', lensId, '--historyid', lensHistoryId]);
     const stdout = getStdout(sfCommandStubs);
     expect(stdout, 'stdout').to.contain(messages.getMessage('revertSuccess', [lensId, lensHistoryId]));
   });

@@ -8,8 +8,18 @@
 import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js';
 import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
 import { expect } from 'chai';
+import { Messages, SfError } from '@salesforce/core';
 import Validate from '../../../src/commands/analytics/template/validate.js';
-import { getStdout, stubDefaultOrg } from '../../testutils.js';
+import {
+  expectToHaveElementInclude,
+  getStdout,
+  getStyledHeaders,
+  getTableData,
+  stubDefaultOrg,
+} from '../../testutils.js';
+
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
+const messages = Messages.loadMessages('@salesforce/analytics', 'validate');
 
 const ID = '0Nkxx000000000zCAA';
 const templateValues = {
@@ -54,18 +64,25 @@ describe('analytics:template:validate', () => {
     expect(stdout, 'stdout').to.contain('Command only available in api version 58.0 or later');
   });
 
-  describe('(with failure)', () => {
-    const exitCode = process.exitCode;
-    after(() => {
-      process.exitCode = exitCode;
-    });
+  it(`runs: --templateid ${ID} --apiversion 58.0`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = () => Promise.resolve(templateWithFailedReadiness);
 
-    it(`runs: --templateid ${ID} --apiversion 58.0`, async () => {
-      await stubDefaultOrg($$, testOrg);
-      $$.fakeConnectionRequest = () => Promise.resolve(templateWithFailedReadiness);
-
+    try {
       await Validate.run(['--templateid', ID, '--apiversion', '58.0']);
-      expect(process.exitCode).to.equal(1);
-    });
+    } catch (error) {
+      expect(error, 'error').to.be.instanceOf(SfError);
+      expect((error as SfError).message, 'error message').to.equal(messages.getMessage('validateFailed'));
+
+      const { data, headers, headerLabels } = getTableData(sfCommandStubs);
+      expect(headers, 'headers').to.deep.equal(['label', 'readinessStatus', 'message']);
+      expect(headerLabels, 'headers').to.deep.equal(['Task', 'Status', 'Message']);
+      expectToHaveElementInclude(data, templateWithFailedReadiness.tasks[0], 'table');
+      expect(getStyledHeaders(sfCommandStubs), 'style headers').to.contain(
+        messages.getMessage('tasksFound', [templateWithFailedReadiness.id])
+      );
+      return;
+    }
+    expect.fail('Expected error');
   });
 });

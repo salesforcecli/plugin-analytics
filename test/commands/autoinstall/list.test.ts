@@ -10,7 +10,13 @@ import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js'
 import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
 import { expect } from 'chai';
 import List from '../../../src/commands/analytics/autoinstall/list.js';
-import { getStdout, stubDefaultOrg } from '../../testutils.js';
+import {
+  expectToHaveElementValue,
+  getStdout,
+  getStyledHeaders,
+  getTableData,
+  stubDefaultOrg,
+} from '../../testutils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'autoinstall');
@@ -44,10 +50,12 @@ describe('analytics:autoinstall:list', () => {
     $$.fakeConnectionRequest = () => Promise.resolve({ requests: autoinstallValues });
 
     await List.run([]);
-    const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.contain(messages.getMessage('autoinstallsFound', [1]));
-    expect(stdout, 'stdout').to.contain(autoinstallValues[0].id);
-    expect(stdout, 'stdout').to.contain(autoinstallValues[0].folderLabel);
+    expect(getStyledHeaders(sfCommandStubs), 'styled headers').to.contain(
+      messages.getMessage('autoinstallsFound', [1])
+    );
+    const { data } = getTableData(sfCommandStubs);
+    expectToHaveElementValue(data, autoinstallValues[0].id, 'table');
+    expectToHaveElementValue(data, autoinstallValues[0].folderLabel, 'table');
   });
 
   it('runs (no results)', async () => {
@@ -57,7 +65,6 @@ describe('analytics:autoinstall:list', () => {
     await List.run([]);
     const stdout = getStdout(sfCommandStubs);
     expect(stdout, 'stdout').to.contain(messages.getMessage('noResultsFound'));
-    expect(stdout, 'stdout').to.not.contain(autoinstallValues[0].id);
-    expect(stdout, 'stdout').to.not.contain(autoinstallValues[0].folderLabel);
+    expect(getTableData(sfCommandStubs).data, 'table').to.be.undefined;
   });
 });

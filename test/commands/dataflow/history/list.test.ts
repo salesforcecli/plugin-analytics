@@ -10,13 +10,20 @@ import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js'
 import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
 import { expect } from 'chai';
 import List from '../../../../src/commands/analytics/dataflow/history/list.js';
-import { getStdout, stubDefaultOrg } from '../../../testutils.js';
+import {
+  expectToHaveElementValue,
+  getStdout,
+  getStyledHeaders,
+  getTableData,
+  stubDefaultOrg,
+} from '../../../testutils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'history');
 
-const dataflowHistoryValues = [
-  { historyid: '0Rmxx0000004CdgCAE', dataflowid: '02Kxx0000004DghEAE', name: 'testName', label: 'my history' },
+const dataflowId = '02KEE00000BzNnl2AF';
+const dataflowHistories = [
+  { id: '0Rmxx0000004CdgCAE', dataflowid: '02KEE00000BzNnl2AF', name: 'testName', label: 'my history' },
 ];
 
 describe('analytics:dataflow:history:list', () => {
@@ -31,25 +38,26 @@ describe('analytics:dataflow:history:list', () => {
     $$.restore();
   });
 
-  it('runs', async () => {
+  it(`runs: --dataflowid ${dataflowId}`, async () => {
     await stubDefaultOrg($$, testOrg);
-    $$.fakeConnectionRequest = () => Promise.resolve({ histories: dataflowHistoryValues });
+    $$.fakeConnectionRequest = () => Promise.resolve({ histories: dataflowHistories });
 
-    await List.run([]);
-    const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.contain(messages.getMessage('dataflowsHistoriesFound', [1]));
-    expect(stdout, 'stdout').to.contain(dataflowHistoryValues[0].historyid);
-    expect(stdout, 'stdout').to.contain(dataflowHistoryValues[0].label);
+    await List.run(['--dataflowid', dataflowId]);
+    expect(getStyledHeaders(sfCommandStubs), 'styled headers').to.contain(
+      messages.getMessage('dataflowsHistoriesFound', [1])
+    );
+    const { data } = getTableData(sfCommandStubs);
+    expectToHaveElementValue(data, dataflowHistories[0].id, 'table');
+    expectToHaveElementValue(data, dataflowHistories[0].label, 'table');
   });
 
-  it('runs (no results)', async () => {
+  it(`runs: --dataflowid ${dataflowId} (no results)`, async () => {
     await stubDefaultOrg($$, testOrg);
     $$.fakeConnectionRequest = () => Promise.resolve({ histories: [] });
 
-    await List.run([]);
+    await List.run(['--dataflowid', dataflowId]);
     const stdout = getStdout(sfCommandStubs);
     expect(stdout, 'stdout').to.contain(messages.getMessage('noResultsFound'));
-    expect(stdout, 'stdout').to.not.contain(dataflowHistoryValues[0].historyid);
-    expect(stdout, 'stdout').to.not.contain(dataflowHistoryValues[0].label);
+    expect(getTableData(sfCommandStubs).data, 'table').to.be.undefined;
   });
 });

@@ -10,7 +10,13 @@ import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js'
 import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
 import { expect } from 'chai';
 import Display from '../../../src/commands/analytics/autoinstall/display.js';
-import { getStdout, stubDefaultOrg } from '../../testutils.js';
+import {
+  expectToHaveElementInclude,
+  expectToHaveElementValue,
+  getStyledHeaders,
+  getTableData,
+  stubDefaultOrg,
+} from '../../testutils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'app');
@@ -51,15 +57,6 @@ function makeAutoInstallJson() {
   };
 }
 
-function verifyAppDetails(stdout: string) {
-  expect(stdout, 'stdout').to.match(new RegExp(`^Id\\s+${ID}$`, 'm'));
-  expect(stdout, 'stdout').to.match(/^Created By\s+Automated Process$/m);
-  // just make sure it looks like a date, to avoid issues with timezone conversion
-  expect(stdout, 'stdout').to.match(/^Created Date\s+2020-03-\d\d \d\d:\d\d:\d\d$/m);
-  expect(stdout, 'stdout').to.match(/^Last Modified By\s+Automated Process$/m);
-  expect(stdout, 'stdout').to.match(/^Last Modified Date\s+2020-03-\d\d \d\d:\d\d:\d\d$/m);
-}
-
 describe('analytics:app:display', () => {
   const $$ = new TestContext();
   const testOrg = new MockTestOrgData();
@@ -79,8 +76,13 @@ describe('analytics:app:display', () => {
     $$.fakeConnectionRequest = () => Promise.resolve(autoInstallRequest);
 
     await Display.run(['--autoinstallid', ID]);
-    const stdout = getStdout(sfCommandStubs);
-    verifyAppDetails(stdout);
-    expect(stdout, 'stdout').to.not.contain(messages.getMessage('displayLogHeader'));
+    expect(getStyledHeaders(sfCommandStubs), 'styled headers').to.not.contain(messages.getMessage('displayLogHeader'));
+    const { data, headers } = getTableData(sfCommandStubs);
+    expect(headers, 'headers').to.deep.equal(['key', 'value']);
+    expectToHaveElementInclude(data, { key: 'Id', value: ID }, 'table');
+    expectToHaveElementInclude(data, { key: 'Created By', value: 'Automated Process' }, 'table');
+    expectToHaveElementInclude(data, { key: 'Last Modified By', value: 'Automated Process' }, 'table');
+    // just make sure it has least one of the dates
+    expectToHaveElementValue(data, /2020-03-\d\d \d\d:\d\d:\d\d$/m, 'table');
   });
 });

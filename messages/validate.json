@@ -6,6 +6,7 @@
   "templatenameFlagDescription": "template name",
   "templatenameFlagLongDescription": "The name of the Analytics template.",
   "tasksFound": "Template [%s] validate retreived.",
+  "validateFailed": "Template validation failed.",
   "valuesfileFlagDescription": "org readiness variable values to override defaults",
   "valuesfileFlagLongDescription": "Org readiness variable values to override defaults."
 }

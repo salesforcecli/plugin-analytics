@@ -599,10 +599,7 @@ describe('analytics:query', () => {
 
     await Query.run(['-q', 'foo', '--json']);
     expect(getStderr(sfCommandStubs), 'stderr').to.equal('');
-    expect(getJsonOutput(sfCommandStubs), 'stdout json').to.deep.include({
-      status: 0,
-      result: saqlResponse,
-    });
+    expect(getJsonOutput(sfCommandStubs), 'stdout json').to.deep.include({ result: saqlResponse });
     expect(getStdout(sfCommandStubs), 'stdout').to.not.contain(
       messages.getMessage('rowsFound', [saqlResponse.results.records.length])
     );

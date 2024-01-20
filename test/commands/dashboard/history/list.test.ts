@@ -10,13 +10,19 @@ import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js'
 import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
 import { expect } from 'chai';
 import List from '../../../../src/commands/analytics/dashboard/history/list.js';
-import { getStdout, stubDefaultOrg } from '../../../testutils.js';
+import {
+  expectToHaveElementValue,
+  getStdout,
+  getStyledHeaders,
+  getTableData,
+  stubDefaultOrg,
+} from '../../../testutils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'history');
 
 const dashboardId = '0FKxx0000004CguGAE';
-const dashBoardHistoryValues = [{ id: '0Rmxx0000004CdgCAE', dashboardId, name: 'testName', label: 'my history' }];
+const dashboardHistories = [{ id: '0Rmxx0000004CdgCAE', dashboardId, name: 'testName', label: 'my history' }];
 
 describe('analytics:dashboard:history:list', () => {
   const $$ = new TestContext();
@@ -32,13 +38,15 @@ describe('analytics:dashboard:history:list', () => {
 
   it(`runs: --dashboardid ${dashboardId}`, async () => {
     await stubDefaultOrg($$, testOrg);
-    $$.fakeConnectionRequest = () => Promise.resolve({ histories: dashBoardHistoryValues });
+    $$.fakeConnectionRequest = () => Promise.resolve({ histories: dashboardHistories });
 
     await List.run(['--dashboardid', dashboardId]);
-    const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.contain(messages.getMessage('dashboardsHistoriesFound', [1]));
-    expect(stdout, 'stdout').to.contain(dashBoardHistoryValues[0].id);
-    expect(stdout, 'stdout').to.contain(dashBoardHistoryValues[0].label);
+    expect(getStyledHeaders(sfCommandStubs), 'styled headers').to.contain(
+      messages.getMessage('dashboardsHistoriesFound', [1])
+    );
+    const { data } = getTableData(sfCommandStubs);
+    expectToHaveElementValue(data, dashboardHistories[0].id, 'table');
+    expectToHaveElementValue(data, dashboardHistories[0].label, 'table');
   });
 
   it(`runs: --dashboardid ${dashboardId} (no results)`, async () => {
@@ -48,7 +56,6 @@ describe('analytics:dashboard:history:list', () => {
     await List.run(['--dashboardid', dashboardId]);
     const stdout = getStdout(sfCommandStubs);
     expect(stdout, 'stdout').to.contain(messages.getMessage('noResultsFound'));
-    expect(stdout, 'stdout').to.not.contain(dashBoardHistoryValues[0].id);
-    expect(stdout, 'stdout').to.not.contain(dashBoardHistoryValues[0].label);
+    expect(getTableData(sfCommandStubs).data, 'table').to.be.undefined;
   });
 });

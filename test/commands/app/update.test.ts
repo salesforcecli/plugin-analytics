@@ -5,13 +5,13 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { Messages, StreamingClient } from '@salesforce/core';
+import { Messages, SfError, StreamingClient } from '@salesforce/core';
 import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js';
 import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
 import { stubMethod } from '@salesforce/ts-sinon';
 import { expect } from 'chai';
 import Update from '../../../src/commands/analytics/app/update.js';
-import { getStderr, getStdout, stubDefaultOrg } from '../../testutils.js';
+import { getJsonOutput, getStdout, stubDefaultOrg } from '../../testutils.js';
 
 const messages = Messages.loadMessages('@salesforce/analytics', 'app');
 
@@ -34,7 +34,7 @@ describe('analytics:app:update', () => {
     await stubDefaultOrg($$, testOrg);
     $$.fakeConnectionRequest = () => Promise.resolve({ id: appId });
 
-    await Update.run(['--folderid', appId, '--templateid', templateId]);
+    await Update.run(['--folderid', appId, '--templateid', templateId, '--async']);
     const stdout = getStdout(sfCommandStubs);
     expect(stdout, 'stdout').to.contain(messages.getMessage('updateSuccess', [appId]));
   });
@@ -44,11 +44,8 @@ describe('analytics:app:update', () => {
     await stubDefaultOrg($$, testOrg);
     $$.fakeConnectionRequest = () => Promise.resolve({ id: appId });
 
-    await Update.run(['--folderid', appId, '--templateid', templateId, '--json']);
-    const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.equal('');
-    expect(JSON.parse(stdout), 'result').to.deep.include({
-      status: 0,
+    await Update.run(['--folderid', appId, '--templateid', templateId, '--async', '--json']);
+    expect(getJsonOutput(sfCommandStubs), 'result').to.deep.include({
       result: {
         id: appId,
       },
@@ -79,7 +76,7 @@ describe('analytics:app:update', () => {
       },
     }));
 
-    await Update.run(['--folderid', appId, 'templateid', templateId]);
+    await Update.run(['--folderid', appId, '--templateid', templateId]);
     const stdout = getStdout(sfCommandStubs);
     expect(stdout, 'stdout').to.contain(messages.getMessage('finishAppCreation', ['foo']));
   });
@@ -109,11 +106,8 @@ describe('analytics:app:update', () => {
       },
     }));
 
-    await Update.run(['--folderid', appId, 'templateid', templateId, '--json']);
-    const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.not.equal('');
-    expect(JSON.parse(stdout), 'result').to.deep.include({
-      status: 0,
+    await Update.run(['--folderid', appId, '--templateid', templateId, '--json']);
+    expect(getJsonOutput(sfCommandStubs), 'result').to.deep.include({
       result: {
         id: appId,
         events: [
@@ -154,12 +148,15 @@ describe('analytics:app:update', () => {
       },
     }));
 
-    await Update.run(['--folderid', appId, 'templateid', templateId]);
-    // this is in the list of events output
-    const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.contain(messages.getMessage('finishAppCreationFailure', ['failed']));
-    // and this is from the command failing
-    const stderr = getStderr(sfCommandStubs);
-    expect(stderr, 'stderr').to.contain(messages.getMessage('finishAppCreationFailure', ['failed']));
+    try {
+      await Update.run(['--folderid', appId, '--templateid', templateId]);
+    } catch (error) {
+      expect(error, 'error').to.be.instanceOf(SfError);
+      expect((error as SfError).message, 'message').to.contain(
+        messages.getMessage('finishAppCreationFailure', ['failed'])
+      );
+      return;
+    }
+    expect.fail('Expected an error');
   });
 });

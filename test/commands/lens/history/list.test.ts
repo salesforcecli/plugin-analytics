@@ -10,7 +10,13 @@ import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js'
 import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
 import { expect } from 'chai';
 import List from '../../../../src/commands/analytics/lens/history/list.js';
-import { getStdout, stubDefaultOrg } from '../../../testutils.js';
+import {
+  expectToHaveElementValue,
+  getStdout,
+  getStyledHeaders,
+  getTableData,
+  stubDefaultOrg,
+} from '../../../testutils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'history');
@@ -38,20 +44,22 @@ describe('analytics:lens:history:list', () => {
     $$.fakeConnectionRequest = () => Promise.resolve({ histories: lensHistoryValues });
 
     await List.run(['--lensid', lensId]);
-    const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.contain(messages.getMessage('lensHistoriesFound', [1]));
-    expect(stdout, 'stdout').to.contain(lensHistoryValues[0].historyid);
-    expect(stdout, 'stdout').to.contain(lensHistoryValues[0].label);
+    expect(getStyledHeaders(sfCommandStubs), 'styled headers').to.contain(
+      messages.getMessage('lensHistoriesFound', [1])
+    );
+    const { data } = getTableData(sfCommandStubs);
+    expectToHaveElementValue(data, lensHistoryValues[0].lensid, 'table');
+    expectToHaveElementValue(data, lensHistoryValues[0].label, 'table');
   });
 
-  it(`runs: --lensid ${lensId}`, async () => {
+  it(`runs: --lensid ${lensId} (no results)`, async () => {
     await stubDefaultOrg($$, testOrg);
     $$.fakeConnectionRequest = () => Promise.resolve({ histories: [] });
 
     await List.run(['--lensid', lensId]);
     const stdout = getStdout(sfCommandStubs);
     expect(stdout, 'stdout').to.contain(messages.getMessage('noResultsFound'));
-    expect(stdout, 'stdout').to.not.contain(lensHistoryValues[0].historyid);
-    expect(stdout, 'stdout').to.not.contain(lensHistoryValues[0].label);
+    const { data } = getTableData(sfCommandStubs);
+    expect(data, 'table').to.be.undefined;
   });
 });

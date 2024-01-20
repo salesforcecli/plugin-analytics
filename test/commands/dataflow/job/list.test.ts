@@ -10,12 +10,19 @@ import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js'
 import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
 import { expect } from 'chai';
 import List from '../../../../src/commands/analytics/dataflow/job/list.js';
-import { getStdout, stubDefaultOrg } from '../../../testutils.js';
+import {
+  expectToHaveElementValue,
+  getStdout,
+  getStyledHeaders,
+  getTableData,
+  stubDefaultOrg,
+} from '../../../testutils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'dataflow');
 
-const dataflowValues = [
+const dataflowId = '02KEE00000BzNnl2AF';
+const dataflowJobs = [
   {
     id: '03CEE00000CBRKX2A5',
     label: 'mydf',
@@ -39,25 +46,23 @@ describe('analytics:dataflow:job:list', () => {
     $$.restore();
   });
 
-  it('runs', async () => {
+  it(`runs: --dataflowid ${dataflowId}`, async () => {
     await stubDefaultOrg($$, testOrg);
-    $$.fakeConnectionRequest = () => Promise.resolve({ dataflowJobs: dataflowValues });
+    $$.fakeConnectionRequest = () => Promise.resolve({ dataflowJobs });
 
-    await List.run([]);
-    const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.contain(messages.getMessage('dataflowsFound', [1]));
-    expect(stdout, 'stdout').to.contain(dataflowValues[0].id);
-    expect(stdout, 'stdout').to.contain(dataflowValues[0].label);
+    await List.run(['--dataflowid', dataflowId]);
+    expect(getStyledHeaders(sfCommandStubs), 'styled headers').to.contain(messages.getMessage('dataflowsFound', [1]));
+    const { data } = getTableData(sfCommandStubs);
+    expectToHaveElementValue(data, dataflowJobs[0].id, 'table');
+    expectToHaveElementValue(data, dataflowJobs[0].label, 'table');
   });
 
-  it('runs (no results)', async () => {
+  it(`runs: --dataflowid ${dataflowId} (no results)`, async () => {
     await stubDefaultOrg($$, testOrg);
     $$.fakeConnectionRequest = () => Promise.resolve({ dataflowJobs: [] });
 
-    await List.run([]);
+    await List.run(['--dataflowid', dataflowId]);
     const stdout = getStdout(sfCommandStubs);
     expect(stdout, 'stdout').to.contain(messages.getMessage('noResultsFound'));
-    expect(stdout, 'stdout').to.not.contain(dataflowValues[0].id);
-    expect(stdout, 'stdout').to.not.contain(dataflowValues[0].label);
   });
 });

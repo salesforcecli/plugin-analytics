@@ -10,7 +10,14 @@ import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js'
 import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
 import { expect } from 'chai';
 import Display from '../../../src/commands/analytics/app/display.js';
-import { getStdout, stubDefaultOrg } from '../../testutils.js';
+import {
+  expectToHaveElementInclude,
+  expectToHaveElementValue,
+  getStdout,
+  getStyledHeaders,
+  getTableData,
+  stubDefaultOrg,
+} from '../../testutils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'app');
@@ -114,19 +121,19 @@ function makeFolderJson(withAppLog: boolean, namespace?: string) {
   return json;
 }
 
-function verifyAppDetails(stdout: string, namespace?: string) {
-  expect(stdout, 'stdout').to.match(/^Name\s+foobar$/m);
-  expect(stdout, 'stdout').to.match(/^Label\s+foo bar$/m);
-  expect(stdout, 'stdout').to.match(new RegExp(`^Id\\s+${ID}$`, 'm'));
-  expect(stdout, 'stdout').to.match(/^Created By\s+User User$/m);
+function verifyAppDetails({ data, headers }: ReturnType<typeof getTableData>, namespace?: string) {
+  expect(headers, 'headers').to.deep.equal(['key', 'value']);
+  expectToHaveElementInclude(data, { key: 'Name', value: 'foobar' }, 'table');
+  expectToHaveElementInclude(data, { key: 'Label', value: 'foo bar' }, 'table');
+  expectToHaveElementInclude(data, { key: 'Id', value: ID }, 'table');
+  expectToHaveElementInclude(data, { key: 'Created By', value: 'User User' }, 'table');
   // just make sure it looks like a date, to avoid issues with timezone conversion
-  expect(stdout, 'stdout').to.match(/^Created Date\s+2020-03-\d\d \d\d:\d\d:\d\d$/m);
-  expect(stdout, 'stdout').to.match(/^Last Modified By\s+User User$/m);
-  expect(stdout, 'stdout').to.match(/^Last Modified Date\s+2020-03-\d\d \d\d:\d\d:\d\d$/m);
-  expect(stdout, 'stdout').to.match(/^Template Source Id\s+0Nkxx0000004DDACA2$/m);
-  expect(stdout, 'stdout').to.match(/^Template Version\s+1\.1$/m);
+  expectToHaveElementValue(data, /2020-03-\d\d \d\d:\d\d:\d\d$/m, 'table');
+  expectToHaveElementInclude(data, { key: 'Last Modified By', value: 'User User' }, 'table');
+  expectToHaveElementInclude(data, { key: 'Template Source Id', value: '0Nkxx0000004DDACA2' }, 'table');
+  expectToHaveElementInclude(data, { key: 'Template Version', value: '1.1' }, 'table');
   if (namespace) {
-    expect(stdout, 'stdout').to.match(new RegExp(`^Namespace\\s+${namespace}$`, 'm'));
+    expectToHaveElementInclude(data, { key: 'Namespace', value: namespace }, 'table');
   }
 }
 
@@ -151,9 +158,8 @@ describe('analytics:app:display', () => {
     $$.fakeConnectionRequest = () => Promise.resolve(folderJsonNoLog);
 
     await Display.run(['--folderid', ID]);
-    const stdout = getStdout(sfCommandStubs);
-    verifyAppDetails(stdout);
-    expect(stdout, 'stdout').to.not.contain(messages.getMessage('displayLogHeader'));
+    verifyAppDetails(getTableData(sfCommandStubs));
+    expect(getStyledHeaders(sfCommandStubs), 'styled headers').to.not.contain(messages.getMessage('displayLogHeader'));
   });
 
   it(`runs: --folderid ${ID} (with namespace)`, async () => {
@@ -161,9 +167,8 @@ describe('analytics:app:display', () => {
     $$.fakeConnectionRequest = () => Promise.resolve(nsFolderJson);
 
     await Display.run(['--folderid', ID]);
-    const stdout = getStdout(sfCommandStubs);
-    verifyAppDetails(stdout, 'AnlyTxHack');
-    expect(stdout, 'stdout').to.not.contain(messages.getMessage('displayLogHeader'));
+    verifyAppDetails(getTableData(sfCommandStubs));
+    expect(getStyledHeaders(sfCommandStubs), 'styled headers').to.not.contain(messages.getMessage('displayLogHeader'));
   });
 
   it(`runs: --folderid ${ID} --applog (with no applog)`, async () => {
@@ -171,10 +176,9 @@ describe('analytics:app:display', () => {
     $$.fakeConnectionRequest = () => Promise.resolve(folderJsonNoLog);
 
     await Display.run(['--folderid', ID, '--applog']);
-    const stdout = getStdout(sfCommandStubs);
-    verifyAppDetails(stdout);
-    expect(stdout, 'stdout').to.contain(messages.getMessage('displayLogHeader'));
-    expect(stdout, 'stdout').to.contain(messages.getMessage('displayNoLogAvailable'));
+    verifyAppDetails(getTableData(sfCommandStubs));
+    expect(getStyledHeaders(sfCommandStubs), 'styled headers').to.contain(messages.getMessage('displayLogHeader'));
+    expect(getStdout(sfCommandStubs), 'stdout').to.contain(messages.getMessage('displayNoLogAvailable'));
   });
 
   it(`runs: -f ${ID} (with applog)`, async () => {
@@ -182,10 +186,10 @@ describe('analytics:app:display', () => {
     $$.fakeConnectionRequest = () => Promise.resolve(folderJsonLog);
 
     await Display.run(['-f', ID]);
-    const stdout = getStdout(sfCommandStubs);
-    verifyAppDetails(stdout);
+    verifyAppDetails(getTableData(sfCommandStubs));
     // no -a, so no applog output
-    expect(stdout, 'stdout').to.not.contain(messages.getMessage('displayLogHeader'));
+    expect(getStyledHeaders(sfCommandStubs), 'styled headers').to.not.contain(messages.getMessage('displayLogHeader'));
+    const stdout = getStdout(sfCommandStubs);
     folderJsonLog.appLog.forEach((line) => {
       expect(stdout, 'stdout').to.not.contain(line);
     });
@@ -196,12 +200,11 @@ describe('analytics:app:display', () => {
     $$.fakeConnectionRequest = () => Promise.resolve(folderJsonLog);
 
     await Display.run(['-f', ID, '-a']);
-    const stdout = getStdout(sfCommandStubs);
-    verifyAppDetails(stdout);
-    // no -a, so no applog output
-    expect(stdout, 'stdout').to.contain(messages.getMessage('displayLogHeader'));
+    verifyAppDetails(getTableData(sfCommandStubs));
+    expect(getStyledHeaders(sfCommandStubs), 'styled headers').to.contain(messages.getMessage('displayLogHeader'));
+    const { data: appLogData } = getTableData(sfCommandStubs, 1);
     folderJsonLog.appLog.forEach((line) => {
-      expect(stdout, 'stdout').to.contain(line);
+      expectToHaveElementValue(appLogData, line.message, 'app log table');
     });
   });
 });

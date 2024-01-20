@@ -10,7 +10,7 @@ import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js'
 import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
 import { expect } from 'chai';
 import Display from '../../../../src/commands/analytics/dataflow/job/display.js';
-import { getStdout, stubDefaultOrg } from '../../../testutils.js';
+import { expectToHaveElementValue, getStyledHeaders, getTableData, stubDefaultOrg } from '../../../testutils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'dataflow');
@@ -43,9 +43,9 @@ describe('analytics:dataflow:job:display', () => {
     $$.fakeConnectionRequest = () => Promise.resolve(dataflowJob);
 
     await Display.run(['--dataflowjobid', dataflowJob.id]);
-    const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.contain(messages.getMessage('displayDetailHeader'));
-    expect(stdout, 'stdout').to.contain(dataflowJob.id);
-    expect(stdout, 'stdout').to.contain(dataflowJob.label);
+    expect(getStyledHeaders(sfCommandStubs), 'styled headers').to.contain(messages.getMessage('displayDetailHeader'));
+    const { data } = getTableData(sfCommandStubs);
+    expectToHaveElementValue(data, dataflowJob.id, 'table');
+    expectToHaveElementValue(data, dataflowJob.label, 'table');
   });
 });

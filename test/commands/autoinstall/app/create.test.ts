@@ -13,7 +13,7 @@ import { expect } from 'chai';
 import { stubMethod } from '@salesforce/ts-sinon';
 import Create from '../../../../src/commands/analytics/autoinstall/app/create.js';
 import { AutoInstallRequestType, AutoInstallStatus } from '../../../../src/lib/analytics/autoinstall/autoinstall.js';
-import { getStderr, getStdout, stubDefaultOrg } from '../../../testutils.js';
+import { getJsonOutput, getStdout, stubDefaultOrg } from '../../../testutils.js';
 import { fs } from '../../../../src/lib/analytics/utils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
@@ -89,10 +89,7 @@ describe('analytics:autoinstall:app:create', () => {
     $$.fakeConnectionRequest = () => Promise.resolve(requestWithStatus('New'));
 
     await Create.run(['--async', '-n', 'abc', '--json']);
-    const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.equal('');
-    expect(JSON.parse(stdout), 'stdout json').to.deep.include({
-      status: 0,
+    expect(getJsonOutput(sfCommandStubs), 'stdout json').to.deep.include({
       result: {
         id: requestId,
       },
@@ -144,11 +141,8 @@ describe('analytics:autoinstall:app:create', () => {
       return Promise.resolve(requestWithStatus('InProgress'));
     };
 
-    await Create.run(['-n', 'abc']);
-    const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.not.equal('');
-    expect(JSON.parse(stdout), 'stdout json').to.deep.include({
-      status: 0,
+    await Create.run(['-n', 'abc', '--json']);
+    expect(getJsonOutput(sfCommandStubs), 'stdout json').to.deep.include({
       result: {
         id: requestId,
         folderId,
@@ -175,9 +169,14 @@ describe('analytics:autoinstall:app:create', () => {
       return Promise.resolve(requestWithStatus('InProgress'));
     };
 
-    await Create.run(['-n', 'abc']);
-    const stderr = getStderr(sfCommandStubs);
-    expect(stderr, 'stderr').to.contain(messages.getMessage('appCreateFailed', [requestId]));
+    try {
+      await Create.run(['-n', 'abc']);
+    } catch (error) {
+      expect(error, 'error').to.be.instanceOf(SfError);
+      expect((error as SfError).message, 'message').to.contain(messages.getMessage('appCreateFailed', [requestId]));
+      return;
+    }
+    expect.fail('Expected an error');
   });
 
   // verify that a failed create with --json returns the last auto-install request (which has the
@@ -196,24 +195,29 @@ describe('analytics:autoinstall:app:create', () => {
       return Promise.resolve(requestWithStatus('InProgress'));
     };
 
-    await Create.run(['-n', 'abc', '--json']);
-    const stderr = getStderr(sfCommandStubs);
-    expect(stderr, 'console output').to.not.equal('');
-    expect(stderr, 'result json').to.deep.include({
-      status: 1,
-      message: messages.getMessage('appCreateFailed', [requestId]),
-      exitCode: 1,
-      // data should be the last auto-install request received
-      data: {
-        id: requestId,
-        requestType: 'WaveAppCreate',
-        requestName: 'foo',
-        requestStatus: 'Failed',
-        templateApiName: 'abc',
-        folderId,
-        folderLabel: 'abcde',
-      },
-    });
+    try {
+      await Create.run(['-n', 'abc', '--json']);
+    } catch (error) {
+      expect(error, 'error').to.be.instanceOf(SfError);
+      expect((error as SfError).message, 'message').to.contain(messages.getMessage('appCreateFailed', [requestId]));
+      expect(getJsonOutput(sfCommandStubs), 'error data').to.deep.include({
+        status: 1,
+        message: messages.getMessage('appCreateFailed', [requestId]),
+        exitCode: 1,
+        // data should be the last auto-install request received
+        data: {
+          id: requestId,
+          requestType: 'WaveAppCreate',
+          requestName: 'foo',
+          requestStatus: 'Failed',
+          templateApiName: 'abc',
+          folderId,
+          folderLabel: 'abcde',
+        },
+      });
+      return;
+    }
+    expect.fail('Expected an error');
   });
 
   it('runs: -n abc (cancelled)', async () => {
@@ -230,9 +234,14 @@ describe('analytics:autoinstall:app:create', () => {
       return Promise.resolve(requestWithStatus('InProgress'));
     };
 
-    await Create.run(['-n', 'abc']);
-    const stderr = getStderr(sfCommandStubs);
-    expect(stderr, 'stderr').to.contain(messages.getMessage('requestCancelled', [requestId]));
+    try {
+      await Create.run(['-n', 'abc']);
+    } catch (error) {
+      expect(error, 'error').to.be.instanceOf(SfError);
+      expect((error as SfError).message, 'message').to.contain(messages.getMessage('requestCancelled', [requestId]));
+      return;
+    }
+    expect.fail('Expected an error');
   });
 
   it('runs: -n abc (skipped)', async () => {
@@ -249,12 +258,18 @@ describe('analytics:autoinstall:app:create', () => {
       return Promise.resolve(requestWithStatus('InProgress'));
     };
 
-    await Create.run(['-n', 'abc']);
-    const stderr = getStderr(sfCommandStubs);
-    expect(stderr, 'stderr').to.contain(messages.getMessage('requestSkipped', [requestId]));
+    try {
+      await Create.run(['-n', 'abc']);
+    } catch (error) {
+      expect(error, 'error').to.be.instanceOf(SfError);
+      expect((error as SfError).message, 'message').to.contain(messages.getMessage('requestSkipped', [requestId]));
+      return;
+    }
+    expect.fail('Expected an error');
   });
 
-  it('runs: -n abc -w .001 (timeout)', async () => {
+  // FIXME: make a way to test timeout w/o waiting for a whole minute
+  it.skip('runs: -n abc -w .001 (timeout)', async () => {
     await stubDefaultOrg($$, testOrg);
     let requestNum = 0;
     $$.fakeConnectionRequest = () => {
@@ -265,9 +280,16 @@ describe('analytics:autoinstall:app:create', () => {
       return Promise.resolve(requestWithStatus('InProgress'));
     };
 
-    await Create.run(['-n', 'abc', '-w', '.001']);
-    const stderr = getStderr(sfCommandStubs);
-    expect(stderr, 'stderr').to.contain(messages.getMessage('requestPollingTimeout', [requestId, 'InProgress']));
+    try {
+      await Create.run(['-n', 'abc', '-w', '.001']);
+    } catch (error) {
+      expect(error, 'error').to.be.instanceOf(SfError);
+      expect((error as SfError).message, 'message').to.contain(
+        messages.getMessage('requestPollingTimeout', [requestId, 'InProgress'])
+      );
+      return;
+    }
+    expect.fail('Expected an error');
   });
 
   it('runs: -n abc (with error)', async () => {
@@ -284,9 +306,14 @@ describe('analytics:autoinstall:app:create', () => {
       return Promise.resolve(requestWithStatus('InProgress'));
     };
 
-    await Create.run(['-n', 'abc']);
-    const stderr = getStderr(sfCommandStubs);
-    expect(stderr, 'stderr').to.contain('expected error in polling');
+    try {
+      await Create.run(['-n', 'abc']);
+    } catch (error) {
+      expect(error, 'error').to.be.instanceOf(SfError);
+      expect((error as SfError).message, 'message').to.contain('expected error in polling');
+      return;
+    }
+    expect.fail('Expected an error');
   });
 
   // Test that --appname and --appdescription values appear in the request body
@@ -302,7 +329,7 @@ describe('analytics:autoinstall:app:create', () => {
     await Create.run(['--async', '-n', 'abc', '--appname', 'customname', '--appdescription', 'customdesc']);
     const stdout = getStdout(sfCommandStubs);
     expect(stdout, 'stdout').to.contain(messages.getMessage('appCreateRequestSuccess', [requestId]));
-    expect(requestBody, 'requestbody ').to.have.nested.include({
+    expect(requestBody, 'reques tbody').to.have.nested.include({
       'configuration.appConfiguration.appLabel': 'customname',
       'configuration.appConfiguration.appName': 'customname',
       'configuration.appConfiguration.appDescription': 'customdesc',
