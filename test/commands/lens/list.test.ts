@@ -75,7 +75,7 @@ describe('analytics:lens:list', () => {
 
     await List.run([]);
     const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.contain('No results found.');
+    expect(stdout, 'stdout').to.contain(messages.getMessage('noResultsFound'));
     expect(stdout, 'stdout').to.contain(lensValues[0].id);
     expect(stdout, 'stdout').to.contain(lensValues[0].label);
     expect(stdout, 'stdout').to.contain(lensValues[1].id);

@@ -9,6 +9,7 @@
   "assetPublisheridFlagDescription": "Asset Publisher ID under development",
   "assetPublisheridFlagLongDescription": "Asset Publisher ID under development.",
   "publishersFound": "Found [%s] asset publishers for resource [%s].",
+  "noResultsFound": "No results found.",
   "deleteCommandDescription": "delete a Analytics asset publisher",
   "deleteCommandLongDescription": "Delete a Analytics asset publisher.",
   "deleteallCommandDescription": "delete Analytics asset publishers",

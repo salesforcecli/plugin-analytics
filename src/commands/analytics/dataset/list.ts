@@ -47,15 +47,19 @@ export default class List extends SfCommand<
       currentversionid: dataset.currentVersionId,
       folderid: dataset.folder?.id,
     }));
-    this.styledHeader(messages.getMessage('datasetsFound', [datasets.length]));
-    this.table(datasets, {
-      id: { header: 'id' },
-      name: { header: 'name' },
-      namespace: { header: 'namespace' },
-      label: { header: 'label' },
-      currentversionid: { header: 'currentversionid' },
-      folderid: { header: 'folderid' },
-    });
+    if (datasets.length > 0) {
+      this.styledHeader(messages.getMessage('datasetsFound', [datasets.length]));
+      this.table(datasets, {
+        id: { header: 'id' },
+        name: { header: 'name' },
+        namespace: { header: 'namespace' },
+        label: { header: 'label' },
+        currentversionid: { header: 'currentversionid' },
+        folderid: { header: 'folderid' },
+      });
+    } else {
+      this.log(messages.getMessage('noResultsFound'));
+    }
     return datasets;
   }
 }

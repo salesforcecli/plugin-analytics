@@ -50,7 +50,7 @@ describe('analytics:lens:history:list', () => {
 
     await List.run(['--lensid', lensId]);
     const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.contain('No results found.');
+    expect(stdout, 'stdout').to.contain(messages.getMessage('noResultsFound'));
     expect(stdout, 'stdout').to.not.contain(lensHistoryValues[0].historyid);
     expect(stdout, 'stdout').to.not.contain(lensHistoryValues[0].label);
   });

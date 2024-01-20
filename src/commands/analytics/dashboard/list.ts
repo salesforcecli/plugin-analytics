@@ -49,16 +49,20 @@ export default class List extends SfCommand<
       foldername: dashboard.folder?.name,
       currentHistoryId: dashboard.currentHistoryId,
     }));
-    this.styledHeader(messages.getMessage('dashboardsFound', [dashboards.length]));
-    this.table(dashboards, {
-      dashboardid: { header: 'dashboardid' },
-      name: { header: 'name' },
-      namespace: { header: 'namespace' },
-      label: { header: 'label' },
-      folderid: { header: 'folderid' },
-      foldername: { header: 'foldername' },
-      currentHistoryId: { header: 'currentHistoryId' },
-    });
+    if (dashboards.length > 0) {
+      this.styledHeader(messages.getMessage('dashboardsFound', [dashboards.length]));
+      this.table(dashboards, {
+        dashboardid: { header: 'dashboardid' },
+        name: { header: 'name' },
+        namespace: { header: 'namespace' },
+        label: { header: 'label' },
+        folderid: { header: 'folderid' },
+        foldername: { header: 'foldername' },
+        currentHistoryId: { header: 'currentHistoryId' },
+      });
+    } else {
+      this.log(messages.getMessage('noResultsFound'));
+    }
     return dashboards;
   }
 }

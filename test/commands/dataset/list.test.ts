@@ -161,7 +161,7 @@ describe('analytics:dataset:list', () => {
     await List.run([]);
     expect(getStderr(sfCommandStubs), 'stderr').to.equal('');
     const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.contain('No results found.');
+    expect(stdout, 'stdout').to.contain(messages.getMessage('noResultsFound'));
     expect(stdout, 'stdout').to.not.contain(datasetJson.id);
     expect(stdout, 'stdout').to.not.contain(datasetJson.label);
     expect(stdout, 'stdout').to.not.contain(nsDatasetJson.id);

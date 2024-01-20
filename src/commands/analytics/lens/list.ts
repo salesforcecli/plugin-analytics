@@ -39,13 +39,17 @@ export default class List extends SfCommand<
       namespace: lens.namespace,
       label: lens.label,
     }));
-    this.styledHeader(messages.getMessage('lensesFound', [lenses.length]));
-    this.table(lenses, {
-      lensid: { header: 'lensid' },
-      name: { header: 'name' },
-      namespace: { header: 'namespace' },
-      label: { header: 'label' },
-    });
+    if (lenses.length > 0) {
+      this.styledHeader(messages.getMessage('lensesFound', [lenses.length]));
+      this.table(lenses, {
+        lensid: { header: 'lensid' },
+        name: { header: 'name' },
+        namespace: { header: 'namespace' },
+        label: { header: 'label' },
+      });
+    } else {
+      this.log(messages.getMessage('noResultsFound'));
+    }
     return lenses;
   }
 }

@@ -47,13 +47,17 @@ export default class List extends SfCommand<
       name: history.name,
       label: history.label,
     }));
-    this.styledHeader(messages.getMessage('dataflowsHistoriesFound', [histories.length]));
-    this.table(histories, {
-      historyid: { header: 'historyid' },
-      dataflowid: { header: 'dataflowid' },
-      name: { header: 'name' },
-      label: { header: 'label' },
-    });
+    if (histories.length > 0) {
+      this.styledHeader(messages.getMessage('dataflowsHistoriesFound', [histories.length]));
+      this.table(histories, {
+        historyid: { header: 'historyid' },
+        dataflowid: { header: 'dataflowid' },
+        name: { header: 'name' },
+        label: { header: 'label' },
+      });
+    } else {
+      this.log(messages.getMessage('noResultsFound'));
+    }
     return histories;
   }
 }

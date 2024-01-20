@@ -56,7 +56,7 @@ describe('analytics:asset:publisher:list', () => {
 
     await List.run(['--assetid', assetId]);
     const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.contain('No results found.');
+    expect(stdout, 'stdout').to.contain(messages.getMessage('noResultsFound'));
     expect(stdout, 'stdout').to.not.contain(publisherValues[0].id);
     expect(stdout, 'stdout').to.not.contain(publisherValues[0].publisherUser.name);
   });

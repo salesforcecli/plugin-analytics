@@ -67,16 +67,20 @@ export default class List extends SfCommand<TemplateInfo[]> {
         namespace: template.namespace,
         templateversion: template.releaseInfo?.templateVersion,
       }));
-    this.styledHeader(messages.getMessage('templatesFound', [templates.length]));
-    this.table(templates, {
-      name: { header: 'name' },
-      label: { header: 'label' },
-      templateid: { header: 'templateid' },
-      templatetype: { header: 'templatetype' },
-      folderid: { header: 'folderid' },
-      namespace: { header: 'namespace' },
-      templateversion: { header: 'templateversion' },
-    });
+    if (templates.length > 0) {
+      this.styledHeader(messages.getMessage('templatesFound', [templates.length]));
+      this.table(templates, {
+        name: { header: 'name' },
+        label: { header: 'label' },
+        templateid: { header: 'templateid' },
+        templatetype: { header: 'templatetype' },
+        folderid: { header: 'folderid' },
+        namespace: { header: 'namespace' },
+        templateversion: { header: 'templateversion' },
+      });
+    } else {
+      this.log(messages.getMessage('noResultsFound'));
+    }
 
     return templates;
   }

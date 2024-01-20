@@ -47,7 +47,7 @@ describe('analytics:dashboard:history:list', () => {
 
     await List.run(['--dashboardid', dashboardId]);
     const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.contain('No results found.');
+    expect(stdout, 'stdout').to.contain(messages.getMessage('noResultsFound'));
     expect(stdout, 'stdout').to.not.contain(dashBoardHistoryValues[0].id);
     expect(stdout, 'stdout').to.not.contain(dashBoardHistoryValues[0].label);
   });

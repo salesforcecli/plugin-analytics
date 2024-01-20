@@ -2,6 +2,7 @@
   "listCommandDescription": "list Analytics templates",
   "listCommandLongDescription": "Lists Analytics templates in the specified folder or target org.",
   "templatesFound": "Found [%s] Analytics templates.",
+  "noResultsFound": "No results found.",
   "folderidFlagDescription": "folder ID",
   "folderidFlagLongDescription": "The ID of the folder that contains the template data.",
   "templateLabelFlagDescription": "template label",

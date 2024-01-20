@@ -50,16 +50,20 @@ export default class List extends SfCommand<
       folderId: request.folderId,
       folderLabel: request.folderLabel,
     }));
-    this.styledHeader(messages.getMessage('autoinstallsFound', [autoinstalls.length]));
-    this.table(autoinstalls, {
-      id: { header: 'id' },
-      requestType: { header: 'requestType' },
-      requestName: { header: 'requestName' },
-      requestStatus: { header: 'requestStatus' },
-      templateApiName: { header: 'templateApiName' },
-      folderId: { header: 'folderId' },
-      folderLabel: { header: 'folderLabel' },
-    });
+    if (autoinstalls.length > 0) {
+      this.styledHeader(messages.getMessage('autoinstallsFound', [autoinstalls.length]));
+      this.table(autoinstalls, {
+        id: { header: 'id' },
+        requestType: { header: 'requestType' },
+        requestName: { header: 'requestName' },
+        requestStatus: { header: 'requestStatus' },
+        templateApiName: { header: 'templateApiName' },
+        folderId: { header: 'folderId' },
+        folderLabel: { header: 'folderLabel' },
+      });
+    } else {
+      this.log(messages.getMessage('noResultsFound'));
+    }
     return autoinstalls;
   }
 }

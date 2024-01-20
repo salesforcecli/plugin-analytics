@@ -9,7 +9,7 @@ import { Messages } from '@salesforce/core';
 import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js';
 import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
 import { expect } from 'chai';
-import List from '../../../src/commands/analytics/template/list.js';
+import List from '../../../src/commands/analytics/recipe/list.js';
 import { getStdout, stubDefaultOrg } from '../../testutils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
@@ -48,7 +48,7 @@ describe('analytics:recipe:list', () => {
 
     await List.run([]);
     const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.contain('No results found.');
+    expect(stdout, 'stdout').to.contain(messages.getMessage('noResultsFound'));
     expect(stdout, 'stdout').to.not.contain(recipeValues[0].id);
     expect(stdout, 'stdout').to.not.contain(recipeValues[0].name);
   });

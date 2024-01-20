@@ -40,14 +40,18 @@ export default class List extends SfCommand<
       label: dataflow.label,
       type: dataflow.type,
     }));
-    this.styledHeader(messages.getMessage('dataflowsFound', [dataflows.length]));
-    this.table(dataflows, {
-      dataflowid: { header: 'dataflowid' },
-      namespace: { header: 'namespace' },
-      name: { header: 'name' },
-      label: { header: 'label' },
-      type: { header: 'type' },
-    });
+    if (dataflows.length) {
+      this.styledHeader(messages.getMessage('dataflowsFound', [dataflows.length]));
+      this.table(dataflows, {
+        dataflowid: { header: 'dataflowid' },
+        namespace: { header: 'namespace' },
+        name: { header: 'name' },
+        label: { header: 'label' },
+        type: { header: 'type' },
+      });
+    } else {
+      this.log(messages.getMessage('noResultsFound'));
+    }
     return dataflows;
   }
 }

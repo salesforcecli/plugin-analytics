@@ -77,8 +77,8 @@ describe('analytics:template:list', () => {
   });
 
   it('runs (no templates)', async () => {
-    await runAndVerify([], templateValues, () => {
-      expect(getStdout(sfCommandStubs), 'stdout').to.contain('No results found.');
+    await runAndVerify([], [], () => {
+      expect(getStdout(sfCommandStubs), 'stdout').to.contain(messages.getMessage('noResultsFound'));
       expect(getTableData(sfCommandStubs).data, 'table data').to.be.undefined;
     });
   });

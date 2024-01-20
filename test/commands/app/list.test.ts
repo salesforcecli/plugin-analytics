@@ -35,7 +35,7 @@ describe('analytics:app:list', () => {
 
     await List.run(['--folderid', folderId]);
     const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.contain('No results found.');
+    expect(stdout, 'stdout').to.contain(messages.getMessage('noResultsFound'));
     expect(stdout, 'stdout').to.not.contain(folderId);
     expect(stdout, 'stdout').to.not.contain('Shared App');
   });

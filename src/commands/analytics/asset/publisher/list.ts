@@ -52,13 +52,17 @@ export default class List extends SfCommand<
       publisheruser: publisher.publisherUser?.name,
       publisheruserid: publisher.publisherUser?.id,
     }));
-    this.styledHeader(messages.getMessage('publishersFound', [publishers.length, assetId]));
-    this.table(publishers, {
-      id: { header: 'id' },
-      assetid: { header: 'assetid' },
-      publisheruser: { header: 'publisheruser' },
-      publisheruserid: { header: 'publisheruserid' },
-    });
+    if (publishers.length) {
+      this.styledHeader(messages.getMessage('publishersFound', [publishers.length, assetId]));
+      this.table(publishers, {
+        id: { header: 'id' },
+        assetid: { header: 'assetid' },
+        publisheruser: { header: 'publisheruser' },
+        publisheruserid: { header: 'publisheruserid' },
+      });
+    } else {
+      this.log(messages.getMessage('noResultsFound'));
+    }
     return publishers;
   }
 }

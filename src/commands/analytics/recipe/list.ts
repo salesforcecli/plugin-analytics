@@ -45,14 +45,18 @@ export default class List extends SfCommand<
       label: recipe.label,
       status: recipe.status,
     }));
-    this.styledHeader(messages.getMessage('recipesFound', [recipes.length]));
-    this.table(recipes, {
-      recipeid: { header: 'recipeid' },
-      name: { header: 'name' },
-      namespace: { header: 'namespace' },
-      label: { header: 'label' },
-      status: { header: 'status' },
-    });
+    if (recipes.length > 0) {
+      this.styledHeader(messages.getMessage('recipesFound', [recipes.length]));
+      this.table(recipes, {
+        recipeid: { header: 'recipeid' },
+        name: { header: 'name' },
+        namespace: { header: 'namespace' },
+        label: { header: 'label' },
+        status: { header: 'status' },
+      });
+    } else {
+      this.log(messages.getMessage('noResultsFound'));
+    }
 
     return recipes;
   }

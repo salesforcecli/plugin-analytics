@@ -56,7 +56,7 @@ describe('analytics:dataflow:job:list', () => {
 
     await List.run([]);
     const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.contain('No results found.');
+    expect(stdout, 'stdout').to.contain(messages.getMessage('noResultsFound'));
     expect(stdout, 'stdout').to.not.contain(dataflowValues[0].id);
     expect(stdout, 'stdout').to.not.contain(dataflowValues[0].label);
   });

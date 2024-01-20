@@ -48,7 +48,7 @@ describe('analytics:dataflow:history:list', () => {
 
     await List.run([]);
     const stdout = getStdout(sfCommandStubs);
-    expect(stdout, 'stdout').to.contain('No results found.');
+    expect(stdout, 'stdout').to.contain(messages.getMessage('noResultsFound'));
     expect(stdout, 'stdout').to.not.contain(dataflowHistoryValues[0].historyid);
     expect(stdout, 'stdout').to.not.contain(dataflowHistoryValues[0].label);
   });

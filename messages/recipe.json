@@ -7,5 +7,6 @@
   "recipeidFlagLongDescription": "The ID of the recipe to update.",
 
   "recipesFound": "Found [%s] Data Prep recipes.",
+  "noResultsFound": "No results found.",
   "recipeJobUpdate": "Updated recipe job (%s) status to (%s)."
 }

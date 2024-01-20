@@ -54,14 +54,18 @@ export default class List extends SfCommand<
       label: history.label,
       isCurrent: history.isCurrent ? '*' : '',
     }));
-    this.styledHeader(messages.getMessage('dashboardsHistoriesFound', [histories.length]));
-    this.table(histories, {
-      historyid: { header: 'historyid' },
-      dashboardid: { header: 'dashboardid' },
-      name: { header: 'name' },
-      label: { header: 'label' },
-      isCurrent: { header: 'isCurrent' },
-    });
+    if (histories.length > 0) {
+      this.styledHeader(messages.getMessage('dashboardsHistoriesFound', [histories.length]));
+      this.table(histories, {
+        historyid: { header: 'historyid' },
+        dashboardid: { header: 'dashboardid' },
+        name: { header: 'name' },
+        label: { header: 'label' },
+        isCurrent: { header: 'isCurrent' },
+      });
+    } else {
+      this.log(messages.getMessage('noResultsFound'));
+    }
     return histories;
   }
 }

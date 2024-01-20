@@ -56,16 +56,20 @@ export default class List extends SfCommand<
       retryCount: job.retryCount,
       startDate: job.startDate,
     }));
-    this.styledHeader(messages.getMessage('dataflowsFound', [dataflowJobs.length]));
-    this.table(dataflowJobs, {
-      id: { header: 'id' },
-      label: { header: 'label' },
-      status: { header: 'status' },
-      waitTime: { header: 'waitTime' },
-      progress: { header: 'progress' },
-      retryCount: { header: 'retryCount' },
-      startDate: { header: 'startDate' },
-    });
+    if (dataflowJobs.length > 0) {
+      this.styledHeader(messages.getMessage('dataflowsFound', [dataflowJobs.length]));
+      this.table(dataflowJobs, {
+        id: { header: 'id' },
+        label: { header: 'label' },
+        status: { header: 'status' },
+        waitTime: { header: 'waitTime' },
+        progress: { header: 'progress' },
+        retryCount: { header: 'retryCount' },
+        startDate: { header: 'startDate' },
+      });
+    } else {
+      this.log(messages.getMessage('noResultsFound'));
+    }
     return dataflowJobs;
   }
 }

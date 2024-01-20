@@ -58,15 +58,19 @@ export default class List extends SfCommand<
         templateSourceId: folder.templateSourceId,
         namespace: folder.namespace,
       }));
-    this.styledHeader(messages.getMessage('appsFound', [folders.length]));
-    this.table(folders, {
-      name: { header: 'name' },
-      label: { header: 'label' },
-      folderid: { header: 'folderid' },
-      status: { header: 'status' },
-      templateSourceId: { header: 'templateSourceId' },
-      namespace: { header: 'namespace' },
-    });
+    if (folders.length > 0) {
+      this.styledHeader(messages.getMessage('appsFound', [folders.length]));
+      this.table(folders, {
+        name: { header: 'name' },
+        label: { header: 'label' },
+        folderid: { header: 'folderid' },
+        status: { header: 'status' },
+        templateSourceId: { header: 'templateSourceId' },
+        namespace: { header: 'namespace' },
+      });
+    } else {
+      this.log(messages.getMessage('noResultsFound'));
+    }
     return folders;
   }
 }
