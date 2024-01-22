@@ -15,6 +15,7 @@ import { Messages, SfError } from '@salesforce/core';
 import chalk from 'chalk';
 
 import WaveTemplate, { type TemplateType } from '../../../lib/analytics/template/wavetemplate.js';
+import { generateTableColumns } from '../../../lib/analytics/utils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'template');
@@ -52,7 +53,7 @@ export default class Display extends SfCommand<TemplateType> {
   public async run() {
     const { flags } = await this.parse(Display);
     const templateInput = (flags.templateid ?? flags.templatename) as string;
-    if (templateInput == null) {
+    if (!templateInput) {
       throw new SfError(messages.getMessage('missingRequiredField'));
     }
     const template = new WaveTemplate(flags['target-org'].getConnection(flags['api-version']));
@@ -72,10 +73,7 @@ export default class Display extends SfCommand<TemplateType> {
         { key: 'Asset Version', value: templateRep.assetVersion },
         { key: 'Template Version', value: templateRep.releaseInfo?.templateVersion },
       ],
-      {
-        key: { header: 'Key' },
-        value: { header: 'Value' },
-      }
+      generateTableColumns(['key', 'value'])
     );
 
     return templateRep;

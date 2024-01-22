@@ -5,6 +5,7 @@
   "templateidFlagLongDescription": "The ID of the Analytics template.",
   "templatenameFlagDescription": "template name",
   "templatenameFlagLongDescription": "The name of the Analytics template.",
+  "missingRequiredField": "Missing Required Field: templateid or templatename",
   "tasksFound": "Template [%s] with an overall Lint score of [%s].",
   "lintFailed": "Template linting failed."
 }

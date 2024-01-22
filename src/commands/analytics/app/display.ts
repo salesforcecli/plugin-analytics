@@ -16,6 +16,7 @@ import chalk from 'chalk';
 import moment from 'moment';
 
 import Folder, { type AppFolder, AppStatus } from '../../../lib/analytics/app/folder.js';
+import { generateTableColumns } from '../../../lib/analytics/utils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'app');
@@ -91,10 +92,7 @@ export default class Display extends SfCommand<AppFolder> {
         { key: 'Template Version', value: app.templateVersion },
         { key: 'Namespace', value: app.namespace },
       ],
-      {
-        key: { header: 'Key' },
-        value: { header: 'Value' },
-      }
+      generateTableColumns(['key', 'value'])
     );
 
     if (flags.applog) {
@@ -103,9 +101,7 @@ export default class Display extends SfCommand<AppFolder> {
         this.log(messages.getMessage('displayNoLogAvailable'));
       } else {
         const data = app.appLog?.map((line) => ({ message: (line?.message ?? line) || '' }));
-        this.table(data, {
-          message: { header: 'Message' },
-        });
+        this.table(data, generateTableColumns(['message']));
       }
     }
     return app;

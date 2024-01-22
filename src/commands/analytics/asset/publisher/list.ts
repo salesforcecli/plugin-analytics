@@ -14,6 +14,7 @@ import {
 import { Messages } from '@salesforce/core';
 
 import Publisher from '../../../../lib/analytics/publisher/publisher.js';
+import { generateTableColumns } from '../../../../lib/analytics/utils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'asset');
@@ -54,12 +55,7 @@ export default class List extends SfCommand<
     }));
     if (publishers.length) {
       this.styledHeader(messages.getMessage('publishersFound', [publishers.length, assetId]));
-      this.table(publishers, {
-        id: { header: 'id' },
-        assetid: { header: 'assetid' },
-        publisheruser: { header: 'publisheruser' },
-        publisheruserid: { header: 'publisheruserid' },
-      });
+      this.table(publishers, generateTableColumns(['id', 'assetid', 'publisheruser', 'publisheruserid']));
     } else {
       this.log(messages.getMessage('noResultsFound'));
     }

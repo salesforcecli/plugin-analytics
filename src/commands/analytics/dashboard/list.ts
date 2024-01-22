@@ -12,6 +12,7 @@ import {
 import { Messages } from '@salesforce/core';
 
 import Dashboard from '../../../lib/analytics/dashboard/dashboard.js';
+import { generateTableColumns } from '../../../lib/analytics/utils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'dashboard');
@@ -51,15 +52,18 @@ export default class List extends SfCommand<
     }));
     if (dashboards.length > 0) {
       this.styledHeader(messages.getMessage('dashboardsFound', [dashboards.length]));
-      this.table(dashboards, {
-        dashboardid: { header: 'dashboardid' },
-        name: { header: 'name' },
-        namespace: { header: 'namespace' },
-        label: { header: 'label' },
-        folderid: { header: 'folderid' },
-        foldername: { header: 'foldername' },
-        currentHistoryId: { header: 'currentHistoryId' },
-      });
+      this.table(
+        dashboards,
+        generateTableColumns([
+          'dashboardid',
+          'name',
+          'namespace',
+          'label',
+          'folderid',
+          'foldername',
+          'currentHistoryId',
+        ])
+      );
     } else {
       this.log(messages.getMessage('noResultsFound'));
     }

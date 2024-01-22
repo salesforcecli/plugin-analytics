@@ -14,6 +14,7 @@ import {
 import { Messages } from '@salesforce/core';
 import chalk from 'chalk';
 import Dataflow, { type DataflowJobType } from '../../../../lib/analytics/dataflow/dataflow.js';
+import { generateTableColumns } from '../../../../lib/analytics/utils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'dataflow');
@@ -52,10 +53,7 @@ export default class Display extends SfCommand<DataflowJobType> {
         { key: 'Retry Count', value: dataflowJob.retryCount },
         { key: 'Start Date', value: dataflowJob.startDate },
       ],
-      {
-        key: { header: 'Key' },
-        value: { header: 'Value' },
-      }
+      generateTableColumns(['key', 'value'])
     );
     return dataflowJob;
   }

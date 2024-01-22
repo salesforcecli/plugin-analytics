@@ -6,12 +6,14 @@
  */
 
 import { promises as _fs } from 'node:fs';
-import { Errors, Flags } from '@oclif/core';
+import { Errors, Flags, ux } from '@oclif/core';
 import { SfError } from '@salesforce/core';
-import { SfCommand } from '@salesforce/sf-plugins-core';
+import { camelCaseToTitleCase } from '@salesforce/kit';
+import { SfCommand, Ux } from '@salesforce/sf-plugins-core';
 import _get from 'lodash.get';
 import chalk, { ChalkInstance } from 'chalk';
 
+/** A flag that support a floating point number. */
 export const numberFlag = Flags.custom<number, { max?: number; min?: number }>({
   // eslint-disable-next-line @typescript-eslint/require-await
   async parse(input, _, opts) {
@@ -50,9 +52,25 @@ export function commandUx<T>(command: SfCommand<T>): CommandUx {
   };
 }
 
+/** Generate default table columns for specified table data keys. */
+export function generateTableColumns<R extends Ux.Table.Data>(
+  keys: string[],
+  mutute?: (key: string, column: Partial<ux.Table.table.Column<R>>) => Partial<ux.Table.table.Column<R>>
+): Ux.Table.Columns<R> {
+  return keys.reduce<Ux.Table.Columns<R>>((columns, key) => {
+    // This is what the old `tableColumnData` used to do for table column header labels
+    let column: Partial<ux.Table.table.Column<R>> = { header: camelCaseToTitleCase(key).toUpperCase() };
+    if (mutute) {
+      column = mutute(key, column);
+    }
+    columns[key] = column;
+    return columns;
+  }, {});
+}
+
 /** Export file system utility methods.
  * We need mostly for testing, since we can't stub the real node:fs since oclif uses that during testing.
- * Also we need to export as an object since this is an ES module and you can't stub top-level function from those.
+ * Also we need to export as an object since this is an ES module and you can't stub top-level functions from those.
  */
 export const fs = {
   readFile: (path: string, charset: BufferEncoding = 'utf8') => _fs.readFile(path, charset),

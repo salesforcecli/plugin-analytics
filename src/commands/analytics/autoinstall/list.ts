@@ -13,6 +13,7 @@ import {
 import { Messages } from '@salesforce/core';
 
 import AutoInstall from '../../../lib/analytics/autoinstall/autoinstall.js';
+import { generateTableColumns } from '../../../lib/analytics/utils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'autoinstall');
@@ -52,15 +53,18 @@ export default class List extends SfCommand<
     }));
     if (autoinstalls.length > 0) {
       this.styledHeader(messages.getMessage('autoinstallsFound', [autoinstalls.length]));
-      this.table(autoinstalls, {
-        id: { header: 'id' },
-        requestType: { header: 'requestType' },
-        requestName: { header: 'requestName' },
-        requestStatus: { header: 'requestStatus' },
-        templateApiName: { header: 'templateApiName' },
-        folderId: { header: 'folderId' },
-        folderLabel: { header: 'folderLabel' },
-      });
+      this.table(
+        autoinstalls,
+        generateTableColumns([
+          'id',
+          'requestType',
+          'requestName',
+          'requestStatus',
+          'templateApiName',
+          'folderId',
+          'folderLabel',
+        ])
+      );
     } else {
       this.log(messages.getMessage('noResultsFound'));
     }

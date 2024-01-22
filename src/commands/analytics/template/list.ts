@@ -14,6 +14,7 @@ import {
 import { Messages } from '@salesforce/core';
 
 import WaveTemplate from '../../../lib/analytics/template/wavetemplate.js';
+import { generateTableColumns } from '../../../lib/analytics/utils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'template');
@@ -69,15 +70,18 @@ export default class List extends SfCommand<TemplateInfo[]> {
       }));
     if (templates.length > 0) {
       this.styledHeader(messages.getMessage('templatesFound', [templates.length]));
-      this.table(templates, {
-        name: { header: 'name' },
-        label: { header: 'label' },
-        templateid: { header: 'templateid' },
-        templatetype: { header: 'templatetype' },
-        folderid: { header: 'folderid' },
-        namespace: { header: 'namespace' },
-        templateversion: { header: 'templateversion' },
-      });
+      this.table(
+        templates,
+        generateTableColumns([
+          'name',
+          'label',
+          'templateid',
+          'templatetype',
+          'folderid',
+          'namespace',
+          'templateversion',
+        ])
+      );
     } else {
       this.log(messages.getMessage('noResultsFound'));
     }

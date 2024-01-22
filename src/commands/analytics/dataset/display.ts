@@ -16,6 +16,7 @@ import chalk from 'chalk';
 import moment from 'moment';
 
 import DatasetSvc, { type DatasetType } from '../../../lib/analytics/dataset/dataset.js';
+import { generateTableColumns } from '../../../lib/analytics/utils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'dataset');
@@ -96,10 +97,7 @@ export default class Display extends SfCommand<DatasetType> {
         { key: 'Live Connection Source Object', value: dataset.liveConnection?.sourceObjectName }
       );
     }
-    this.table(values, {
-      key: { header: 'Key' },
-      value: { header: 'Value' },
-    });
+    this.table(values, generateTableColumns(['key', 'value']));
     return dataset;
   }
 }

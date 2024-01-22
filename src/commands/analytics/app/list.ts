@@ -14,6 +14,7 @@ import {
 import { Messages } from '@salesforce/core';
 
 import Folder, { type AppStatus } from '../../../lib/analytics/app/folder.js';
+import { generateTableColumns } from '../../../lib/analytics/utils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'app');
@@ -60,14 +61,10 @@ export default class List extends SfCommand<
       }));
     if (folders.length > 0) {
       this.styledHeader(messages.getMessage('appsFound', [folders.length]));
-      this.table(folders, {
-        name: { header: 'name' },
-        label: { header: 'label' },
-        folderid: { header: 'folderid' },
-        status: { header: 'status' },
-        templateSourceId: { header: 'templateSourceId' },
-        namespace: { header: 'namespace' },
-      });
+      this.table(
+        folders,
+        generateTableColumns(['name', 'label', 'folderid', 'status', 'templateSourceId', 'namespace'])
+      );
     } else {
       this.log(messages.getMessage('noResultsFound'));
     }

@@ -14,6 +14,7 @@ import {
 import { Messages } from '@salesforce/core';
 
 import Dataflow from '../../../../lib/analytics/dataflow/dataflow.js';
+import { generateTableColumns } from '../../../../lib/analytics/utils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'history');
@@ -49,12 +50,7 @@ export default class List extends SfCommand<
     }));
     if (histories.length > 0) {
       this.styledHeader(messages.getMessage('dataflowsHistoriesFound', [histories.length]));
-      this.table(histories, {
-        historyid: { header: 'historyid' },
-        dataflowid: { header: 'dataflowid' },
-        name: { header: 'name' },
-        label: { header: 'label' },
-      });
+      this.table(histories, generateTableColumns(['historyid', 'dataflowid', 'name', 'label']));
     } else {
       this.log(messages.getMessage('noResultsFound'));
     }

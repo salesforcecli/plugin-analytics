@@ -12,6 +12,7 @@ import {
 } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 import DatasetSvc from '../../../lib/analytics/dataset/dataset.js';
+import { generateTableColumns } from '../../../lib/analytics/utils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'dataset');
@@ -49,14 +50,7 @@ export default class List extends SfCommand<
     }));
     if (datasets.length > 0) {
       this.styledHeader(messages.getMessage('datasetsFound', [datasets.length]));
-      this.table(datasets, {
-        id: { header: 'id' },
-        name: { header: 'name' },
-        namespace: { header: 'namespace' },
-        label: { header: 'label' },
-        currentversionid: { header: 'currentversionid' },
-        folderid: { header: 'folderid' },
-      });
+      this.table(datasets, generateTableColumns(['id', 'name', 'namespace', 'label', 'currentversionid', 'folderid']));
     } else {
       this.log(messages.getMessage('noResultsFound'));
     }

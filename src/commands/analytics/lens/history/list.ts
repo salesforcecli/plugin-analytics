@@ -14,6 +14,7 @@ import {
 import { Messages } from '@salesforce/core';
 
 import Lens from '../../../../lib/analytics/lens/lens.js';
+import { generateTableColumns } from '../../../../lib/analytics/utils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'history');
@@ -49,12 +50,7 @@ export default class List extends SfCommand<
     }));
     if (histories.length > 0) {
       this.styledHeader(messages.getMessage('lensHistoriesFound', [histories.length]));
-      this.table(histories, {
-        historyid: { header: 'historyid' },
-        lensid: { header: 'lensid' },
-        name: { header: 'name' },
-        label: { header: 'label' },
-      });
+      this.table(histories, generateTableColumns(['historyid', 'lensid', 'name', 'label']));
     } else {
       this.log(messages.getMessage('noResultsFound'));
     }

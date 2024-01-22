@@ -12,6 +12,7 @@ import {
 import { Messages } from '@salesforce/core';
 
 import Recipe from '../../../lib/analytics/recipe/recipe.js';
+import { generateTableColumns } from '../../../lib/analytics/utils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'recipe');
@@ -47,13 +48,7 @@ export default class List extends SfCommand<
     }));
     if (recipes.length > 0) {
       this.styledHeader(messages.getMessage('recipesFound', [recipes.length]));
-      this.table(recipes, {
-        recipeid: { header: 'recipeid' },
-        name: { header: 'name' },
-        namespace: { header: 'namespace' },
-        label: { header: 'label' },
-        status: { header: 'status' },
-      });
+      this.table(recipes, generateTableColumns(['recipeid', 'name', 'namespace', 'label', 'status']));
     } else {
       this.log(messages.getMessage('noResultsFound'));
     }

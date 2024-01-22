@@ -13,6 +13,7 @@ import {
 import { Messages } from '@salesforce/core';
 
 import Dataflow from '../../../lib/analytics/dataflow/dataflow.js';
+import { generateTableColumns } from '../../../lib/analytics/utils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'dataflow');
@@ -42,13 +43,7 @@ export default class List extends SfCommand<
     }));
     if (dataflows.length) {
       this.styledHeader(messages.getMessage('dataflowsFound', [dataflows.length]));
-      this.table(dataflows, {
-        dataflowid: { header: 'dataflowid' },
-        namespace: { header: 'namespace' },
-        name: { header: 'name' },
-        label: { header: 'label' },
-        type: { header: 'type' },
-      });
+      this.table(dataflows, generateTableColumns(['dataflowid', 'namespace', 'name', 'label', 'type']));
     } else {
       this.log(messages.getMessage('noResultsFound'));
     }

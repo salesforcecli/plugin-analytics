@@ -50,6 +50,9 @@ export default class Lint extends SfCommand<LintType | string> {
     const { flags } = await this.parse(Lint);
     const templateName = flags.templatename as string;
     const templateId = flags.templateid as string;
+    if (!templateName && !templateId) {
+      throw new SfError(messages.getMessage('missingRequiredField'));
+    }
     const lint = new TemplateLint(flags['target-org'].getConnection(flags['api-version']));
     if (!lint.appliesToThisServerVersion()) {
       const commandNotAvailable = 'Command only available in api version 58.0 or later';

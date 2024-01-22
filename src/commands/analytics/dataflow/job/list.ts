@@ -13,6 +13,7 @@ import {
 } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 import Dataflow from '../../../../lib/analytics/dataflow/dataflow.js';
+import { generateTableColumns } from '../../../../lib/analytics/utils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'dataflow');
@@ -58,15 +59,10 @@ export default class List extends SfCommand<
     }));
     if (dataflowJobs.length > 0) {
       this.styledHeader(messages.getMessage('dataflowsFound', [dataflowJobs.length]));
-      this.table(dataflowJobs, {
-        id: { header: 'id' },
-        label: { header: 'label' },
-        status: { header: 'status' },
-        waitTime: { header: 'waitTime' },
-        progress: { header: 'progress' },
-        retryCount: { header: 'retryCount' },
-        startDate: { header: 'startDate' },
-      });
+      this.table(
+        dataflowJobs,
+        generateTableColumns(['id', 'label', 'status', 'waitTime', 'progress', 'retryCount', 'startDate'])
+      );
     } else {
       this.log(messages.getMessage('noResultsFound'));
     }

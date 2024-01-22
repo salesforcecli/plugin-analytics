@@ -13,6 +13,7 @@ import {
 import { Messages } from '@salesforce/core';
 
 import Lens from '../../../lib/analytics/lens/lens.js';
+import { generateTableColumns } from '../../../lib/analytics/utils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'lens');
@@ -41,12 +42,7 @@ export default class List extends SfCommand<
     }));
     if (lenses.length > 0) {
       this.styledHeader(messages.getMessage('lensesFound', [lenses.length]));
-      this.table(lenses, {
-        lensid: { header: 'lensid' },
-        name: { header: 'name' },
-        namespace: { header: 'namespace' },
-        label: { header: 'label' },
-      });
+      this.table(lenses, generateTableColumns(['lensid', 'name', 'namespace', 'label']));
     } else {
       this.log(messages.getMessage('noResultsFound'));
     }

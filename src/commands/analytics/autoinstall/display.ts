@@ -19,6 +19,7 @@ import AutoInstall, {
   AutoInstallRequestType,
   AutoInstallStatus,
 } from '../../../lib/analytics/autoinstall/autoinstall.js';
+import { generateTableColumns } from '../../../lib/analytics/utils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'autoinstall');
@@ -101,10 +102,7 @@ export default class Display extends SfCommand<AutoInstallRequestType> {
         { key: 'Last Modified By', value: autoinstallRep.lastModifiedBy?.name },
         { key: 'Last Modified Date', value: formatDate(autoinstallRep.lastModifiedDate) },
       ],
-      {
-        key: { header: 'Key' },
-        value: { header: 'Value' },
-      }
+      generateTableColumns(['key', 'value'])
     );
 
     if (flags.applog) {
@@ -119,7 +117,7 @@ export default class Display extends SfCommand<AutoInstallRequestType> {
         const data = autoinstallRep.appFromRequest.appLog?.map((line) => ({
           message: (typeof line === 'string' ? line : line.message) || '',
         }));
-        this.table(data, { message: { header: 'Message' } });
+        this.table(data, generateTableColumns(['message']));
       }
     }
 
