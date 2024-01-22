@@ -5,6 +5,7 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
+import { format } from 'node:util';
 import { OrgConfigProperties } from '@salesforce/core';
 import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js';
 import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
@@ -21,7 +22,7 @@ export async function stubDefaultOrg($$: TestContext, testOrg: MockTestOrgData) 
 function getAllLogs(logMethod: sinon.SinonStub<[message?: string | undefined, ...args: any[]], void>): string {
   return logMethod
     .getCalls()
-    .flatMap((c) => c.args)
+    .flatMap((c) => (c.args[0] ? format(c.args[0], c.args.slice(1)) : ''))
     .join('\n');
 }
 
