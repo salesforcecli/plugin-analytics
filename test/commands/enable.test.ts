@@ -108,7 +108,6 @@ describe('analytics:enable', () => {
 
     try {
       await Enable.run(['--json']);
-      expect.fail('Expected an error');
     } catch (e: unknown) {
       expect(e, 'error').to.be.instanceOf(SfError);
       expect((e as SfError).message, 'error message').to.contain(
@@ -121,7 +120,9 @@ describe('analytics:enable', () => {
         id: DEFAULT_REQUEST_ID,
         requestStatus: 'Failed',
       });
+      return;
     }
+    expect.fail('Expected an error');
   });
 
   it('runs with Cancelled status', async () => {
@@ -140,13 +141,14 @@ describe('analytics:enable', () => {
 
     try {
       await Enable.run([]);
-      expect.fail('Expected an error');
     } catch (error: unknown) {
       expect(error, 'error').to.be.instanceOf(SfError);
       expect((error as SfError).message, 'error message').to.contain(
         messages.getMessage('requestCancelled', [DEFAULT_REQUEST_ID])
       );
+      return;
     }
+    expect.fail('Expected an error');
   });
 
   // FIXME: make a way to test timeout w/o waiting for a whole minute
@@ -163,18 +165,18 @@ describe('analytics:enable', () => {
 
     try {
       await Enable.run(['--wait', '.001']);
-      expect.fail('Expected exception');
     } catch (error) {
       expect(error, 'error').to.be.instanceOf(SfError);
       expect((error as SfError).message, 'error message)').to.contain(
         messages.getMessage('requestPollingTimeout', ['0UZ6g000000E9qDGAS', 'InProgress'])
       );
+      const stderr = getStderr(sfCommandStubs);
+      expect(stderr, 'stderr').to.contain(
+        messages.getMessage('requestPollingTimeout', ['0UZ6g000000E9qDGAS', 'InProgress'])
+      );
+      return;
     }
-
-    const stderr = getStderr(sfCommandStubs);
-    expect(stderr, 'stderr').to.contain(
-      messages.getMessage('requestPollingTimeout', ['0UZ6g000000E9qDGAS', 'InProgress'])
-    );
+    expect.fail('Expected exception');
   });
 
   it('runs with error during polling', async () => {
@@ -193,13 +195,13 @@ describe('analytics:enable', () => {
 
     try {
       await Enable.run([]);
-      expect.fail('Expected exception');
     } catch (error) {
       expect(error, 'error').to.be.instanceOf(SfError);
       expect((error as SfError).message, 'error message)').to.contain(errorMessage);
+      const stderr = getStderr(sfCommandStubs);
+      expect(stderr, 'stderr').to.contain(errorMessage);
+      return;
     }
-
-    const stderr = getStderr(sfCommandStubs);
-    expect(stderr, 'stderr').to.contain(errorMessage);
+    expect.fail('Expected an error');
   });
 });
