@@ -3,7 +3,7 @@
   "description": "Commands for working with Salesforce Analytics applications, assets, and services",
   "version": "1.3.19",
   "author": "Salesforce",
-  "bugs": "https://github.com/forcedotcom/analyticsdx-vscode/issues",
+  "bugs": "https://github.com/salesforcecli/plugin-analytics/issues",
   "dependencies": {
     "@oclif/core": "^3.18.0",
     "@oclif/plugin-help": "^6.0.10",

@@ -27,7 +27,7 @@ sfdx plugins:install @salesforce/analytics@x.y.z
 
 ## Issues
 
-Please report any issues at https://github.com/forcedotcom/analyticsdx-vscode/issues
+Please report any issues at https://github.com/salesforcecli/plugin-analytics/issues
 
 ## Contributing
 
