@@ -1,6 +1,6 @@
 # plugin-analytics
 
-[![NPM](https://img.shields.io/npm/v/@salesforce/analytics.svg?label=@salesforce/analytics)](https://www.npmjs.com/package/@salesforce/analytics) [![CircleCI](https://circleci.com/gh/salesforcecli/plugin-analytics/tree/main.svg?style=shield)](https://circleci.com/gh/salesforcecli/plugin-analytics/tree/main) [![Downloads/week](https://img.shields.io/npm/dw/@salesforce/analytics.svg)](https://npmjs.org/package/@salesforce/analytics) [![License](https://img.shields.io/badge/License-BSD%203--Clause-brightgreen.svg)](https://raw.githubusercontent.com/salesforcecli/plugin-analytics/main/LICENSE.txt)
+[![NPM](https://img.shields.io/npm/v/@salesforce/analytics.svg?label=@salesforce/analytics)](https://www.npmjs.com/package/@salesforce/analytics) [![Build Status](https://github.com/salesforcecli/plugin-analytics/workflows/version,%20tag%20and%20github%20release/badge.svg)](https://github.com/salesforcecli/plugin-analytics/actions?query=version,%20tag%20and%20github%20release%22+branch%3Amain) [![Downloads/week](https://img.shields.io/npm/dw/@salesforce/analytics.svg)](https://npmjs.org/package/@salesforce/analytics) [![License](https://img.shields.io/badge/License-BSD%203--Clause-brightgreen.svg)](https://raw.githubusercontent.com/salesforcecli/plugin-analytics/main/LICENSE.txt)
 
 A plugin for working with Tableau CRM analytics applications, assets, and services.
 
