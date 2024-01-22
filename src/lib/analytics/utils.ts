@@ -6,10 +6,28 @@
  */
 
 import { promises as _fs } from 'node:fs';
+import { Errors, Flags } from '@oclif/core';
 import { SfError } from '@salesforce/core';
 import { SfCommand } from '@salesforce/sf-plugins-core';
 import _get from 'lodash.get';
 import chalk, { ChalkInstance } from 'chalk';
+
+export const numberFlag = Flags.custom<number, { max?: number; min?: number }>({
+  // eslint-disable-next-line @typescript-eslint/require-await
+  async parse(input, _, opts) {
+    let num: number;
+    try {
+      num = Number.parseFloat(input);
+    } catch (error) {
+      throw new Errors.CLIError(`Expected an number but received: ${input}`);
+    }
+    if (opts.min !== undefined && num < opts.min)
+      throw new Errors.CLIError(`Expected an integer greater than or equal to ${opts.min} but received: ${input}`);
+    if (opts.max !== undefined && num > opts.max)
+      throw new Errors.CLIError(`Expected an integer less than or equal to ${opts.max} but received: ${input}`);
+    return num;
+  },
+});
 
 export type CommandUx = Pick<SfCommand<unknown>, 'log' | 'logJson' | 'styledJSON' | 'styledHeader' | 'table'> & {
   jsonEnabled: boolean;

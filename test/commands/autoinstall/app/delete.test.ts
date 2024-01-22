@@ -137,8 +137,7 @@ describe('analytics:autoinstall:app:delete', () => {
     expect.fail('Expected an error');
   });
 
-  // FIXME: make a way to test timeout w/o waiting for a whole minute
-  it.skip(`runs: -f ${folderId} -w .001 (timeout)`, async () => {
+  it(`runs: -f ${folderId} -w .001 (timeout)`, async () => {
     await stubDefaultOrg($$, testOrg);
     let requestNum = 0;
     $$.fakeConnectionRequest = () => {

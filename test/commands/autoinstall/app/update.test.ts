@@ -137,8 +137,7 @@ describe('analytics:autoinstall:app:update', () => {
     expect.fail('Expected an error');
   });
 
-  // FIXME: make a way to test timeout w/o waiting for a whole minute
-  it.skip(`runs: -n abc -f ${folderId} -w .001 (timeout)`, async () => {
+  it(`runs: -n abc -f ${folderId} -w .001 (timeout)`, async () => {
     await stubDefaultOrg($$, testOrg);
     let requestNum = 0;
     $$.fakeConnectionRequest = () => {

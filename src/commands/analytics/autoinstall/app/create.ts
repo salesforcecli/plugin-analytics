@@ -22,7 +22,7 @@ import {
   DEF_POLLING_INTERVAL,
   MIN_POLLING_INTERVAL,
 } from '../../../../lib/analytics/constants.js';
-import { fs, throwWithData } from '../../../../lib/analytics/utils.js';
+import { fs, numberFlag, throwWithData } from '../../../../lib/analytics/utils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'autoinstall');
@@ -75,7 +75,7 @@ export default class Create extends SfCommand<AutoInstallRequestType | { id: str
       summary: messages.getMessage('appCreateAsyncDescription'),
       description: messages.getMessage('appCreateAsyncLongDescription'),
     }),
-    wait: Flags.integer({
+    wait: numberFlag({
       char: 'w',
       summary: messages.getMessage('autoInstallWaitDescription'),
       description: messages.getMessage('autoInstallWaitLongDescription', [DEF_APP_CREATE_UPDATE_TIMEOUT]),

@@ -151,8 +151,7 @@ describe('analytics:enable', () => {
     expect.fail('Expected an error');
   });
 
-  // FIXME: make a way to test timeout w/o waiting for a whole minute
-  it.skip('runs with timeout in polling', async () => {
+  it('runs with timeout in polling', async () => {
     await stubDefaultOrg($$, testOrg);
     let requestNum = 0;
     $$.fakeConnectionRequest = () => {
