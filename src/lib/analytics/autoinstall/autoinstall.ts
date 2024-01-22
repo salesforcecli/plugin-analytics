@@ -5,9 +5,8 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import { Connection } from '@salesforce/core';
-import { Ux } from '@salesforce/sf-plugins-core';
 import { connectRequest, fetchAllPages } from '../request.js';
-import { throwError, waitFor } from '../utils.js';
+import { CommandUx, throwError, waitFor } from '../utils.js';
 
 export type AutoInstallStatus =
   | 'New'
@@ -108,7 +107,7 @@ export default class AutoInstall {
       timeoutMs: number;
       pauseMs: number;
       timeoutMessage: string | ((r: AutoInstallRequestType | undefined) => string | Error | never);
-      ux?: Ux;
+      ux?: CommandUx;
       showSpinner?: boolean;
       startMesg?: string;
       predicate?: (r: AutoInstallRequestType) => boolean;

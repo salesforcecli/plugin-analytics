@@ -29,7 +29,10 @@ export const numberFlag = Flags.custom<number, { max?: number; min?: number }>({
   },
 });
 
-export type CommandUx = Pick<SfCommand<unknown>, 'log' | 'logJson' | 'styledJSON' | 'styledHeader' | 'table'> & {
+export type CommandUx = Pick<
+  SfCommand<unknown>,
+  'log' | 'logJson' | 'styledJSON' | 'styledHeader' | 'table' | 'spinner'
+> & {
   jsonEnabled: boolean;
 };
 /** Return an obejct that proxies to the ux methods on the command.
@@ -43,6 +46,7 @@ export function commandUx<T>(command: SfCommand<T>): CommandUx {
     styledJSON: command.styledJSON.bind(command),
     styledHeader: command.styledHeader.bind(command),
     table: command.table.bind(command),
+    spinner: command.spinner,
   };
 }
 

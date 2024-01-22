@@ -7,7 +7,6 @@
 import {
   Flags,
   SfCommand,
-  Ux,
   orgApiVersionFlagWithDeprecations,
   requiredOrgFlagWithDeprecations,
 } from '@salesforce/sf-plugins-core';
@@ -22,7 +21,7 @@ import {
   DEF_POLLING_INTERVAL,
   MIN_POLLING_INTERVAL,
 } from '../../../../lib/analytics/constants.js';
-import { fs, numberFlag, throwWithData } from '../../../../lib/analytics/utils.js';
+import { commandUx, fs, numberFlag, throwWithData } from '../../../../lib/analytics/utils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'autoinstall');
@@ -146,7 +145,7 @@ export default class Create extends SfCommand<AutoInstallRequestType | { id: str
         pauseMs: flags.pollinterval,
         timeoutMessage: (r) =>
           throwWithData(messages.getMessage('requestPollingTimeout', [autoInstallId, r?.requestStatus ?? '']), r),
-        ux: new Ux({ jsonEnabled: this.jsonEnabled() }),
+        ux: commandUx(this),
         startMesg: messages.getMessage('startRequestPolling', [autoInstallId]),
       });
       const status = finalRequest.requestStatus?.toLocaleLowerCase();
