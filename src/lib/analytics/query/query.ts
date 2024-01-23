@@ -307,7 +307,7 @@ export default class QuerySvc {
           ux.table(
             records,
             columnNames.reduce<Ux.Table.Columns<Row>>((all, name) => {
-              all[name] = { header: name, get: () => convertRowValue(name) };
+              all[name] = { header: name, get: (row) => convertRowValue(row[name]) };
               return all;
             }, {})
           );
@@ -320,7 +320,16 @@ export default class QuerySvc {
 }
 
 export function convertRowValue(value: unknown): string {
-  return Array.isArray(value) ? '[' + value.join(',') + ']' : typeof value === 'string' ? value : String(value);
+  // use empty string for undefined/null
+  if (typeof value === 'undefined' || value === 'null') {
+    return '';
+  }
+  // handle array values
+  if (Array.isArray(value)) {
+    return '[' + value.join(',') + ']';
+  }
+  // otherwise do our best to convert to string
+  return typeof value === 'string' ? value : String(value);
 }
 
 function writeCsvLine(ux: CommandUx, values: unknown[], delim = ','): void {
