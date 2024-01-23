@@ -70,7 +70,7 @@ export default class Folder {
   }
 
   public async create(body: CreateAppBody): Promise<string | undefined> {
-    if (this.serverVersion >= 55.0) {
+    if (this.serverVersion >= 55.0 && body.templateSourceId) {
       if (!body.templateOptions) {
         body.templateOptions = { dynamicOptions: { productionType: 'ATF_3_0', runtimeLogEntryLevel: 'Warning' } };
       } else if (!body.templateOptions.dynamicOptions) {

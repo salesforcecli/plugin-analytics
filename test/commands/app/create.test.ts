@@ -217,7 +217,7 @@ describe('analytics:app:create', () => {
     });
   });
 
-  it('runs: --definitionfile config/foo.json -n customname -a', async () => {
+  it('runs: --definitionfile config/foo.json -n customname -a --api-version 59.0', async () => {
     await stubDefaultOrg($$, testOrg);
     let requestBody: AnyJson | undefined;
     $$.fakeConnectionRequest = (request) => {
@@ -238,19 +238,21 @@ describe('analytics:app:create', () => {
       )
     );
 
-    await Create.run(['--definitionfile', 'config/foo.json', '-n', 'customname', '-a']);
+    await Create.run(['--definitionfile', 'config/foo.json', '-n', 'customname', '-a', '--api-version', '59.0']);
     expect(getStdout(sfCommandStubs), 'stdout').to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
-    expect(requestBody, 'requestBody').to.include({
+    expect(requestBody, 'requestBody').to.deep.include({
       // request body should have fields from the readFile()
       templateSourceId: testTemplateJson.id,
       assetIcon: '16.png',
       // but name and label should come from cli arg
       label: 'customname',
       name: 'customname',
+      // and this should be put in there automatically
+      templateOptions: { dynamicOptions: { productionType: 'ATF_3_0', runtimeLogEntryLevel: 'Warning' } },
     });
   });
 
-  it('run: -f config/emptyapp.json', async () => {
+  it('run: -f config/emptyapp.json --apiversion 59.0', async () => {
     await stubDefaultOrg($$, testOrg);
     let requestBody: AnyJson | undefined;
     $$.fakeConnectionRequest = (request) => {
@@ -275,7 +277,7 @@ describe('analytics:app:create', () => {
       Promise.reject(new SfError('StreamingClient.create() should not be called'))
     );
 
-    await Create.run(['-f', 'config/emptyapp.json']);
+    await Create.run(['-f', 'config/emptyapp.json', '--api-version', '59.0']);
     expect(getStdout(sfCommandStubs), 'stdout').to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
     expect(requestBody, 'requestBody').to.include({
       // request body should have fields from the readFile()
@@ -283,8 +285,8 @@ describe('analytics:app:create', () => {
       name: 'emptyapp',
       label: 'Empty App',
     });
-    // and it shouldn't have a template id listed
-    expect(requestBody, 'requestBody').to.not.have.key('templateSourceId');
+    // and it shouldn't have a template id nor templateOptions listed
+    expect(requestBody, 'requestBody keys').to.not.have.any.keys('templateSourceId', 'templateOptions');
   });
 
   it('runs: --definitionfile config/foo.json', async () => {
