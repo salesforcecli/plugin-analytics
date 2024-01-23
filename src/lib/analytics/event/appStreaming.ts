@@ -118,7 +118,6 @@ export default class AppStreaming {
     if (folderId !== waveAssetEvent.folderId && waveAssetEvent.folderId !== 'test') {
       return { completed: false };
     }
-
     switch (waveAssetEvent.eventType) {
       case 'ExternalData': {
         this.logEvent('External Data', 'created', waveAssetEvent);
@@ -179,11 +178,13 @@ export default class AppStreaming {
       case 'Application': {
         this.createEventJson(waveAssetEvent);
         if (waveAssetEvent.status === 'Success') {
-          this.ux.log(getStreamResultMark(true) + messages.getMessage('finishAppCreation', [waveAssetEvent.label]));
+          this.ux.log(
+            getStreamResultMark(true) + ' ' + messages.getMessage('finishAppCreation', [waveAssetEvent.label])
+          );
         } else {
           // failed or cancelled
           this.ux.log(
-            getStreamResultMark(false) + messages.getMessage('finishAppCreationFailure', [waveAssetEvent.message])
+            getStreamResultMark(false) + ' ' + messages.getMessage('finishAppCreationFailure', [waveAssetEvent.message])
           );
           throwWithData(messages.getMessage('finishAppCreationFailure', [waveAssetEvent.message]), {
             id: folderId,
@@ -202,6 +203,7 @@ export default class AppStreaming {
       if (event.status === 'Success') {
         this.ux.log(
           getStreamResultMark(true) +
+            ' ' +
             messages.getMessage('verboseAppCreateEventSuccess', [
               messages.getMessage('appCreateSuccessfulLabel'),
               eventDisplayName,
@@ -213,6 +215,7 @@ export default class AppStreaming {
       } else {
         this.ux.log(
           getStreamResultMark(false) +
+            ' ' +
             messages.getMessage('appCreateEventFail', [
               messages.getMessage('appCreateEventFailureLabel'),
               eventDisplayName,
@@ -227,13 +230,16 @@ export default class AppStreaming {
       if (event.status === 'Success' && event.total > 0 && event.total === event.index) {
         this.createEventJson(event);
         this.ux.log(
-          getStreamResultMark(true) + messages.getMessage('appCreateEvent', [event.total, eventDisplayName, action])
+          getStreamResultMark(true) +
+            ' ' +
+            messages.getMessage('appCreateEvent', [event.total, eventDisplayName, action])
         );
       }
       if (event.status !== 'Success') {
         this.createEventJson(event);
         this.ux.log(
           getStreamResultMark(true) +
+            ' ' +
             messages.getMessage('appCreateEventFail', [
               messages.getMessage('appCreateEventFailureLabel'),
               eventDisplayName,
