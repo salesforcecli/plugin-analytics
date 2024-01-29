@@ -4,6 +4,7 @@
   "listCommandDescription": "list Analytics dataflows",
   "listCommandLongDescription": "Lists Analytics dataflows in the specified target org.",
   "dataflowsFound": "Found [%s] Analytics dataflows.",
+  "noResultsFound": "No results found.",
   "startCommandDescription": "start Analytics dataflows",
   "startCommandLongDescription": "Start an Analytics dataflow in the specified target org.",
   "stopCommandDescription": "stop Analytics dataflows",

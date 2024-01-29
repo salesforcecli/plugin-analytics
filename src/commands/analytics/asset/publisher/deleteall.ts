@@ -5,53 +5,48 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { flags, SfdxCommand } from '@salesforce/command';
-import { Messages, Org } from '@salesforce/core';
-import { cli } from 'cli-ux';
+import {
+  Flags,
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
+import { Messages } from '@salesforce/core';
 
-import Publisher from '../../../../lib/analytics/publisher/publisher';
+import Publisher from '../../../../lib/analytics/publisher/publisher.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'asset');
 
-export default class Deleteall extends SfdxCommand {
-  public static description = messages.getMessage('deleteallCommandDescription');
-  public static longDescription = messages.getMessage('deleteallCommandLongDescription');
+export default class Deleteall extends SfCommand<string> {
+  public static readonly summary = messages.getMessage('deleteallCommandDescription');
+  public static readonly description = messages.getMessage('deleteallCommandLongDescription');
 
-  public static examples = ['$ sfdx analytics:asset:publisher:deleteall -i assetId'];
+  public static readonly examples = ['$ sfdx analytics:asset:publisher:deleteall -i assetId'];
 
-  protected static flagsConfig = {
-    assetid: flags.id({
+  public static readonly flags = {
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
+    assetid: Flags.salesforceId({
       char: 'i',
       required: true,
-      description: messages.getMessage('assetidFlagDescription'),
-      longDescription: messages.getMessage('assetidFlagLongDescription')
+      summary: messages.getMessage('assetidFlagDescription'),
+      description: messages.getMessage('assetidFlagLongDescription'),
     }),
-    noprompt: flags.boolean({
+    noprompt: Flags.boolean({
       char: 'p',
-      description: messages.getMessage('nopromptFlagDescription'),
-      longDescription: messages.getMessage('nopromptFlagLongDescription')
-    })
+      summary: messages.getMessage('nopromptFlagDescription'),
+      description: messages.getMessage('nopromptFlagLongDescription'),
+    }),
   };
 
-  protected static requiresUsername = true;
-  protected static requiresProject = false;
-
   public async run() {
-    if (this.flags.noprompt) {
-      await this.executeCommand();
-    } else {
-      const answer = (await cli.prompt(messages.getMessage('confirmDeleteYesNo'))) as string;
-      if (answer.toUpperCase() === 'YES' || answer.toUpperCase() === 'Y') {
-        await this.executeCommand();
-      }
+    const { flags } = await this.parse(Deleteall);
+    if (flags.noprompt || (await this.confirm({ message: messages.getMessage('confirmDeleteYesNo') }))) {
+      const publisher = new Publisher(flags['target-org'].getConnection(flags['api-version']));
+      await publisher.deleteAll(flags.assetid);
+      this.log(messages.getMessage('deletePublishersSuccess', [flags.assetid]));
     }
-    return this.flags.assetid as string;
-  }
-
-  private async executeCommand() {
-    const publisher = new Publisher(this.org as Org);
-    await publisher.deleteAll(this.flags.assetid as string);
-    this.ux.log(messages.getMessage('deletePublishersSuccess', [this.flags.assetid]));
+    return flags.assetid;
   }
 }

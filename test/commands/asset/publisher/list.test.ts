@@ -5,39 +5,66 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/command/lib/test';
+import { Messages } from '@salesforce/core';
+import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js';
+import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
+import { expect } from 'chai';
+import List from '../../../../src/commands/analytics/asset/publisher/list.js';
+import {
+  expectToHaveElementValue,
+  getStdout,
+  getStyledHeaders,
+  getTableData,
+  stubDefaultOrg,
+} from '../../../testutils.js';
 
-core.Messages.importMessagesDirectory(__dirname);
-const messages = core.Messages.loadMessages('@salesforce/analytics', 'asset');
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
+const messages = Messages.loadMessages('@salesforce/analytics', 'asset');
 
+const assetId = '0FKxx0000004GNwGAM';
 const publisherValues = [
   {
     id: '0dUxx00000002WTEAY',
-    assetid: '0FKxx0000004GNwGAM',
+    assetId,
     publisherUser: {
       id: '005xx000001XK37AAG',
-      name: 'foo'
-    }
-  }
+      name: 'foo',
+    },
+  },
 ];
 
 describe('analytics:asset:publisher:list', () => {
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve({ publishers: publisherValues }))
-    .stdout()
-    .command(['analytics:asset:publisher:list', '--assetid', '0FKxx0000004GNwGAM'])
-    .it('runs analytics:asset:publisher:list --assetid 0FKxx0000004GNwGAM', ctx => {
-      expect(ctx.stdout).to.contain(messages.getMessage('publishersFound', [1, '0FKxx0000004GNwGAM']));
-    });
+  const $$ = new TestContext();
+  const testOrg = new MockTestOrgData();
+  let sfCommandStubs: ReturnType<typeof stubSfCommandUx>;
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve({ publishers: [] }))
-    .stdout()
-    .command(['analytics:asset:publisher:list', '--assetid', '0FKxx0000004GNwGAM'])
-    .it('runs analytics:asset:publisher:list --assetid 0FKxx0000004GNwGAM', ctx => {
-      expect(ctx.stdout).to.contain('No results found.');
-    });
+  beforeEach(() => {
+    sfCommandStubs = stubSfCommandUx($$.SANDBOX);
+  });
+  afterEach(() => {
+    $$.restore();
+  });
+
+  it(`runs: --assetid ${assetId}`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = () => Promise.resolve({ publishers: publisherValues });
+
+    await List.run(['--assetid', assetId]);
+    expect(getStyledHeaders(sfCommandStubs), 'styled headers').to.contain(
+      messages.getMessage('publishersFound', [1, assetId])
+    );
+    const { data } = getTableData(sfCommandStubs);
+    expectToHaveElementValue(data, publisherValues[0].id, 'table');
+    expectToHaveElementValue(data, publisherValues[0].publisherUser.name, 'table');
+  });
+
+  it(`runs: --assetid ${assetId} (no results)`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = () => Promise.resolve({ publishers: [] });
+
+    await List.run(['--assetid', assetId]);
+    const stdout = getStdout(sfCommandStubs);
+    expect(stdout, 'stdout').to.contain(messages.getMessage('noResultsFound'));
+    expect(getTableData(sfCommandStubs).data, 'table').to.be.undefined;
+  });
 });

@@ -5,39 +5,44 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { flags, SfdxCommand } from '@salesforce/command';
-import { Messages, Org } from '@salesforce/core';
+import {
+  Flags,
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
+import { Messages } from '@salesforce/core';
 
-import Recipe from '../../../lib/analytics/recipe/recipe';
+import Recipe, { type RecipeType } from '../../../lib/analytics/recipe/recipe.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'recipe');
 
-export default class Start extends SfdxCommand {
-  public static description = messages.getMessage('startCommandDescription');
-  public static longDescription = messages.getMessage('startCommandLongDescription');
+export default class Start extends SfCommand<RecipeType | undefined> {
+  public static readonly summary = messages.getMessage('startCommandDescription');
+  public static readonly description = messages.getMessage('startCommandLongDescription');
 
-  public static examples = ['$ sfdx analytics:recipe:start --recipeid <recipeid>'];
+  public static readonly examples = ['$ sfdx analytics:recipe:start --recipeid <recipeid>'];
 
-  protected static flagsConfig = {
-    recipeid: flags.id({
+  public static readonly flags = {
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
+    recipeid: Flags.salesforceId({
       char: 'i',
       required: true,
-      description: messages.getMessage('recipeidFlagDescription'),
-      longDescription: messages.getMessage('recipeidFlagLongDescription')
-    })
+      summary: messages.getMessage('recipeidFlagDescription'),
+      description: messages.getMessage('recipeidFlagLongDescription'),
+    }),
   };
 
-  protected static requiresUsername = true;
-  protected static requiresProject = false;
-
   public async run() {
-    const recipeId = this.flags.recipeid as string;
-    const recipe = new Recipe(this.org as Org);
+    const { flags } = await this.parse(Start);
+    const recipeId = flags.recipeid;
+    const recipe = new Recipe(flags['target-org'].getConnection(flags['api-version']));
 
     const recipeJob = await recipe.startRecipe(recipeId);
     const message = messages.getMessage('recipeJobUpdate', [recipeJob?.id, recipeJob?.status]);
-    this.ux.log(message);
+    this.log(message);
     return recipeJob;
   }
 }

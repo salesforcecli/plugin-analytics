@@ -5,9 +5,9 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { Connection, Org } from '@salesforce/core';
-import { connectRequest, fetchAllPages } from '../request';
-import { throwError } from '../utils';
+import { Connection } from '@salesforce/core';
+import { connectRequest, fetchAllPages } from '../request.js';
+import { throwError } from '../utils.js';
 
 export type RecipeType = Record<string, unknown> & {
   conversionDetails: [];
@@ -24,6 +24,7 @@ export type RecipeType = Record<string, unknown> & {
   lastModifiedDate?: string;
   licenseAttributes?: { type?: string };
   name?: string;
+  namespace?: string;
   publishingTarget?: string;
   recipeDefinition?: { name?: string; nodes?: Record<string, unknown>; ui?: Record<string, unknown>; version?: string };
   scheduleAttributes?: { assetId: string; frequency: string };
@@ -36,12 +37,10 @@ export type RecipeType = Record<string, unknown> & {
 };
 
 export default class Recipe {
-  private readonly connection: Connection;
   private readonly recipesUrl: string;
   private readonly dataflowsJobsUrl: string;
 
-  public constructor(organization: Org) {
-    this.connection = organization.getConnection();
+  public constructor(private readonly connection: Connection) {
     this.recipesUrl = `${this.connection.baseUrl()}/wave/recipes/`;
     this.dataflowsJobsUrl = `${this.connection.baseUrl()}/wave/dataflowjobs/`;
   }
@@ -57,7 +56,7 @@ export default class Recipe {
 
     const recipeDetails = await connectRequest<RecipeType>(this.connection, {
       method: 'GET',
-      url: targetDataflowIdUrl
+      url: targetDataflowIdUrl,
     });
     const dataflowId = recipeDetails.targetDataflowId;
     const response = await connectRequest<RecipeType>(this.connection, {
@@ -65,8 +64,8 @@ export default class Recipe {
       url: startRecipeUrl,
       body: JSON.stringify({
         dataflowId,
-        command
-      })
+        command,
+      }),
     });
 
     if (response) {

@@ -34,6 +34,7 @@
   "appDefinitionFileFlagDescription": "Analytics template definition file; required unless --templateid is specified",
   "appDefinitionFileFlagLongDescription": "Analytics template definition file; required unless a --templateid value is specified.",
   "appsFound": "Found [%s] Analytics apps.",
+  "noResultsFound": "No results found.",
   "startAppCreation": "Successfully started the creation process for Analytics app [%s].",
   "startAppUpdate": "Successfully started the update process for Analytics app [%s].",
   "appCreateEvent": "%s %s %s, 0 failed",

@@ -6,7 +6,7 @@
  */
 
 import { expect } from 'chai';
-import { computeColumnNames, mapDatasetNames, QueryResponse } from '../../../../src/lib/analytics/query/query';
+import { computeColumnNames, mapDatasetNames, QueryResponse } from '../../../../src/lib/analytics/query/query.js';
 
 describe('QuerySvc', () => {
   describe('computeColumnNames()', () => {
@@ -26,35 +26,35 @@ describe('QuerySvc', () => {
                   {
                     field: {
                       id: 'q.Role.Name',
-                      type: 'string'
+                      type: 'string',
                     },
                     inputs: [
                       {
-                        id: 'q.Role.Name'
-                      }
-                    ]
+                        id: 'q.Role.Name',
+                      },
+                    ],
                   },
                   {
                     field: {
                       id: 'q.count',
-                      type: 'numeric'
-                    }
-                  }
+                      type: 'numeric',
+                    },
+                  },
                 ],
                 input: {
                   type: 'group',
                   groups: [
                     {
-                      id: 'q.Role.Name'
-                    }
-                  ]
-                }
+                      id: 'q.Role.Name',
+                    },
+                  ],
+                },
               },
 
-              queryLanguage: 'SAQL'
-            }
-          ]
-        }
+              queryLanguage: 'SAQL',
+            },
+          ],
+        },
       };
 
       const names = computeColumnNames(response);
@@ -74,17 +74,17 @@ describe('QuerySvc', () => {
               columns: [
                 {
                   columnLabel: 'Col1',
-                  columnType: 'varchar'
+                  columnType: 'varchar',
                 },
                 {
                   columnLabel: 'Col2',
-                  columnType: 'number'
-                }
+                  columnType: 'number',
+                },
               ],
-              queryLanguage: 'SQL'
-            }
-          ]
-        }
+              queryLanguage: 'SQL',
+            },
+          ],
+        },
       };
 
       const names = computeColumnNames(response);
@@ -98,14 +98,14 @@ describe('QuerySvc', () => {
           columns: [
             {
               label: 'ColUno',
-              type: 'varchar'
+              type: 'varchar',
             },
             {
               label: 'ColDos',
-              type: 'numeric'
-            }
-          ]
-        }
+              type: 'numeric',
+            },
+          ],
+        },
       };
 
       const names = computeColumnNames(response);
@@ -122,12 +122,12 @@ describe('QuerySvc', () => {
           records: [
             {
               DivisionName: 'AMER',
-              'Sales Amount': 1234.56
+              'Sales Amount': 1234.56,
             },
-            {}
+            {},
           ],
-          metadata: []
-        }
+          metadata: [],
+        },
       };
 
       const names = computeColumnNames(response);
@@ -139,13 +139,13 @@ describe('QuerySvc', () => {
         records: [
           {
             DivisionName: 'AMER',
-            'Sales Amount': 1234.56
+            'Sales Amount': 1234.56,
           },
-          {}
+          {},
         ],
         metadata: {
-          columns: []
-        }
+          columns: [],
+        },
       };
 
       const names = computeColumnNames(response);
@@ -189,7 +189,7 @@ describe('QuerySvc', () => {
         origQuery,
         nameToRef.bind({
           Ops: '0Fb6g000000QI3fCAG/0Fc6g000007NGrnCAG',
-          Meetings: '0Fb6g000000QI3fCAG/0Fc6g000007NGrnCAG'
+          Meetings: '0Fb6g000000QI3fCAG/0Fc6g000007NGrnCAG',
         })
       );
       expect(query).to.not.contain('"Ops"');
@@ -212,5 +212,5 @@ describe('QuerySvc', () => {
   });
 });
 
-// TODO: figure out why these text execution aren't getting included in code coverage, e.g.
+// TODO: figure out why these test execution aren't getting included in code coverage, e.g.
 // 'compute column names from records' covers that part of computeColumnNames, but doesn't show as covered

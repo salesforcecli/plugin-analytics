@@ -5,20 +5,20 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import * as url from 'url';
+import * as url from 'node:url';
 import { Connection } from '@salesforce/core';
-import { JsonCollection, JsonMap } from '@salesforce/ts-types';
-import { RequestInfo } from 'jsforce';
+import { type JsonCollection, type JsonMap } from '@salesforce/ts-types';
+import { type HttpRequest } from 'jsforce';
 
 /** Make a jsforce request to a connect-api resource, turning off entity encoding. */
 export function connectRequest<T = JsonCollection>(
   connection: Connection,
-  requestOrUrl: string | RequestInfo,
+  requestOrUrl: string | HttpRequest,
   options?: JsonMap
 ): Promise<T> {
-  const request: RequestInfo = typeof requestOrUrl === 'string' ? { method: 'GET', url: requestOrUrl } : requestOrUrl;
-  request.headers = Object.assign(request.headers || {}, {
-    'X-Chatter-Entity-Encoding': 'false'
+  const request: HttpRequest = typeof requestOrUrl === 'string' ? { method: 'GET', url: requestOrUrl } : requestOrUrl;
+  request.headers = Object.assign(request.headers ?? {}, {
+    'X-Chatter-Entity-Encoding': 'false',
   });
   return connection.request(request, options);
 }
@@ -47,11 +47,11 @@ export async function fetchAllPages<T>(
     maxPages = MAX_PAGES,
     getNextPagePath = 'nextPageUrl',
     fetchUrl = connectRequest,
-    options
+    options,
   }: {
     maxPages?: number;
     getNextPagePath?: string | ((response: unknown) => string | undefined);
-    fetchUrl?: (connection: Connection, request: RequestInfo, options?: JsonMap) => unknown;
+    fetchUrl?: (connection: Connection, request: HttpRequest, options?: JsonMap) => unknown;
     options?: JsonMap;
   } = {}
 ): Promise<T[]> {
@@ -60,6 +60,9 @@ export async function fetchAllPages<T>(
   let nextUrl = firstPageUrl;
   while (++pageNum <= maxPages) {
     // console.debug(`#!#! Fetching page ${pageNum} from ${nextUrl}`);
+
+    // we need the previous result to run the next fetch, so disable this rule here
+    // eslint-disable-next-line no-await-in-loop
     const response = await fetchUrl(connection, { method: 'GET', url: nextUrl }, options);
     const items: unknown =
       typeof getItems === 'string' ? (response as Record<string, unknown>)[getItems] : getItems(response);

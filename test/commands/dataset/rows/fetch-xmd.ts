@@ -6,19 +6,19 @@
  */
 
 import { JsonMap } from '@salesforce/ts-types';
-import { XmdType } from '../../../../src/lib/analytics/dataset/dataset';
+import { XmdType } from '../../../../src/lib/analytics/dataset/dataset.js';
 
 // putting this in a seperate file since it's so big
 export const xmdJson: XmdType & JsonMap = Object.freeze({
   createdBy: {
     id: '005xx000001XCD7AAO',
     name: 'User User',
-    profilePhotoUrl: '/profilephoto/005/T'
+    profilePhotoUrl: '/profilephoto/005/T',
   },
   createdDate: '2021-02-02T01:28:28.000Z',
   dataset: {
     connector: 'CSV',
-    fullyQualifiedName: 'ABCWidgetSales2017_csv'
+    fullyQualifiedName: 'ABCWidgetSales2017_csv',
   },
   dates: [
     {
@@ -34,7 +34,7 @@ export const xmdJson: XmdType & JsonMap = Object.freeze({
         quarter: 'Year_Quarter',
         second: 'Year_Second',
         week: 'Year_Week',
-        year: 'Year_Year'
+        year: 'Year_Year',
       },
       firstDayOfWeek: -1,
       fiscalMonthOffset: 0,
@@ -42,8 +42,8 @@ export const xmdJson: XmdType & JsonMap = Object.freeze({
       isYearEndFiscalYear: true,
       label: 'Year',
       showInExplorer: true,
-      type: 'Date'
-    }
+      type: 'Date',
+    },
   ],
   derivedDimensions: [],
   derivedMeasures: [],
@@ -62,7 +62,7 @@ export const xmdJson: XmdType & JsonMap = Object.freeze({
       recordDisplayFields: [],
       salesforceActions: [],
       salesforceActionsEnabled: true,
-      showInExplorer: true
+      showInExplorer: true,
     },
     {
       conditionalFormatting: {},
@@ -78,7 +78,7 @@ export const xmdJson: XmdType & JsonMap = Object.freeze({
       recordDisplayFields: [],
       salesforceActions: [],
       salesforceActionsEnabled: true,
-      showInExplorer: true
+      showInExplorer: true,
     },
     {
       conditionalFormatting: {},
@@ -94,7 +94,7 @@ export const xmdJson: XmdType & JsonMap = Object.freeze({
       recordDisplayFields: [],
       salesforceActions: [],
       salesforceActionsEnabled: true,
-      showInExplorer: true
+      showInExplorer: true,
     },
     {
       conditionalFormatting: {},
@@ -110,7 +110,7 @@ export const xmdJson: XmdType & JsonMap = Object.freeze({
       recordDisplayFields: [],
       salesforceActions: [],
       salesforceActionsEnabled: true,
-      showInExplorer: true
+      showInExplorer: true,
     },
     {
       conditionalFormatting: {},
@@ -124,7 +124,7 @@ export const xmdJson: XmdType & JsonMap = Object.freeze({
       recordDisplayFields: [],
       salesforceActions: [],
       salesforceActionsEnabled: true,
-      showInExplorer: true
+      showInExplorer: true,
     },
     {
       conditionalFormatting: {},
@@ -138,7 +138,7 @@ export const xmdJson: XmdType & JsonMap = Object.freeze({
       recordDisplayFields: [],
       salesforceActions: [],
       salesforceActionsEnabled: true,
-      showInExplorer: true
+      showInExplorer: true,
     },
     {
       conditionalFormatting: {},
@@ -152,7 +152,7 @@ export const xmdJson: XmdType & JsonMap = Object.freeze({
       recordDisplayFields: [],
       salesforceActions: [],
       salesforceActionsEnabled: true,
-      showInExplorer: true
+      showInExplorer: true,
     },
     {
       conditionalFormatting: {},
@@ -166,7 +166,7 @@ export const xmdJson: XmdType & JsonMap = Object.freeze({
       recordDisplayFields: [],
       salesforceActions: [],
       salesforceActionsEnabled: true,
-      showInExplorer: true
+      showInExplorer: true,
     },
     {
       conditionalFormatting: {},
@@ -180,7 +180,7 @@ export const xmdJson: XmdType & JsonMap = Object.freeze({
       recordDisplayFields: [],
       salesforceActions: [],
       salesforceActionsEnabled: true,
-      showInExplorer: true
+      showInExplorer: true,
     },
     {
       conditionalFormatting: {},
@@ -194,7 +194,7 @@ export const xmdJson: XmdType & JsonMap = Object.freeze({
       recordDisplayFields: [],
       salesforceActions: [],
       salesforceActionsEnabled: true,
-      showInExplorer: true
+      showInExplorer: true,
     },
     {
       conditionalFormatting: {},
@@ -208,7 +208,7 @@ export const xmdJson: XmdType & JsonMap = Object.freeze({
       recordDisplayFields: [],
       salesforceActions: [],
       salesforceActionsEnabled: true,
-      showInExplorer: true
+      showInExplorer: true,
     },
     {
       conditionalFormatting: {},
@@ -222,7 +222,7 @@ export const xmdJson: XmdType & JsonMap = Object.freeze({
       recordDisplayFields: [],
       salesforceActions: [],
       salesforceActionsEnabled: true,
-      showInExplorer: true
+      showInExplorer: true,
     },
     {
       conditionalFormatting: {},
@@ -236,7 +236,7 @@ export const xmdJson: XmdType & JsonMap = Object.freeze({
       recordDisplayFields: [],
       salesforceActions: [],
       salesforceActionsEnabled: true,
-      showInExplorer: true
+      showInExplorer: true,
     },
     {
       conditionalFormatting: {
@@ -245,25 +245,25 @@ export const xmdJson: XmdType & JsonMap = Object.freeze({
             values: [
               {
                 formatValue: '#7D98B3',
-                value: 'AK'
+                value: 'AK',
               },
               {
                 formatValue: '#98B1FF',
-                value: 'AL'
+                value: 'AL',
               },
               {
                 formatValue: '#B3B400',
-                value: 'CO'
+                value: 'CO',
               },
               {
                 formatValue: '#B56200',
-                value: 'AZ'
-              }
-            ]
+                value: 'AZ',
+              },
+            ],
           },
           referenceField: 'State',
-          type: 'categories'
-        }
+          type: 'categories',
+        },
       },
       customActions: [],
       customActionsEnabled: true,
@@ -277,7 +277,7 @@ export const xmdJson: XmdType & JsonMap = Object.freeze({
       recordDisplayFields: [],
       salesforceActions: [],
       salesforceActionsEnabled: false,
-      showInExplorer: true
+      showInExplorer: true,
     },
     {
       conditionalFormatting: {},
@@ -293,7 +293,7 @@ export const xmdJson: XmdType & JsonMap = Object.freeze({
       recordDisplayFields: [],
       salesforceActions: [],
       salesforceActionsEnabled: true,
-      showInExplorer: true
+      showInExplorer: true,
     },
     {
       conditionalFormatting: {},
@@ -309,14 +309,14 @@ export const xmdJson: XmdType & JsonMap = Object.freeze({
       recordDisplayFields: [],
       salesforceActions: [],
       salesforceActionsEnabled: true,
-      showInExplorer: true
-    }
+      showInExplorer: true,
+    },
   ],
   language: 'en_US',
   lastModifiedBy: {
     id: '005xx000001XCD7AAO',
     name: 'User User',
-    profilePhotoUrl: '/profilephoto/005/T'
+    profilePhotoUrl: '/profilephoto/005/T',
   },
   lastModifiedDate: '2021-02-02T01:28:28.000Z',
   measures: [
@@ -325,48 +325,48 @@ export const xmdJson: XmdType & JsonMap = Object.freeze({
       field: 'Regular_GM',
       format: {
         decimalDigits: 2,
-        delimiters: {}
+        delimiters: {},
       },
       fullyQualifiedName: 'Regular_GM',
       label: 'Regular GM',
       origin: 'Regular_GM',
-      showInExplorer: true
+      showInExplorer: true,
     },
     {
       conditionalFormatting: {},
       field: 'Adjusted_COGS',
       format: {
         decimalDigits: 2,
-        delimiters: {}
+        delimiters: {},
       },
       fullyQualifiedName: 'Adjusted_COGS',
       label: 'Adjusted COGS',
       origin: 'Adjusted_COGS',
-      showInExplorer: true
+      showInExplorer: true,
     },
     {
       conditionalFormatting: {},
       field: 'Total_GM',
       format: {
         decimalDigits: 2,
-        delimiters: {}
+        delimiters: {},
       },
       fullyQualifiedName: 'Total_GM',
       label: 'Total GM',
       origin: 'Total_GM',
-      showInExplorer: true
+      showInExplorer: true,
     },
     {
       conditionalFormatting: {},
       field: 'DIVISION_NUM',
       format: {
         decimalDigits: 0,
-        delimiters: {}
+        delimiters: {},
       },
       fullyQualifiedName: 'DIVISION_NUM',
       label: 'DIVISION_NUM',
       origin: 'DIVISION_NUM',
-      showInExplorer: true
+      showInExplorer: true,
     },
     {
       conditionalFormatting: {},
@@ -376,35 +376,35 @@ export const xmdJson: XmdType & JsonMap = Object.freeze({
         decimalDigits: 2,
         delimiters: {
           decimal: '.',
-          thousands: ','
-        }
+          thousands: ',',
+        },
       },
       fullyQualifiedName: 'Sales',
       label: 'Sales',
       origin: 'Sales',
-      showInExplorer: true
+      showInExplorer: true,
     },
     {
       conditionalFormatting: {},
       field: 'Year_day_epoch',
       format: {
-        delimiters: {}
+        delimiters: {},
       },
       label: 'Year_day_epoch',
-      showInExplorer: true
+      showInExplorer: true,
     },
     {
       conditionalFormatting: {},
       field: 'Year_sec_epoch',
       format: {
-        delimiters: {}
+        delimiters: {},
       },
       label: 'Year_sec_epoch',
-      showInExplorer: true
-    }
+      showInExplorer: true,
+    },
   ],
   organizations: [],
   showDetailsDefaultFields: [],
   type: 'main',
-  url: '/services/data/v52.0/wave/datasets/0Fbxx0000004CyeCAE/versions/0Fcxx0000004CsCCAU/xmds/main'
+  url: '/services/data/v52.0/wave/datasets/0Fbxx0000004CyeCAE/versions/0Fcxx0000004CsCCAU/xmds/main',
 });

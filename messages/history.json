@@ -1,4 +1,6 @@
 {
+  "noResultsFound": "No results found.",
+
   "listDashboardHistoryCommandDescription": "list history records for Analytics dashboards",
   "listDashboardHistoryCommandLongDescription": "Lists history records for Analytics dashboards in the specified target org.",
   "dashboardsHistoriesFound": "Found [%s] Analytics dashboard history records.",

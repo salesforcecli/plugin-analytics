@@ -5,16 +5,27 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/command/lib/test';
+import { Messages } from '@salesforce/core';
+import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js';
+import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
+import { expect } from 'chai';
+import { AnyJson } from '@salesforce/ts-types';
+import Display from '../../../src/commands/analytics/template/display.js';
+import {
+  expectToHaveElementInclude,
+  getStderr,
+  getStyledHeaders,
+  getTableData,
+  stubDefaultOrg,
+} from '../../testutils.js';
 
-core.Messages.importMessagesDirectory(__dirname);
-const messages = core.Messages.loadMessages('@salesforce/analytics', 'template');
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
+const messages = Messages.loadMessages('@salesforce/analytics', 'template');
 
 const ID = '0Nkxx000000000zCAA';
 // this is what the template json looks like (49+, at least)
 const json = {
-  description: 'foo bar desc',
+  summary: 'foo bar desc',
   id: ID,
   label: 'foo bar',
   name: 'foobar',
@@ -22,35 +33,40 @@ const json = {
   assetVersion: 50,
   templateType: 'embeddedapp',
   folderSource: {
-    id: '005xx000001XB1RAAW'
-  }
+    id: '005xx000001XB1RAAW',
+  },
 };
 
 describe('analytics:template:display', () => {
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve(json))
-    .stdout()
-    .command(['analytics:template:display', '--templateid', ID])
-    .it(`runs analytics:template:display --templateid ${ID}`, ctx => {
-      expect(ctx.stdout).to.contain(messages.getMessage('displayDetailHeader'));
-    });
+  const $$ = new TestContext();
+  const testOrg = new MockTestOrgData();
+  let sfCommandStubs: ReturnType<typeof stubSfCommandUx>;
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve(json))
-    .stdout()
-    .command(['analytics:template:display', '--templatename', 'foo'])
-    .it('runs analytics:template:display --templatename foo', ctx => {
-      expect(ctx.stdout).to.contain(messages.getMessage('displayDetailHeader'));
-    });
+  beforeEach(() => {
+    sfCommandStubs = stubSfCommandUx($$.SANDBOX);
+  });
+  afterEach(() => {
+    $$.restore();
+  });
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.reject(new Error('Should not have been called.')))
-    .stderr()
-    .command(['analytics:template:display'])
-    .it('runs analytics:template:display', ctx => {
-      expect(ctx.stderr).to.contain(messages.getMessage('missingRequiredField'));
-    });
+  async function runAndVerify(args: string[], response: AnyJson, expected: { label: string; name: string }) {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = () => Promise.resolve(response);
+
+    await Display.run(args);
+    expect(getStderr(sfCommandStubs), 'stderr').to.equal('');
+    expect(getStyledHeaders(sfCommandStubs), 'headers').to.contain(messages.getMessage('displayDetailHeader'));
+
+    const { data } = getTableData(sfCommandStubs);
+    expectToHaveElementInclude(data, { value: expected.label }, 'table');
+    expectToHaveElementInclude(data, { value: expected.name }, 'table');
+  }
+
+  it(`runs: --templateid ${ID}`, async () => {
+    await runAndVerify(['--templateid', ID], json, json);
+  });
+
+  it(`runs: --templatename ${json.name}`, async () => {
+    await runAndVerify(['--templatename', json.name], json, json);
+  });
 });

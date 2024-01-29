@@ -5,75 +5,80 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { flags, SfdxCommand } from '@salesforce/command';
-import { Messages, Org, SfdxError } from '@salesforce/core';
+import {
+  Flags,
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
+import { Messages, SfError } from '@salesforce/core';
 
-import AutoInstall from '../../../../lib/analytics/autoinstall/autoinstall';
+import AutoInstall, { type AutoInstallRequestType } from '../../../../lib/analytics/autoinstall/autoinstall.js';
 import {
   DEF_APP_CREATE_UPDATE_TIMEOUT,
   DEF_POLLING_INTERVAL,
-  MIN_POLLING_INTERVAL
-} from '../../../../lib/analytics/constants';
-import { throwWithData } from '../../../../lib/analytics/utils';
+  MIN_POLLING_INTERVAL,
+} from '../../../../lib/analytics/constants.js';
+import { commandUx, numberFlag, throwWithData } from '../../../../lib/analytics/utils.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'autoinstall');
 
-export default class Delete extends SfdxCommand {
-  public static description = messages.getMessage('deleteCommandDescription');
-  public static longDescription = messages.getMessage('deleteCommandLongDescription');
+export default class Delete extends SfCommand<AutoInstallRequestType | string | undefined> {
+  public static readonly summary = messages.getMessage('deleteCommandDescription');
+  public static readonly description = messages.getMessage('deleteCommandLongDescription');
 
-  public static examples = ['$ sfdx analytics:autoinstall:app:delete -f folderid'];
+  public static readonly examples = ['$ sfdx analytics:autoinstall:app:delete -f folderid'];
 
-  protected static flagsConfig = {
-    folderid: flags.id({
+  public static readonly flags = {
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
+    folderid: Flags.salesforceId({
       char: 'f',
       required: true,
-      description: messages.getMessage('folderidFlagDescription'),
-      longDescription: messages.getMessage('folderidFlagLongDescription')
+      summary: messages.getMessage('folderidFlagDescription'),
+      description: messages.getMessage('folderidFlagLongDescription'),
     }),
-    async: flags.boolean({
+    async: Flags.boolean({
       char: 'a',
-      description: messages.getMessage('appDeleteAsyncDescription'),
-      longDescription: messages.getMessage('appDeleteAsyncLongDescription')
+      summary: messages.getMessage('appDeleteAsyncDescription'),
+      description: messages.getMessage('appDeleteAsyncLongDescription'),
     }),
-    wait: flags.number({
+    wait: numberFlag({
       char: 'w',
-      description: messages.getMessage('autoInstallWaitDescription'),
-      longDescription: messages.getMessage('autoInstallWaitLongDescription', [DEF_APP_CREATE_UPDATE_TIMEOUT]),
+      summary: messages.getMessage('autoInstallWaitDescription'),
+      description: messages.getMessage('autoInstallWaitLongDescription', [DEF_APP_CREATE_UPDATE_TIMEOUT]),
       min: 0,
-      default: DEF_APP_CREATE_UPDATE_TIMEOUT
+      default: DEF_APP_CREATE_UPDATE_TIMEOUT,
     }),
-    pollinterval: flags.number({
+    pollinterval: Flags.integer({
       char: 'p',
-      description: messages.getMessage('autoInstallPollIntervalDescription'),
-      longDescription: messages.getMessage('autoInstallPollIntervalLongDescription', [DEF_POLLING_INTERVAL]),
+      summary: messages.getMessage('autoInstallPollIntervalDescription'),
+      description: messages.getMessage('autoInstallPollIntervalLongDescription', [DEF_POLLING_INTERVAL]),
       min: MIN_POLLING_INTERVAL,
-      default: DEF_POLLING_INTERVAL
-    })
+      default: DEF_POLLING_INTERVAL,
+    }),
   };
 
-  protected static requiresUsername = true;
-  protected static requiresProject = false;
-
   public async run() {
-    const autoinstall = new AutoInstall(this.org as Org);
-    const autoInstallId = await autoinstall.delete(this.flags.folderid as string);
-    if (this.flags.async || this.flags.wait <= 0) {
-      this.ux.log(messages.getMessage('appDeleteRequestSuccess', [autoInstallId]));
+    const { flags } = await this.parse(Delete);
+    const autoinstall = new AutoInstall(flags['target-org'].getConnection(flags['api-version']));
+    const autoInstallId = await autoinstall.delete(flags.folderid);
+    if (flags.async || flags.wait <= 0) {
+      this.log(messages.getMessage('appDeleteRequestSuccess', [autoInstallId]));
     } else if (autoInstallId) {
       // otherwise start polling the request
       const finalRequest = await autoinstall.pollRequest(autoInstallId, {
-        timeoutMs: this.flags.wait * 60 * 1000,
-        pauseMs: this.flags.pollinterval as number,
-        timeoutMessage: r =>
-          throwWithData(messages.getMessage('requestPollingTimeout', [autoInstallId, r?.requestStatus || '']), r),
-        ux: this.ux,
-        startMesg: messages.getMessage('startRequestPolling', [autoInstallId])
+        timeoutMs: flags.wait * 60 * 1000,
+        pauseMs: flags.pollinterval,
+        timeoutMessage: (r) =>
+          throwWithData(messages.getMessage('requestPollingTimeout', [autoInstallId, r?.requestStatus ?? '']), r),
+        ux: commandUx(this),
+        startMesg: messages.getMessage('startRequestPolling', [autoInstallId]),
       });
       const status = finalRequest.requestStatus?.toLocaleLowerCase();
       if (status === 'success') {
-        this.ux.log(messages.getMessage('appDeleteSuccess', [finalRequest.folderId, autoInstallId]));
+        this.log(messages.getMessage('appDeleteSuccess', [finalRequest.folderId, autoInstallId]));
         return finalRequest;
       } else if (status === 'cancelled') {
         throwWithData(messages.getMessage('requestCancelled', [autoInstallId]), finalRequest);
@@ -82,7 +87,7 @@ export default class Delete extends SfdxCommand {
       }
     } else {
       // we should always get an auto-install-request id back, but fail if we don't
-      throw new SfdxError(messages.getMessage('appDeleteFailed', ['']));
+      throw new SfError(messages.getMessage('appDeleteFailed', ['']));
     }
     return autoInstallId;
   }

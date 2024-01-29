@@ -5,512 +5,495 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { promises as fs } from 'fs';
-import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/command/lib/test';
+import { Messages, SfError, StreamingClient } from '@salesforce/core';
+import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js';
+import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
+import { expect } from 'chai';
 import { AnyJson, ensureJsonMap, ensureString } from '@salesforce/ts-types';
-import { StreamingClient } from '@salesforce/core';
+import { stubMethod } from '@salesforce/ts-sinon';
+import Create from '../../../src/commands/analytics/app/create.js';
+import { getJsonOutput, getStdout, getStyledHeaders, stubDefaultOrg } from '../../testutils.js';
+import { fs } from '../../../src/lib/analytics/utils.js';
 
-core.Messages.importMessagesDirectory(__dirname);
-const messages = core.Messages.loadMessages('@salesforce/analytics', 'app');
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
+const messages = Messages.loadMessages('@salesforce/analytics', 'app');
+
 const appId = '0llxx000000000zCAA';
 const testTemplateJson = {
   id: '0Nkxx000000000zCAA',
-  description: '',
+  summary: '',
   label: 'Test Template',
-  name: 'TestTemplate'
+  name: 'TestTemplate',
 };
 const sustainabilityTemplateJson = { id: '0Nkxx000000000zCAB', name: 'Sustainability', label: 'Sustainability' };
 
 describe('analytics:app:create', () => {
-  let requestBody: AnyJson | undefined;
-  function saveOffRequestBody(json: string | undefined) {
-    requestBody = undefined;
-    try {
-      requestBody = json && (JSON.parse(json) as AnyJson);
-    } catch (e) {
-      expect.fail('Error parsing request body: ' + (e instanceof Error ? e.message : String(e)));
-    }
-  }
+  const $$ = new TestContext();
+  const testOrg = new MockTestOrgData();
+  let sfCommandStubs: ReturnType<typeof stubSfCommandUx>;
 
   beforeEach(() => {
-    requestBody = undefined;
+    sfCommandStubs = stubSfCommandUx($$.SANDBOX);
+  });
+  afterEach(() => {
+    $$.restore();
   });
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
+  it(`runs: --templateid ${testTemplateJson.id} --async`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    let requestBody: AnyJson | undefined;
+    $$.fakeConnectionRequest = (request) => {
       request = ensureJsonMap(request);
-      if (request.method === 'GET') {
+      if (ensureString(request.method) === 'GET') {
         // call for the template by id, it should return the one template
         return Promise.resolve(testTemplateJson);
       }
-      if (request.method === 'POST') {
-        saveOffRequestBody(ensureString(request.body));
+      if (ensureString(request.method) === 'POST') {
+        requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
         return Promise.resolve({ id: appId });
       }
-      return Promise.reject();
-    })
-    .stdout()
-    .command(['analytics:app:create', '--templateid', testTemplateJson.id, '--async'])
-    .it(`runs analytics:app:create --templateid ${testTemplateJson.id} --async`, ctx => {
-      expect(ctx.stdout).to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
-      // request body should have values from the template GET
-      expect(requestBody, 'requestBody').to.not.be.undefined;
-      expect(requestBody, 'requestBody').to.include({
-        templateSourceId: testTemplateJson.id,
-        label: testTemplateJson.label,
-        name: testTemplateJson.name
-      });
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
+    };
+
+    await Create.run(['--templateid', testTemplateJson.id, '--async']);
+    expect(getStyledHeaders(sfCommandStubs), 'styled headers').to.contain(
+      messages.getMessage('startAppCreation', [appId])
+    );
+    expect(getStdout(sfCommandStubs), 'stdout').to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
+    expect(requestBody, 'requestBody').to.include({
+      templateSourceId: testTemplateJson.id,
+      label: testTemplateJson.label,
+      name: testTemplateJson.name,
     });
+  });
 
   // make sure --async --json returns the the app id
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
+  it(`runs: --templateid ${testTemplateJson.id} --async --json`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = (request) => {
       request = ensureJsonMap(request);
-      if (request.method === 'GET') {
+      if (ensureString(request.method) === 'GET') {
         // call for the template by id, it should return the one template
         return Promise.resolve(testTemplateJson);
       }
-      if (request.method === 'POST') {
+      if (ensureString(request.method) === 'POST') {
         return Promise.resolve({ id: appId });
       }
-      return Promise.reject();
-    })
-    .stdout()
-    .command(['analytics:app:create', '--templateid', testTemplateJson.id, '--async', '--json'])
-    .it(`runs analytics:app:create --templateid ${testTemplateJson.id} --async --json`, ctx => {
-      expect(ctx.stdout).to.not.be.undefined.and.not.be.null.and.not.equal('');
-      const results = JSON.parse(ctx.stdout) as unknown;
-      expect(results, 'result').to.deep.include({
-        status: 0,
-        result: {
-          id: appId
-        }
-      });
-    });
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
+    };
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
+    await Create.run(['--templateid', testTemplateJson.id, '--async', '--json']);
+    expect(getJsonOutput(sfCommandStubs), 'result').to.deep.include({
+      result: {
+        id: appId,
+      },
+    });
+  });
+
+  it(`runs: -t ${testTemplateJson.id} -n customname --wait 0`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    let requestBody: AnyJson | undefined;
+    $$.fakeConnectionRequest = (request) => {
       request = ensureJsonMap(request);
-      if (request.method === 'GET') {
+      if (ensureString(request.method) === 'GET') {
         // call for the template by id, it should return the one template
         return Promise.resolve(testTemplateJson);
       }
-      if (request.method === 'POST') {
-        saveOffRequestBody(ensureString(request.body));
+      if (ensureString(request.method) === 'POST') {
+        requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
         return Promise.resolve({ id: appId });
       }
-      return Promise.reject();
-    })
-    .stdout()
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
+    };
+
     // --wait=0 should be the same as --async so this should return right away
-    .command(['analytics:app:create', '-t', testTemplateJson.id, '-n', 'customname', '--wait=0'])
-    .it(`runs analytics:app:create -t ${testTemplateJson.id} -n customname --wait=0`, ctx => {
-      expect(ctx.stdout).to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
-      expect(requestBody, 'requestBody').to.not.be.undefined;
-      expect(requestBody, 'requestBody').to.include({
-        // request body should have values from the template GET
-        templateSourceId: testTemplateJson.id,
-        // but name and label should be from arg
-        label: 'customname',
-        name: 'customname'
-      });
+    await Create.run(['-t', testTemplateJson.id, '-n', 'customname', '--wait', '0']);
+    expect(getStdout(sfCommandStubs), 'stdout').to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
+    expect(requestBody, 'requestBody').to.include({
+      // request body should have values from the template GET
+      templateSourceId: testTemplateJson.id,
+      // but name and label should be from arg
+      label: 'customname',
+      name: 'customname',
     });
+  });
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
+  it('runs: --templatename Sustainability --async', async () => {
+    await stubDefaultOrg($$, testOrg);
+    let requestBody: AnyJson | undefined;
+    $$.fakeConnectionRequest = (request) => {
       request = ensureJsonMap(request);
-      if (request.method === 'GET') {
+      if (ensureString(request.method) === 'GET') {
         // call for all templates
         return Promise.resolve({
-          templates: [testTemplateJson, sustainabilityTemplateJson]
+          templates: [testTemplateJson, sustainabilityTemplateJson],
         });
       }
-      if (request.method === 'POST') {
-        saveOffRequestBody(ensureString(request.body));
+      if (ensureString(request.method) === 'POST') {
+        requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
         return Promise.resolve({ id: appId });
       }
-      return Promise.reject();
-    })
-    .stdout()
-    .command(['analytics:app:create', '--templatename', 'Sustainability', '--async'])
-    .it('runs analytics:app:create --templatename Sustainability --async', ctx => {
-      expect(ctx.stdout).to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
-      // request body should have values from the templates GET
-      expect(requestBody, 'requestBody').to.not.be.undefined;
-      expect(requestBody, 'requestBody').to.include({
-        templateSourceId: sustainabilityTemplateJson.id,
-        label: sustainabilityTemplateJson.label,
-        name: sustainabilityTemplateJson.name
-      });
-    });
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
+    };
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
+    await Create.run(['--templatename', 'Sustainability', '--async']);
+    expect(getStdout(sfCommandStubs), 'stdout').to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
+    // request body should have values from the templates GET
+    expect(requestBody, 'requestBody').to.include({
+      templateSourceId: sustainabilityTemplateJson.id,
+      label: sustainabilityTemplateJson.label,
+      name: sustainabilityTemplateJson.name,
+    });
+  });
+
+  it('runs: --templatename Sustainability --appname customname --appdescription customdesc --async', async () => {
+    await stubDefaultOrg($$, testOrg);
+    let requestBody: AnyJson | undefined;
+    $$.fakeConnectionRequest = (request) => {
       request = ensureJsonMap(request);
-      if (request.method === 'GET') {
+      if (ensureString(request.method) === 'GET') {
         // call for all templates
         return Promise.resolve({
-          templates: [testTemplateJson, sustainabilityTemplateJson]
+          templates: [testTemplateJson, sustainabilityTemplateJson],
         });
       }
-      if (request.method === 'POST') {
-        saveOffRequestBody(request.body as string);
+      if (ensureString(request.method) === 'POST') {
+        requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
         return Promise.resolve({ id: appId });
       }
-      return Promise.reject();
-    })
-    .stdout()
-    .command(['analytics:app:create', '--templatename', 'Sustainability', '--appname', 'customname', '--async'])
-    .it('runs analytics:app:create --templatename Sustainability --appname customname --async', ctx => {
-      expect(ctx.stdout).to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
-      expect(requestBody, 'requestBody').to.not.be.undefined;
-      expect(requestBody, 'requestBody').to.include({
-        // request body should have values from the templates GET
-        templateSourceId: sustainabilityTemplateJson.id,
-        // but name and label should come from the cli arg
-        label: 'customname',
-        name: 'customname'
-      });
-    });
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
+    };
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
-      request = ensureJsonMap(request);
-      if (request.method === 'GET') {
-        // call for all templates
-        return Promise.resolve({
-          templates: [testTemplateJson, sustainabilityTemplateJson]
-        });
-      }
-      if (request.method === 'POST') {
-        saveOffRequestBody(request.body as string);
-        return Promise.resolve({ id: appId });
-      }
-      return Promise.reject();
-    })
-    .stdout()
-    .command([
-      'analytics:app:create',
+    await Create.run([
       '--templatename',
       'Sustainability',
       '--appname',
       'customname',
       '--appdescription',
       'customdesc',
-      '--async'
-    ])
-    .it(
-      'runs analytics:app:create --templatename Sustainability --appname customname --appdescription customdesc --async',
-      ctx => {
-        expect(ctx.stdout).to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
-        expect(requestBody, 'requestBody').to.not.be.undefined;
-        expect(requestBody, 'requestBody').to.include({
-          // request body should have values from the templates GET
-          templateSourceId: sustainabilityTemplateJson.id,
-          // but name and label should come from the cli arg
-          label: 'customname',
-          name: 'customname',
-          description: 'customdesc'
-        });
-      }
-    );
+      '--async',
+    ]);
+    expect(getStdout(sfCommandStubs), 'stdout').to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
+    expect(requestBody, 'requestBody').to.include({
+      // this should come from the template GET
+      templateSourceId: sustainabilityTemplateJson.id,
+      // these should come from the args
+      label: 'customname',
+      name: 'customname',
+      description: 'customdesc',
+    });
+  });
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
+  it('runs: --definitionfile config/foo.json --async', async () => {
+    await stubDefaultOrg($$, testOrg);
+    let requestBody: AnyJson | undefined;
+    $$.fakeConnectionRequest = (request) => {
       request = ensureJsonMap(request);
-      if (request.method === 'POST') {
-        saveOffRequestBody(request.body as string);
+      if (ensureString(request.method) === 'POST') {
+        requestBody = JSON.parse(request.body as string) as AnyJson;
         return Promise.resolve({ id: appId });
       }
-      return Promise.reject();
-    })
-    .stub(fs, 'readFile', () =>
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
+    };
+    stubMethod($$.SANDBOX, fs, 'readFile').callsFake(() =>
       Promise.resolve(
         JSON.stringify({
           templateSourceId: testTemplateJson.id,
           assetIcon: '16.png',
           label: testTemplateJson.label,
-          name: testTemplateJson.name
+          name: testTemplateJson.name,
         })
       )
-    )
-    .stdout()
-    .command(['analytics:app:create', '--definitionfile', 'config/foo.json', '--async'])
-    .it('runs analytics:app:create --definitionfile config/foo.json --async', ctx => {
-      expect(ctx.stdout).to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
-      expect(requestBody, 'requestBody').to.not.be.undefined;
-      expect(requestBody, 'requestBody').to.include({
-        // request body should have fields from the readFile()
-        templateSourceId: testTemplateJson.id,
-        assetIcon: '16.png',
-        label: testTemplateJson.label,
-        name: testTemplateJson.name
-      });
-    });
+    );
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
+    await Create.run(['--definitionfile', 'config/foo.json', '--async']);
+    expect(getStdout(sfCommandStubs), 'stdout').to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
+    expect(requestBody, 'requestBody').to.include({
+      // request body should have fields from the readFile()
+      templateSourceId: testTemplateJson.id,
+      assetIcon: '16.png',
+      label: testTemplateJson.label,
+      name: testTemplateJson.name,
+    });
+  });
+
+  it('runs: --definitionfile config/foo.json -n customname -a --api-version 59.0', async () => {
+    await stubDefaultOrg($$, testOrg);
+    let requestBody: AnyJson | undefined;
+    $$.fakeConnectionRequest = (request) => {
       request = ensureJsonMap(request);
-      if (request.method === 'POST') {
-        saveOffRequestBody(request.body as string);
+      if (ensureString(request.method) === 'POST') {
+        requestBody = JSON.parse(request.body as string) as AnyJson;
         return Promise.resolve({ id: appId });
       }
-      return Promise.reject();
-    })
-    .stub(fs, 'readFile', () =>
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
+    };
+    stubMethod($$.SANDBOX, fs, 'readFile').callsFake(() =>
       Promise.resolve(
         JSON.stringify({
           templateSourceId: testTemplateJson.id,
-          assetIcon: '16.png'
+          assetIcon: '16.png',
           // leave off name and label so it should use the name from the cli arg
         })
       )
-    )
-    .stdout()
-    .command(['analytics:app:create', '-f', 'config/foo.json', '-n', 'customname', '-a'])
-    .it('runs analytics:app:create -f config/foo.json -n customname -a', ctx => {
-      expect(ctx.stdout).to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
-      expect(requestBody, 'requestBody').to.not.be.undefined;
-      expect(requestBody, 'requestBody').to.include({
-        // request body should have fields from the readFile()
-        templateSourceId: testTemplateJson.id,
-        assetIcon: '16.png',
-        // but name and label should come from cli arg
-        name: 'customname',
-        label: 'customname'
-      });
-    });
+    );
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
+    await Create.run(['--definitionfile', 'config/foo.json', '-n', 'customname', '-a', '--api-version', '59.0']);
+    expect(getStdout(sfCommandStubs), 'stdout').to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
+    expect(requestBody, 'requestBody').to.deep.include({
+      // request body should have fields from the readFile()
+      templateSourceId: testTemplateJson.id,
+      assetIcon: '16.png',
+      // but name and label should come from cli arg
+      label: 'customname',
+      name: 'customname',
+      // and this should be put in there automatically
+      templateOptions: { dynamicOptions: { productionType: 'ATF_3_0', runtimeLogEntryLevel: 'Warning' } },
+    });
+  });
+
+  it('run: -f config/emptyapp.json --apiversion 59.0', async () => {
+    await stubDefaultOrg($$, testOrg);
+    let requestBody: AnyJson | undefined;
+    $$.fakeConnectionRequest = (request) => {
       request = ensureJsonMap(request);
-      if (request.method === 'POST') {
-        saveOffRequestBody(request.body as string);
+      if (ensureString(request.method) === 'POST') {
+        requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
         return Promise.resolve({ id: appId });
       }
-      return Promise.reject();
-    })
-    .stub(fs, 'readFile', () =>
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
+    };
+    stubMethod($$.SANDBOX, fs, 'readFile').callsFake(() =>
       Promise.resolve(
         JSON.stringify({
           assetIcon: '16.png',
           name: 'emptyapp',
-          label: 'Empty App'
+          label: 'Empty App',
           // leave off templateSourceId to make sure this finishes w/o the --async
         })
       )
-    )
-    .stdout()
-    .command(['analytics:app:create', '-f', 'config/emptyapp.json'])
-    .it('runs analytics:app:create -f config/emptyapp.json', ctx => {
-      expect(ctx.stdout).to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
-      expect(requestBody, 'requestBody').to.not.be.undefined;
-      expect(requestBody, 'requestBody').to.include({
-        // request body should have fields from the readFile()
-        assetIcon: '16.png',
-        name: 'emptyapp',
-        label: 'Empty App'
-      });
-      // and it shouldn't have a template id listed
-      expect(requestBody, 'requestBody').to.not.have.key('templateSourceId');
-    });
+    );
+    stubMethod($$.SANDBOX, StreamingClient, 'create').callsFake(() =>
+      Promise.reject(new SfError('StreamingClient.create() should not be called'))
+    );
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .stub(core.StreamingClient, 'create', async (options?: StreamingClient.Options) => {
-      return {
-        handshake: async () => StreamingClient.ConnectionState.CONNECTED,
-        replay: async () => -1,
-        subscribe: async () =>
-          options?.streamProcessor({
-            payload: {
-              EventType: 'Application',
-              Status: 'Success',
-              ItemLabel: 'foo',
-              FolderId: 'test',
-              Message: 'Success'
-            },
-            event: { replayId: 20 }
-          })
-      };
-    })
-    .stub(fs, 'readFile', () =>
+    await Create.run(['-f', 'config/emptyapp.json', '--api-version', '59.0']);
+    expect(getStdout(sfCommandStubs), 'stdout').to.contain(messages.getMessage('createAppSuccessAsync', [appId]));
+    expect(requestBody, 'requestBody').to.include({
+      // request body should have fields from the readFile()
+      assetIcon: '16.png',
+      name: 'emptyapp',
+      label: 'Empty App',
+    });
+    // and it shouldn't have a template id nor templateOptions listed
+    expect(requestBody, 'requestBody keys').to.not.have.any.keys('templateSourceId', 'templateOptions');
+  });
+
+  it('runs: --definitionfile config/foo.json', async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = (request) => {
+      request = ensureJsonMap(request);
+      if (ensureString(request.method) === 'POST') {
+        return Promise.resolve({ id: appId });
+      }
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
+    };
+    stubMethod($$.SANDBOX, StreamingClient, 'create').callsFake(async (options?: StreamingClient.Options) => ({
+      init: async () => {},
+      handshake: async () => StreamingClient.ConnectionState.CONNECTED,
+      replay: async () => {},
+      subscribe: async (streamInit?: () => Promise<void>) => {
+        // the streamInit is what creates the app and sets the app id
+        if (streamInit) {
+          await streamInit();
+        }
+        options?.streamProcessor({
+          payload: {
+            EventType: 'Application',
+            Status: 'Success',
+            ItemLabel: 'foo',
+            FolderId: appId,
+            Message: 'Success',
+          },
+          event: { replayId: 20 },
+        });
+      },
+    }));
+    stubMethod($$.SANDBOX, fs, 'readFile').callsFake(() =>
       Promise.resolve(
         JSON.stringify({
           templateSourceId: testTemplateJson.id,
-          assetIcon: '16.png'
+          assetIcon: '16.png',
         })
       )
-    )
-    .stdout()
-    .command(['analytics:app:create', '--definitionfile', 'config/foo.json'])
-    .it('runs analytics:app:create --definitionfile config/foo.json (with success message)', ctx => {
-      expect(ctx.stdout).to.contain(messages.getMessage('finishAppCreation', ['foo']));
-    });
+    );
+
+    await Create.run(['--definitionfile', 'config/foo.json']);
+    expect(getStyledHeaders(sfCommandStubs), 'styled headers').to.contain(
+      messages.getMessage('startAppCreation', [appId])
+    );
+    expect(getStdout(sfCommandStubs), 'stdout').to.contain(messages.getMessage('finishAppCreation', ['foo']));
+  });
 
   // verify that we get the appId and streaming events when doing --json
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
+  it('runs: --definitionfile config/foo.json --json', async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = (request) => {
       request = ensureJsonMap(request);
-      if (request.method === 'POST') {
+      if (ensureString(request.method) === 'POST') {
         return Promise.resolve({ id: appId });
       }
-      return Promise.reject();
-    })
-    .stub(core.StreamingClient, 'create', async (options?: StreamingClient.Options) => {
-      return {
-        handshake: async () => StreamingClient.ConnectionState.CONNECTED,
-        replay: async () => -1,
-        subscribe: async (streamInit?: () => Promise<void>) => {
-          // the streamInit is what creates the app and sets the app id
-          if (streamInit) {
-            await streamInit();
-          }
-          options?.streamProcessor({
-            payload: {
-              EventType: 'Application',
-              Status: 'Success',
-              ItemLabel: 'foo',
-              FolderId: 'test',
-              Message: 'Success'
-            },
-            event: { replayId: 20 }
-          });
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
+    };
+    stubMethod($$.SANDBOX, StreamingClient, 'create').callsFake(async (options?: StreamingClient.Options) => ({
+      handshake: async () => StreamingClient.ConnectionState.CONNECTED,
+      replay: async () => -1,
+      subscribe: async (streamInit?: () => Promise<void>) => {
+        // the streamInit is what creates the app and sets the app id
+        if (streamInit) {
+          await streamInit();
         }
-      };
-    })
-    .stub(fs, 'readFile', () =>
+        options?.streamProcessor({
+          payload: {
+            EventType: 'Application',
+            Status: 'Success',
+            ItemLabel: 'foo',
+            FolderId: appId,
+            Message: 'Success',
+          },
+          event: { replayId: 20 },
+        });
+      },
+    }));
+    stubMethod($$.SANDBOX, fs, 'readFile').callsFake(() =>
       Promise.resolve(
         JSON.stringify({
           templateSourceId: testTemplateJson.id,
-          assetIcon: '16.png'
+          assetIcon: '16.png',
         })
       )
-    )
-    .stdout()
-    .command(['analytics:app:create', '--definitionfile', 'config/foo.json', '--json'])
-    .it('runs analytics:app:create --definitionfile config/foo.json --json (with success message)', ctx => {
-      expect(ctx.stdout).to.not.be.undefined.and.not.be.null.and.not.equal('');
-      const results = JSON.parse(ctx.stdout) as unknown;
-      expect(results, 'result').to.deep.include({
-        status: 0,
-        result: {
-          id: appId,
-          events: [
-            {
-              EventType: 'Application',
-              Index: 0,
-              ItemLabel: 'foo',
-              Message: 'Success',
-              Status: 'Success',
-              Total: 0
-            }
-          ]
-        }
-      });
-    });
+    );
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .stub(core.StreamingClient, 'create', async (options?: StreamingClient.Options) => {
-      return {
-        handshake: async () => StreamingClient.ConnectionState.CONNECTED,
-        replay: async () => -1,
-        subscribe: async () =>
-          options?.streamProcessor({
-            payload: {
-              EventType: 'Application',
-              Status: 'Failed',
-              ItemLabel: 'foo',
-              FolderId: 'test',
-              Message: 'failed'
-            },
-            event: { replayId: 20 }
-          })
-      };
-    })
-    .stub(fs, 'readFile', () =>
+    await Create.run(['--definitionfile', 'config/foo.json', '--json']);
+    expect(getJsonOutput(sfCommandStubs), 'result').to.deep.include({
+      result: {
+        id: appId,
+        events: [
+          {
+            EventType: 'Application',
+            Index: 0,
+            ItemLabel: 'foo',
+            Message: 'Success',
+            Status: 'Success',
+            Total: 0,
+          },
+        ],
+      },
+    });
+  });
+
+  it('runs: --definitionfile config/foo.json (with failure)', async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = (request) => {
+      request = ensureJsonMap(request);
+      if (ensureString(request.method) === 'POST') {
+        return Promise.resolve({ id: appId });
+      }
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
+    };
+    stubMethod($$.SANDBOX, StreamingClient, 'create').callsFake(async (options?: StreamingClient.Options) => ({
+      handshake: async () => StreamingClient.ConnectionState.CONNECTED,
+      replay: async () => -1,
+      subscribe: async (streamInit?: () => Promise<void>) => {
+        // the streamInit is what creates the app and sets the app id
+        if (streamInit) {
+          await streamInit();
+        }
+        options?.streamProcessor({
+          payload: {
+            EventType: 'Application',
+            Status: 'Failed',
+            ItemLabel: 'foo',
+            FolderId: 'test',
+            Message: 'failed',
+          },
+          event: { replayId: 20 },
+        });
+      },
+    }));
+    stubMethod($$.SANDBOX, fs, 'readFile').callsFake(() =>
       Promise.resolve(
         JSON.stringify({
           templateSourceId: testTemplateJson.id,
-          assetIcon: '16.png'
+          assetIcon: '16.png',
         })
       )
-    )
-    .stdout()
-    .stderr()
-    .command(['analytics:app:create', '--definitionfile', 'config/foo.json'])
-    .it('runs analytics:app:create --definitionfile config/foo.json (with failure message)', ctx => {
-      // this is in the list of events output
-      expect(ctx.stdout).to.contain(messages.getMessage('finishAppCreationFailure', ['failed']));
-      // and this is from the command failing
-      expect(ctx.stderr).to.contain(messages.getMessage('finishAppCreationFailure', ['failed']));
-    });
+    );
+
+    try {
+      await Create.run(['--definitionfile', 'config/foo.json']);
+    } catch (error) {
+      expect(error, 'error').to.be.instanceOf(SfError);
+      expect((error as SfError).message, 'message').to.contain(
+        messages.getMessage('finishAppCreationFailure', ['failed'])
+      );
+      return;
+    }
+    expect.fail('Expecpted an error');
+  });
 
   // verify --json on failure returns the app id and the events
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
+  it('runs: --definitionfile config/foo.json --json (with failure)', async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = (request) => {
       request = ensureJsonMap(request);
-      if (request.method === 'POST') {
+      if (ensureString(request.method) === 'POST') {
         return Promise.resolve({ id: appId });
       }
-      return Promise.reject();
-    })
-    .stub(core.StreamingClient, 'create', async (options?: StreamingClient.Options) => {
-      return {
-        handshake: async () => StreamingClient.ConnectionState.CONNECTED,
-        replay: async () => -1,
-        subscribe: async (streamInit?: () => Promise<void>) => {
-          // the streamInit is what creates the app and sets the app id
-          if (streamInit) {
-            await streamInit();
-          }
-          options?.streamProcessor({
-            payload: {
-              EventType: 'Application',
-              Status: 'Failed',
-              ItemLabel: 'foo',
-              FolderId: 'test',
-              Message: 'failed'
-            },
-            event: { replayId: 20 }
-          });
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
+    };
+    stubMethod($$.SANDBOX, StreamingClient, 'create').callsFake(async (options?: StreamingClient.Options) => ({
+      handshake: async () => StreamingClient.ConnectionState.CONNECTED,
+      replay: async () => -1,
+      subscribe: async (streamInit?: () => Promise<void>) => {
+        // the streamInit is what creates the app and sets the app id
+        if (streamInit) {
+          await streamInit();
         }
-      };
-    })
-    .stub(fs, 'readFile', () =>
+        options?.streamProcessor({
+          payload: {
+            EventType: 'Application',
+            Status: 'Failed',
+            ItemLabel: 'foo',
+            FolderId: 'test',
+            Message: 'failed',
+          },
+          event: { replayId: 20 },
+        });
+      },
+    }));
+    stubMethod($$.SANDBOX, fs, 'readFile').callsFake(() =>
       Promise.resolve(
         JSON.stringify({
           templateSourceId: testTemplateJson.id,
-          assetIcon: '16.png'
+          assetIcon: '16.png',
         })
       )
-    )
-    .stderr()
-    .stdout()
-    .command(['analytics:app:create', '--definitionfile', 'config/foo.json', '--json'])
-    .it('runs analytics:app:create --definitionfile config/foo.json --json (with failure message)', ctx => {
-      // in tests, the output seems to go stdout
-      const output = ctx.stderr || ctx.stdout || '';
-      expect(output, 'output').to.not.equal('');
-      const results = JSON.parse(output) as unknown;
-      expect(results, 'results').to.deep.include({
+    );
+
+    try {
+      await Create.run(['--definitionfile', 'config/foo.json', '--json']);
+    } catch (error) {
+      expect(error, 'error').to.be.instanceOf(SfError);
+      expect((error as SfError).message, 'message').to.contain(
+        messages.getMessage('finishAppCreationFailure', ['failed'])
+      );
+      const json = getJsonOutput(sfCommandStubs);
+      expect(json, 'json results').to.deep.include({
         status: 1,
         exitCode: 1,
         message: messages.getMessage('finishAppCreationFailure', ['failed']),
-        result: {
+        data: {
           id: appId,
           events: [
             {
@@ -519,10 +502,13 @@ describe('analytics:app:create', () => {
               ItemLabel: 'foo',
               Message: 'failed',
               Status: 'Failed',
-              Total: 0
-            }
-          ]
-        }
+              Total: 0,
+            },
+          ],
+        },
       });
-    });
+      return;
+    }
+    expect.fail('Expecpted an error');
+  });
 });

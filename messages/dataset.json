@@ -2,6 +2,7 @@
   "listCommandDescription": "list Analytics datasets",
   "listCommandLongDescription": "Lists Analytics datasets in the specified target org.",
   "datasetsFound": "Found [%s] Analytics datasets.",
+  "noResultsFound": "No results found.",
   "displayCommandDescription": "displays a Analytics dataset's details",
   "displayCommandLongDescription": "Displays a Analytics dataset's details.",
   "missingRequiredField": "Missing Required Field: datasetid or datasetname",

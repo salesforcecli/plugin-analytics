@@ -5,25 +5,30 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { UX } from '@salesforce/command';
-import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/command/lib/test';
-import { SfdxError } from '@salesforce/core';
+import { Messages, SfError } from '@salesforce/core';
+import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js';
+import { stubSfCommandUx, stubSpinner } from '@salesforce/sf-plugins-core';
 import { JsonMap } from '@salesforce/ts-types';
-import { AutoInstallRequestType, AutoInstallStatus } from '../../../../src/lib/analytics/autoinstall/autoinstall';
+import { expect } from 'chai';
+import { stubMethod } from '@salesforce/ts-sinon';
+import Delete from '../../../../src/commands/analytics/autoinstall/app/delete.js';
+import { AutoInstallRequestType, AutoInstallStatus } from '../../../../src/lib/analytics/autoinstall/autoinstall.js';
+import { getStdout, stubDefaultOrg } from '../../../testutils.js';
 
-core.Messages.importMessagesDirectory(__dirname);
-const messages = core.Messages.loadMessages('@salesforce/analytics', 'autoinstall');
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
+const messages = Messages.loadMessages('@salesforce/analytics', 'autoinstall');
 
+const requestId = '0UZ6g000000E9qXGAS';
+const folderId = '0llxx000000000zCAA';
 function requestWithStatus(status: AutoInstallStatus): AutoInstallRequestType & JsonMap {
   return {
-    id: '0UZ6g000000E9qXGAS',
+    id: requestId,
     requestType: 'WaveAppDelete',
     requestName: 'AutoInstallRequest WaveAppDelete',
     requestStatus: status,
     templateApiName: 'abc',
-    folderId: '0llxx000000000zCAA',
-    folderLabel: 'abcde'
+    folderId,
+    folderLabel: 'abcde',
   };
 }
 
@@ -32,34 +37,43 @@ function stubTimeout(callback?: () => unknown) {
 }
 
 describe('analytics:autoinstall:app:delete', () => {
-  // use this so we can have return different values from withConnectionRequest() to simulate polling
-  let requestNum: number;
+  const $$ = new TestContext();
+  const testOrg = new MockTestOrgData();
+  let sfCommandStubs: ReturnType<typeof stubSfCommandUx>;
+
   beforeEach(() => {
-    requestNum = 0;
+    sfCommandStubs = stubSfCommandUx($$.SANDBOX);
+    stubSpinner($$.SANDBOX);
+    // have the polling happen immediately
+    stubMethod($$.SANDBOX, global, 'setTimeout').callsFake(stubTimeout);
+  });
+  afterEach(() => {
+    $$.restore();
   });
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve(requestWithStatus('New')))
-    .stdout()
-    .command(['analytics:autoinstall:app:delete', '--async', '-f', '0llxx000000000zCAA'])
-    .it('runs analytics:autoinstall:app:delete --async', ctx => {
-      expect(ctx.stdout).to.contain(messages.getMessage('appDeleteRequestSuccess', ['0UZ6g000000E9qXGAS']));
-    });
+  it(`runs: --async -f ${folderId}`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = () => Promise.resolve(requestWithStatus('New'));
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve(requestWithStatus('New')))
-    .stdout()
+    await Delete.run(['--async', '-f', folderId]);
+    const stdout = getStdout(sfCommandStubs);
+    expect(stdout, 'stdout').to.contain(messages.getMessage('appDeleteRequestSuccess', [requestId]));
+  });
+
+  it(`runs: --wait 0 -f ${folderId}`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = () => Promise.resolve(requestWithStatus('New'));
+
     // --wait 0 should be the same as --async so this should return right away
-    .command(['analytics:autoinstall:app:delete', '--wait', '0', '-f', '0llxx000000000zCAA'])
-    .it('runs analytics:autoinstall:app:delete --wait 0', ctx => {
-      expect(ctx.stdout).to.contain(messages.getMessage('appDeleteRequestSuccess', ['0UZ6g000000E9qXGAS']));
-    });
+    await Delete.run(['--wait', '0', '-f', folderId]);
+    const stdout = getStdout(sfCommandStubs);
+    expect(stdout, 'stdout').to.contain(messages.getMessage('appDeleteRequestSuccess', [requestId]));
+  });
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => {
+  it(`runs: -f ${folderId}`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    let requestNum = 0;
+    $$.fakeConnectionRequest = () => {
       requestNum++;
       if (requestNum === 1) {
         return Promise.resolve(requestWithStatus('New'));
@@ -68,23 +82,17 @@ describe('analytics:autoinstall:app:delete', () => {
         return Promise.resolve(requestWithStatus('Success'));
       }
       return Promise.resolve(requestWithStatus('InProgress'));
-    })
-    // hide the output from the UX spinner, since it bypasses stdout()
-    .stub(UX.prototype, 'startSpinner', () => {})
-    .stub(UX.prototype, 'stopSpinner', () => {})
-    // skip the delay in setTimeout() so the test runs faster
-    .stub(global, 'setTimeout', stubTimeout)
-    .stdout()
-    .command(['analytics:autoinstall:app:delete', '-f', '0llxx000000000zCAA'])
-    .it('runs analytics:autoinstall:app:delete with Success status', ctx => {
-      expect(ctx.stdout).to.contain(
-        messages.getMessage('appDeleteSuccess', ['0llxx000000000zCAA', '0UZ6g000000E9qXGAS'])
-      );
-    });
+    };
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => {
+    await Delete.run(['-f', folderId]);
+    const stdout = getStdout(sfCommandStubs);
+    expect(stdout, 'stdout').to.contain(messages.getMessage('appDeleteSuccess', [folderId, requestId]));
+  });
+
+  it(`runs: -f ${folderId} (with failure)`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    let requestNum = 0;
+    $$.fakeConnectionRequest = () => {
       requestNum++;
       if (requestNum === 1) {
         return Promise.resolve(requestWithStatus('New'));
@@ -93,20 +101,22 @@ describe('analytics:autoinstall:app:delete', () => {
         return Promise.resolve(requestWithStatus('Failed'));
       }
       return Promise.resolve(requestWithStatus('InProgress'));
-    })
-    .stub(UX.prototype, 'startSpinner', () => {})
-    .stub(UX.prototype, 'stopSpinner', () => {})
-    .stub(global, 'setTimeout', stubTimeout)
-    .stdout()
-    .stderr()
-    .command(['analytics:autoinstall:app:delete', '-f', '0llxx000000000zCAA'])
-    .it('runs analytics:autoinstall:app:delete with Failed status', ctx => {
-      expect(ctx.stderr).to.contain(messages.getMessage('appDeleteFailed', ['0UZ6g000000E9qXGAS']));
-    });
+    };
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => {
+    try {
+      await Delete.run(['-f', folderId]);
+    } catch (error) {
+      expect(error, 'error').to.be.instanceOf(SfError);
+      expect((error as SfError).message, 'message').to.contain(messages.getMessage('appDeleteFailed', [requestId]));
+      return;
+    }
+    expect.fail('Expected an error');
+  });
+
+  it(`runs: -f ${folderId} (cancelled)`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    let requestNum = 0;
+    $$.fakeConnectionRequest = () => {
       requestNum++;
       if (requestNum === 1) {
         return Promise.resolve(requestWithStatus('New'));
@@ -115,54 +125,62 @@ describe('analytics:autoinstall:app:delete', () => {
         return Promise.resolve(requestWithStatus('Cancelled'));
       }
       return Promise.resolve(requestWithStatus('InProgress'));
-    })
-    .stub(UX.prototype, 'startSpinner', () => {})
-    .stub(UX.prototype, 'stopSpinner', () => {})
-    .stub(global, 'setTimeout', stubTimeout)
-    .stdout()
-    .stderr()
-    .command(['analytics:autoinstall:app:delete', '-f', '0llxx000000000zCAA'])
-    .it('runs analytics:autoinstall:app:delete with Cancelled status', ctx => {
-      expect(ctx.stderr).to.contain(messages.getMessage('requestCancelled', ['0UZ6g000000E9qXGAS']));
-    });
+    };
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => {
+    try {
+      await Delete.run(['-f', folderId]);
+    } catch (error) {
+      expect(error, 'error').to.be.instanceOf(SfError);
+      expect((error as SfError).message, 'message').to.contain(messages.getMessage('requestCancelled', [requestId]));
+      return;
+    }
+    expect.fail('Expected an error');
+  });
+
+  it(`runs: -f ${folderId} -w .001 (timeout)`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    let requestNum = 0;
+    $$.fakeConnectionRequest = () => {
       requestNum++;
       if (requestNum === 1) {
         return Promise.resolve(requestWithStatus('New'));
       }
       return Promise.resolve(requestWithStatus('InProgress'));
-    })
-    .stub(UX.prototype, 'startSpinner', () => {})
-    .stub(UX.prototype, 'stopSpinner', () => {})
-    .stub(global, 'setTimeout', stubTimeout)
-    .stdout()
-    .stderr()
-    .command(['analytics:autoinstall:app:delete', '-f', '0llxx000000000zCAA', '-w', '.001'])
-    .it('runs analytics:autoinstall:app:delete with timeout in polling', ctx => {
-      expect(ctx.stderr).to.contain(messages.getMessage('requestPollingTimeout', ['0UZ6g000000E9qXGAS', 'InProgress']));
-    });
+    };
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => {
+    try {
+      await Delete.run(['-f', folderId, '-w', '.001']);
+    } catch (error) {
+      expect(error, 'error').to.be.instanceOf(SfError);
+      expect((error as SfError).message, 'message').to.contain(
+        messages.getMessage('requestPollingTimeout', [requestId, 'InProgress'])
+      );
+      return;
+    }
+    expect.fail('Expected an error');
+  });
+
+  it(`runs: -f ${folderId} (with error)`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    let requestNum = 0;
+    $$.fakeConnectionRequest = () => {
       requestNum++;
       if (requestNum === 1) {
         return Promise.resolve(requestWithStatus('New'));
-      } else if (requestNum === 3) {
-        return Promise.reject(new SfdxError('expected error in polling'));
+      }
+      if (requestNum === 3) {
+        return Promise.reject(new SfError('expected error in polling'));
       }
       return Promise.resolve(requestWithStatus('InProgress'));
-    })
-    .stub(UX.prototype, 'startSpinner', () => {})
-    .stub(UX.prototype, 'stopSpinner', () => {})
-    .stub(global, 'setTimeout', stubTimeout)
-    .stdout()
-    .stderr()
-    .command(['analytics:autoinstall:app:delete', '-f', '0llxx000000000zCAA'])
-    .it('runs analytics:autoinstall:app:delete with error during polling', ctx => {
-      expect(ctx.stderr).to.contain('expected error in polling');
-    });
+    };
+
+    try {
+      await Delete.run(['-f', folderId]);
+    } catch (error) {
+      expect(error, 'error').to.be.instanceOf(SfError);
+      expect((error as SfError).message, 'message').to.contain('expected error in polling');
+      return;
+    }
+    expect.fail('Expected an error');
+  });
 });

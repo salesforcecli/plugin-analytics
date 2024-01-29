@@ -5,38 +5,54 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { SfdxCommand } from '@salesforce/command';
-import { Messages, Org } from '@salesforce/core';
-import DatasetSvc from '../../../lib/analytics/dataset/dataset';
+import {
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
+import { Messages } from '@salesforce/core';
+import DatasetSvc from '../../../lib/analytics/dataset/dataset.js';
+import { generateTableColumns } from '../../../lib/analytics/utils.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'dataset');
 
-export default class List extends SfdxCommand {
-  public static description = messages.getMessage('listCommandDescription');
-  public static longDescription = messages.getMessage('listCommandLongDescription');
+export default class List extends SfCommand<
+  Array<{
+    id?: string;
+    name?: string;
+    namespace?: string;
+    label?: string;
+    currentversionid?: string;
+    folderid?: string;
+  }>
+> {
+  public static readonly summary = messages.getMessage('listCommandDescription');
+  public static readonly description = messages.getMessage('listCommandLongDescription');
 
-  public static examples = ['$ sfdx analytics:dataset:list'];
+  public static readonly examples = ['$ sfdx analytics:dataset:list'];
 
-  protected static flagsConfig = {};
-
-  protected static requiresUsername = true;
-  protected static requiresProject = false;
-
-  protected static tableColumnData = ['id', 'namespace', 'name', 'label', 'currentversionid', 'folderid'];
+  public static readonly flags = {
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
+  };
 
   public async run() {
-    const svc = new DatasetSvc((this.org as Org).getConnection());
-    const datasets = ((await svc.list()) || []).map(dataset => ({
+    const { flags } = await this.parse(List);
+    const svc = new DatasetSvc(flags['target-org'].getConnection(flags['api-version']));
+    const datasets = ((await svc.list()) || []).map((dataset) => ({
       id: dataset.id,
       name: dataset.name,
       namespace: dataset.namespace,
       label: dataset.label,
       currentversionid: dataset.currentVersionId,
-      folderid: dataset.folder?.id
+      folderid: dataset.folder?.id,
     }));
-    if (datasets.length) {
-      this.ux.styledHeader(messages.getMessage('datasetsFound', [datasets.length]));
+    if (datasets.length > 0) {
+      this.styledHeader(messages.getMessage('datasetsFound', [datasets.length]));
+      this.table(datasets, generateTableColumns(['id', 'name', 'namespace', 'label', 'currentversionid', 'folderid']));
+    } else {
+      this.log(messages.getMessage('noResultsFound'));
     }
     return datasets;
   }

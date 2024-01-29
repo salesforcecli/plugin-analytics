@@ -1,5 +1,6 @@
 {
   "listCommandDescription": "list Analytics lenses",
   "listCommandLongDescription": "Lists Analytics lenses in the specified target org.",
-  "lensesFound": "Found [%s] Analytics lenses."
+  "lensesFound": "Found [%s] Analytics lenses.",
+  "noResultsFound": "No results found."
 }

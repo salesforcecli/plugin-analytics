@@ -5,206 +5,180 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/command/lib/test';
+import { Messages } from '@salesforce/core';
+import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js';
+import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
+import { expect } from 'chai';
 import { AnyJson, ensureJsonMap, ensureString } from '@salesforce/ts-types';
+import Create from '../../../src/commands/analytics/template/create.js';
+import { getStdout, stubDefaultOrg } from '../../testutils.js';
 
-core.Messages.importMessagesDirectory(__dirname);
-const messages = core.Messages.loadMessages('@salesforce/analytics', 'template');
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
+const messages = Messages.loadMessages('@salesforce/analytics', 'template');
 const templateId = '0Nkxx000000000zCAA';
+const folderId = '00lxx000000000zCAA';
 
 describe('analytics:template:create', () => {
-  let requestBody: AnyJson | undefined;
-  function saveOffRequestBody(json: string | undefined) {
-    requestBody = undefined;
-    try {
-      requestBody = json && (JSON.parse(json) as AnyJson);
-    } catch (e) {
-      expect.fail('Error parsing request body: ' + (e instanceof Error ? e.message : String(e)));
-    }
-  }
+  const $$ = new TestContext();
+  const testOrg = new MockTestOrgData();
+  let sfCommandStubs: ReturnType<typeof stubSfCommandUx>;
 
   beforeEach(() => {
-    requestBody = undefined;
+    sfCommandStubs = stubSfCommandUx($$.SANDBOX);
+  });
+  afterEach(() => {
+    $$.restore();
   });
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
+  it(`runs: --folderid ${folderId}`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    let requestBody: AnyJson | undefined;
+    $$.fakeConnectionRequest = (request) => {
       request = ensureJsonMap(request);
       if (request.method === 'POST') {
-        saveOffRequestBody(ensureString(request.body));
+        requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
         return Promise.resolve({ id: templateId });
       }
-      return Promise.reject();
-    })
-    .stdout()
-    .command(['analytics:template:create', '--folderid', '00lxx000000000zCAA'])
-    .it('runs analytics:app:create --folderid 00lxx000000000zCAA', ctx => {
-      expect(ctx.stdout).to.contain(messages.getMessage('createSuccess', [templateId]));
-      expect(requestBody, 'requestBody').to.deep.equal({ folderSource: { id: '00lxx000000000zCAA' } });
-    });
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
+    };
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
-      request = ensureJsonMap(request);
-      if (request.method === 'POST') {
-        saveOffRequestBody(ensureString(request.body));
-        return Promise.resolve({ id: templateId });
-      }
-      return Promise.reject();
-    })
-    .stdout()
-    .command(['analytics:template:create', '-f', '00lxx000000000zCAA', '--label', 'testlabel'])
-    .it('runs analytics:app:create -f 00lxx000000000zCAA --label testlabel', ctx => {
-      expect(ctx.stdout).to.contain(messages.getMessage('createSuccess', [templateId]));
-      expect(requestBody, 'requestBody').to.deep.equal({
-        folderSource: { id: '00lxx000000000zCAA' },
-        label: 'testlabel'
-      });
-    });
+    await Create.run(['--folderid', folderId]);
+    const stdout = getStdout(sfCommandStubs);
+    expect(stdout, 'stdout').to.contain(messages.getMessage('createSuccess', [templateId]));
+    expect(requestBody, 'requestBody').to.deep.equal({ folderSource: { id: folderId } });
+  });
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
+  it(`runs: -f ${folderId} --label testlabel`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    let requestBody: AnyJson | undefined;
+    $$.fakeConnectionRequest = (request) => {
       request = ensureJsonMap(request);
       if (request.method === 'POST') {
-        saveOffRequestBody(ensureString(request.body));
+        requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
         return Promise.resolve({ id: templateId });
       }
-      return Promise.reject();
-    })
-    .stdout()
-    .command(['analytics:template:create', '-f', '00lxx000000000zCAA', '--description', 'test description'])
-    .it('runs analytics:app:create -f 00lxx000000000zCAA --description "test description"', ctx => {
-      expect(ctx.stdout).to.contain(messages.getMessage('createSuccess', [templateId]));
-      expect(requestBody, 'requestBody').to.deep.equal({
-        folderSource: { id: '00lxx000000000zCAA' },
-        description: 'test description'
-      });
-    });
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
+    };
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
+    await Create.run(['-f', folderId, '--label', 'testlabel']);
+    const stdout = getStdout(sfCommandStubs);
+    expect(stdout, 'stdout').to.contain(messages.getMessage('createSuccess', [templateId]));
+    expect(requestBody, 'requestBody').to.deep.equal({ folderSource: { id: folderId }, label: 'testlabel' });
+  });
+
+  it(`runs: -f ${folderId} --description "test description"`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    let requestBody: AnyJson | undefined;
+    $$.fakeConnectionRequest = (request) => {
       request = ensureJsonMap(request);
       if (request.method === 'POST') {
-        saveOffRequestBody(ensureString(request.body));
+        requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
         return Promise.resolve({ id: templateId });
       }
-      return Promise.reject();
-    })
-    .stdout()
-    .command([
-      'analytics:template:create',
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
+    };
+
+    await Create.run(['-f', folderId, '--description', 'test description']);
+    const stdout = getStdout(sfCommandStubs);
+    expect(stdout, 'stdout').to.contain(messages.getMessage('createSuccess', [templateId]));
+    expect(requestBody, 'requestBody').to.deep.equal({
+      folderSource: { id: folderId },
+      description: 'test description',
+    });
+  });
+
+  it(`runs: -f ${folderId} --label testlabel --description "test description"`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    let requestBody: AnyJson | undefined;
+    $$.fakeConnectionRequest = (request) => {
+      request = ensureJsonMap(request);
+      if (request.method === 'POST') {
+        requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
+        return Promise.resolve({ id: templateId });
+      }
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
+    };
+
+    await Create.run(['-f', folderId, '--label', 'testlabel', '--description', 'test description']);
+    const stdout = getStdout(sfCommandStubs);
+    expect(stdout, 'stdout').to.contain(messages.getMessage('createSuccess', [templateId]));
+    expect(requestBody, 'requestBody').to.deep.equal({
+      folderSource: { id: folderId },
+      label: 'testlabel',
+      description: 'test description',
+    });
+  });
+
+  it(`runs: -f ${folderId} -r "05vxx0000004CAeAAM, 05vxx0000004CAeAAM"`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    let requestBody: AnyJson | undefined;
+    $$.fakeConnectionRequest = (request) => {
+      request = ensureJsonMap(request);
+      if (request.method === 'POST') {
+        requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
+        return Promise.resolve({ id: templateId });
+      }
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
+    };
+
+    await Create.run(['-f', folderId, '-r', '05vxx0000004CAeAAM, 05vxx0000004CAeAAM']);
+    const stdout = getStdout(sfCommandStubs);
+    expect(stdout, 'stdout').to.contain(messages.getMessage('createSuccess', [templateId]));
+    expect(requestBody, 'requestBody').to.deep.equal({
+      folderSource: { id: folderId },
+      recipeIds: ['05vxx0000004CAeAAM', '05vxx0000004CAeAAM'],
+    });
+  });
+
+  it(`runs: -f ${folderId} -d "1dtxxx000000001, 1dtxxx000000002" --apiversion 59.0`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    let requestBody: AnyJson | undefined;
+    $$.fakeConnectionRequest = (request) => {
+      request = ensureJsonMap(request);
+      if (request.method === 'POST') {
+        requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
+        return Promise.resolve({ id: templateId });
+      }
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
+    };
+
+    await Create.run(['-f', folderId, '-d', '1dtxxx000000001, 1dtxxx000000002', '--apiversion', '59.0']);
+    const stdout = getStdout(sfCommandStubs);
+    expect(stdout, 'stdout').to.contain(messages.getMessage('createSuccess', [templateId]));
+    expect(requestBody, 'requestBody').to.deep.equal({
+      folderSource: { id: folderId },
+      dataTransformIds: ['1dtxxx000000001', '1dtxxx000000002'],
+    });
+  });
+
+  it(`runs: -f ${folderId} -r "05vxx0000004CAeAAM, 05vxx0000004CAeAAM" -d "1dtxxx000000001, 1dtxxx000000002" --apiversion 59.0`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    let requestBody: AnyJson | undefined;
+    $$.fakeConnectionRequest = (request) => {
+      request = ensureJsonMap(request);
+      if (request.method === 'POST') {
+        requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
+        return Promise.resolve({ id: templateId });
+      }
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
+    };
+
+    await Create.run([
       '-f',
-      '00lxx000000000zCAA',
-      '-l',
-      'testlabel',
-      '--description',
-      'test description'
-    ])
-    .it('runs analytics:app:create -f 00lxx000000000zCAA -l testlabel --description "test description"', ctx => {
-      expect(ctx.stdout).to.contain(messages.getMessage('createSuccess', [templateId]));
-      expect(requestBody, 'requestBody').to.deep.equal({
-        folderSource: { id: '00lxx000000000zCAA' },
-        label: 'testlabel',
-        description: 'test description'
-      });
-    });
-
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
-      request = ensureJsonMap(request);
-      if (request.method === 'POST') {
-        saveOffRequestBody(ensureString(request.body));
-        return Promise.resolve({ id: templateId });
-      }
-      return Promise.reject();
-    })
-    .stdout()
-    .command([
-      'analytics:template:create',
-      '--folderid',
-      '00lxx000000000zCAA',
-      '-r',
-      '05vxx0000004CAeAAM, 05vxx0000004CAeAAM'
-    ])
-    .it(
-      'runs analytics:template:create --folderid 00lxx000000000zCAA, -r "05vxx0000004CAeAAM, 05vxx0000004CAeAAM"',
-      ctx => {
-        expect(ctx.stdout).to.contain(messages.getMessage('createSuccess', [templateId]));
-        expect(requestBody, 'requestBody').to.deep.equal({
-          folderSource: { id: '00lxx000000000zCAA' },
-          recipeIds: ['05vxx0000004CAeAAM', '05vxx0000004CAeAAM']
-        });
-      }
-    );
-
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
-      request = ensureJsonMap(request);
-      if (request.method === 'POST') {
-        saveOffRequestBody(ensureString(request.body));
-        return Promise.resolve({ id: templateId });
-      }
-      return Promise.reject();
-    })
-    .stdout()
-    .command([
-      'analytics:template:create',
-      '--folderid',
-      '00lxx000000000zCAA',
-      '-d',
-      '1dtxxx000000001, 1dtxxx000000002',
-      '--apiversion',
-      '59.0'
-    ])
-    .it(
-      'runs analytics:template:create --folderid 00lxx000000000zCAA, -d "1dtxxx000000001, 1dtxxx000000002" --apiversion 59.0',
-      ctx => {
-        expect(ctx.stdout).to.contain(messages.getMessage('createSuccess', [templateId]));
-        expect(requestBody, 'requestBody').to.deep.equal({
-          folderSource: { id: '00lxx000000000zCAA' },
-          dataTransformIds: ['1dtxxx000000001', '1dtxxx000000002']
-        });
-      }
-    );
-
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
-      request = ensureJsonMap(request);
-      if (request.method === 'POST') {
-        saveOffRequestBody(ensureString(request.body));
-        return Promise.resolve({ id: templateId });
-      }
-      return Promise.reject();
-    })
-    .stdout()
-    .command([
-      'analytics:template:create',
-      '--folderid',
-      '00lxx000000000zCAA',
+      folderId,
       '-r',
       '05vxx0000004CAeAAM, 05vxx0000004CAeAAM',
       '-d',
       '1dtxxx000000001, 1dtxxx000000002',
       '--apiversion',
-      '59.0'
-    ])
-    .it(
-      'runs analytics:template:create --folderid 00lxx000000000zCAA, -r "05vxx0000004CAeAAM, 05vxx0000004CAeAAM", -d "1dtxxx000000001, 1dtxxx000000002" --apiversion 59.0',
-      ctx => {
-        expect(ctx.stdout).to.contain(messages.getMessage('createSuccess', [templateId]));
-        expect(requestBody, 'requestBody').to.deep.equal({
-          folderSource: { id: '00lxx000000000zCAA' },
-          recipeIds: ['05vxx0000004CAeAAM', '05vxx0000004CAeAAM'],
-          dataTransformIds: ['1dtxxx000000001', '1dtxxx000000002']
-        });
-      }
-    );
+      '59.0',
+    ]);
+    const stdout = getStdout(sfCommandStubs);
+    expect(stdout, 'stdout').to.contain(messages.getMessage('createSuccess', [templateId]));
+    expect(requestBody, 'requestBody').to.deep.equal({
+      folderSource: { id: folderId },
+      recipeIds: ['05vxx0000004CAeAAM', '05vxx0000004CAeAAM'],
+      dataTransformIds: ['1dtxxx000000001', '1dtxxx000000002'],
+    });
+  });
 });

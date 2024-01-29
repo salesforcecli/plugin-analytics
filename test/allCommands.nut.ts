@@ -6,7 +6,7 @@
  */
 
 import { execCmd } from '@salesforce/cli-plugins-testkit';
-import { expect } from '@salesforce/command/lib/test';
+import { expect } from 'chai';
 import { JsonMap } from '@salesforce/ts-types';
 
 describe('verifies all command run successfully', () => {

@@ -4,109 +4,115 @@
  * Licensed under the BSD 3-Clause license.
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import { promises as fs } from 'fs';
-import { flags, SfdxCommand } from '@salesforce/command';
-import { Messages, Org, SfdxError } from '@salesforce/core';
+import {
+  Flags,
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
+import { Messages, SfError } from '@salesforce/core';
 
-import AutoInstall, { AutoInstallCreateAppConfigurationBody } from '../../../../lib/analytics/autoinstall/autoinstall';
+import AutoInstall, {
+  type AutoInstallCreateAppConfigurationBody,
+  type AutoInstallRequestType,
+} from '../../../../lib/analytics/autoinstall/autoinstall.js';
 import {
   DEF_APP_CREATE_UPDATE_TIMEOUT,
   DEF_POLLING_INTERVAL,
-  MIN_POLLING_INTERVAL
-} from '../../../../lib/analytics/constants';
-import { throwWithData } from '../../../../lib/analytics/utils';
+  MIN_POLLING_INTERVAL,
+} from '../../../../lib/analytics/constants.js';
+import { commandUx, fs, numberFlag, throwWithData } from '../../../../lib/analytics/utils.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'autoinstall');
 
-export default class Create extends SfdxCommand {
-  public static description = messages.getMessage('createCommandDescription');
-  public static longDescription = messages.getMessage('createCommandLongDescription');
+export default class Create extends SfCommand<AutoInstallRequestType | { id: string }> {
+  public static readonly summary = messages.getMessage('createCommandDescription');
+  public static readonly description = messages.getMessage('createCommandLongDescription');
 
-  public static examples = [
+  public static readonly examples = [
     '$ sfdx analytics:autoinstall:app:create -t templateid',
-    '$ sfdx analytics:autoinstall:app:create -n templatename'
+    '$ sfdx analytics:autoinstall:app:create -n templatename',
   ];
 
-  protected static flagsConfig = {
-    templateid: flags.id({
+  public static readonly flags = {
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
+    templateid: Flags.salesforceId({
       char: 't',
-      description: messages.getMessage('templateidFlagDescription'),
-      longDescription: messages.getMessage('templateidFlagLongDescription'),
-      exclusive: ['templatename']
+      summary: messages.getMessage('templateidFlagDescription'),
+      description: messages.getMessage('templateidFlagLongDescription'),
+      exclusive: ['templatename'],
     }),
-    templatename: flags.string({
+    templatename: Flags.string({
       char: 'n',
-      description: messages.getMessage('templatenameFlagDescription'),
-      longDescription: messages.getMessage('templatenameFlagLongDescription'),
-      exclusive: ['templateid']
+      summary: messages.getMessage('templatenameFlagDescription'),
+      description: messages.getMessage('templatenameFlagLongDescription'),
+      exclusive: ['templateid'],
     }),
-    appname: flags.string({
-      description: messages.getMessage('appnameFlagDescription'),
-      longDescription: messages.getMessage('appnameFlagLongDescription')
+    appname: Flags.string({
+      summary: messages.getMessage('appnameFlagDescription'),
+      description: messages.getMessage('appnameFlagLongDescription'),
     }),
-    appdescription: flags.string({
-      description: messages.getMessage('appdescriptionFlagDescription'),
-      longDescription: messages.getMessage('appdescriptionFlagLongDescription')
+    appdescription: Flags.string({
+      summary: messages.getMessage('appdescriptionFlagDescription'),
+      description: messages.getMessage('appdescriptionFlagLongDescription'),
     }),
-    appconfiguration: flags.filepath({
+    appconfiguration: Flags.file({
       char: 'c',
-      description: messages.getMessage('appConfigFileFlagDescription'),
-      longDescription: messages.getMessage('appConfigFileFlagLongDescription'),
-      exclusive: ['appname', 'appdescription']
+      summary: messages.getMessage('appConfigFileFlagDescription'),
+      description: messages.getMessage('appConfigFileFlagLongDescription'),
+      exclusive: ['appname', 'appdescription'],
     }),
-    noenqueue: flags.boolean({
-      description: messages.getMessage('noenqueueFlagDescription'),
-      longDescription: messages.getMessage('noenqueueFlagLongDescription'),
-      hidden: true
+    noenqueue: Flags.boolean({
+      summary: messages.getMessage('noenqueueFlagDescription'),
+      description: messages.getMessage('noenqueueFlagLongDescription'),
+      hidden: true,
     }),
-    async: flags.boolean({
+    async: Flags.boolean({
       char: 'a',
-      description: messages.getMessage('appCreateAsyncDescription'),
-      longDescription: messages.getMessage('appCreateAsyncLongDescription')
+      summary: messages.getMessage('appCreateAsyncDescription'),
+      description: messages.getMessage('appCreateAsyncLongDescription'),
     }),
-    wait: flags.number({
+    wait: numberFlag({
       char: 'w',
-      description: messages.getMessage('autoInstallWaitDescription'),
-      longDescription: messages.getMessage('autoInstallWaitLongDescription', [DEF_APP_CREATE_UPDATE_TIMEOUT]),
+      summary: messages.getMessage('autoInstallWaitDescription'),
+      description: messages.getMessage('autoInstallWaitLongDescription', [DEF_APP_CREATE_UPDATE_TIMEOUT]),
       min: 0,
-      default: DEF_APP_CREATE_UPDATE_TIMEOUT
+      default: DEF_APP_CREATE_UPDATE_TIMEOUT,
     }),
-    pollinterval: flags.number({
+    pollinterval: Flags.integer({
       char: 'p',
-      description: messages.getMessage('autoInstallPollIntervalDescription'),
-      longDescription: messages.getMessage('autoInstallPollIntervalLongDescription', [DEF_POLLING_INTERVAL]),
+      summary: messages.getMessage('autoInstallPollIntervalDescription'),
+      description: messages.getMessage('autoInstallPollIntervalLongDescription', [DEF_POLLING_INTERVAL]),
       min: MIN_POLLING_INTERVAL,
-      default: DEF_POLLING_INTERVAL
-    })
+      default: DEF_POLLING_INTERVAL,
+    }),
   };
 
-  // Comment this out if your command does not require an org username
-  protected static requiresUsername = true;
-  protected static requiresProject = false;
-
   public async run() {
-    const templateInput = (this.flags.templateid ?? this.flags.templatename) as string;
+    const { flags } = await this.parse(Create);
+    const templateInput = (flags.templateid ?? flags.templatename) as string;
     if (!templateInput) {
-      throw new SfdxError(messages.getMessage('missingRequiredField'));
+      throw new SfError(messages.getMessage('missingRequiredField'));
     }
 
-    const autoinstall = new AutoInstall(this.org as Org);
+    const autoinstall = new AutoInstall(flags['target-org'].getConnection(flags['api-version']));
 
     const defaultAppConfiguration: AutoInstallCreateAppConfigurationBody = {
-      appName: this.flags.appname as string,
-      appLabel: this.flags.appname as string,
-      appDescription: this.flags.appdescription as string
+      appName: flags.appname,
+      appLabel: flags.appname,
+      appDescription: flags.appdescription,
     };
 
     let json: unknown;
     let fileAppConfiguration: unknown;
-    if (this.flags.appconfiguration) {
-      const path = String(this.flags.appconfiguration);
+    if (flags.appconfiguration) {
+      const path = flags.appconfiguration;
       try {
-        json = JSON.parse(await fs.readFile(path, 'utf8'));
+        json = JSON.parse(await fs.readFile(path));
       } catch (e) {
-        throw new SfdxError(
+        throw new SfError(
           `Error parsing ${path}`,
           undefined,
           undefined,
@@ -115,36 +121,36 @@ export default class Create extends SfdxCommand {
         );
       }
       if (typeof json !== 'object') {
-        throw new SfdxError(`Invalid json in ${path}, expected an object, found a ${typeof json}`);
+        throw new SfError(`Invalid json in ${path}, expected an object, found a ${typeof json}`);
       }
     }
     if (json) {
-      fileAppConfiguration = json as AutoInstallCreateAppConfigurationBody | unknown;
+      fileAppConfiguration = json;
     }
 
     const autoInstallId = await autoinstall.create(
       templateInput,
       fileAppConfiguration ? fileAppConfiguration : defaultAppConfiguration,
-      !this.flags.noenqueue
+      !flags.noenqueue
     );
 
     // they did't enqueue or said they don't want to wait, so just return now
-    if (this.flags.noenqueue || this.flags.async || this.flags.wait <= 0) {
-      this.ux.log(messages.getMessage('appCreateRequestSuccess', [autoInstallId]));
+    if (flags.noenqueue || flags.async || flags.wait <= 0) {
+      this.log(messages.getMessage('appCreateRequestSuccess', [autoInstallId]));
       return { id: autoInstallId };
     } else if (autoInstallId) {
       // otherwise start polling the request
       const finalRequest = await autoinstall.pollRequest(autoInstallId, {
-        timeoutMs: this.flags.wait * 60 * 1000,
-        pauseMs: this.flags.pollinterval as number,
-        timeoutMessage: r =>
-          throwWithData(messages.getMessage('requestPollingTimeout', [autoInstallId, r?.requestStatus || '']), r),
-        ux: this.ux,
-        startMesg: messages.getMessage('startRequestPolling', [autoInstallId])
+        timeoutMs: flags.wait * 60 * 1000,
+        pauseMs: flags.pollinterval,
+        timeoutMessage: (r) =>
+          throwWithData(messages.getMessage('requestPollingTimeout', [autoInstallId, r?.requestStatus ?? '']), r),
+        ux: commandUx(this),
+        startMesg: messages.getMessage('startRequestPolling', [autoInstallId]),
       });
       const status = finalRequest.requestStatus?.toLocaleLowerCase();
       if (status === 'success') {
-        this.ux.log(messages.getMessage('appCreateSuccess', [finalRequest.folderId, autoInstallId]));
+        this.log(messages.getMessage('appCreateSuccess', [finalRequest.folderId, autoInstallId]));
         return finalRequest;
       } else if (status === 'cancelled') {
         throwWithData(messages.getMessage('requestCancelled', [autoInstallId]), finalRequest);
@@ -155,7 +161,7 @@ export default class Create extends SfdxCommand {
       }
     } else {
       // we should always get an auto-install-request id back, but fail if we don't
-      throw new SfdxError(messages.getMessage('appCreateFailed', ['']));
+      throw new SfError(messages.getMessage('appCreateFailed', ['']));
     }
   }
 }

@@ -15,8 +15,7 @@
       "name": "Run All Tests",
       "type": "node",
       "request": "launch",
-      "protocol": "inspector",
-      "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+      "program": "${workspaceFolder}/node_modules/mocha/bin/mocha",
       "args": ["--inspect", "--no-timeouts", "--colors", "test/**/*.test.ts"],
       "env": {
         "NODE_ENV": "development",
@@ -31,13 +30,28 @@
       "type": "node",
       "request": "launch",
       "name": "Run Current Test",
-      "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+      "sourceMaps": true,
+      "program": "${workspaceFolder}/node_modules/mocha/bin/mocha",
       "args": ["--inspect", "--no-timeouts", "--colors", "${file}"],
       "env": {
         "NODE_ENV": "development",
         "SFDX_ENV": "development"
       },
+      "smartStep": true,
+      "internalConsoleOptions": "openOnSessionStart",
+      "preLaunchTask": "Compile"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Run Tests in Current Test's Folder",
       "sourceMaps": true,
+      "program": "${workspaceFolder}/node_modules/mocha/bin/mocha",
+      "args": ["--inspect", "--no-timeouts", "--colors", "--recursive", "${fileDirname}/**/*.test.ts"],
+      "env": {
+        "NODE_ENV": "development",
+        "SFDX_ENV": "development"
+      },
       "smartStep": true,
       "internalConsoleOptions": "openOnSessionStart",
       "preLaunchTask": "Compile"

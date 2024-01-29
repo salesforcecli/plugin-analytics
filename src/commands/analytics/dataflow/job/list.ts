@@ -5,46 +5,66 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { flags, SfdxCommand } from '@salesforce/command';
-import { Messages, Org } from '@salesforce/core';
-import Dataflow from '../../../../lib/analytics/dataflow/dataflow';
+import {
+  Flags,
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
+import { Messages } from '@salesforce/core';
+import Dataflow from '../../../../lib/analytics/dataflow/dataflow.js';
+import { generateTableColumns } from '../../../../lib/analytics/utils.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'dataflow');
 
-export default class List extends SfdxCommand {
-  public static description = messages.getMessage('listJobsCommandDescription');
-  public static longDescription = messages.getMessage('listJobsCommandLongDescription');
+export default class List extends SfCommand<
+  Array<{
+    id?: string;
+    label?: string;
+    status?: string;
+    waitTime?: number;
+    progress?: number;
+    retryCount?: number;
+    startDate?: string;
+  }>
+> {
+  public static readonly summary = messages.getMessage('listJobsCommandDescription');
+  public static readonly description = messages.getMessage('listJobsCommandLongDescription');
 
-  public static examples = ['$ sfdx analytics:dataflow:job:list --dataflowid <dataflowid>'];
+  public static readonly examples = ['$ sfdx analytics:dataflow:job:list --dataflowid <dataflowid>'];
 
-  protected static flagsConfig = {
-    dataflowid: flags.id({
+  public static readonly flags = {
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
+    dataflowid: Flags.salesforceId({
       char: 'i',
       required: true,
-      description: messages.getMessage('dataflowidFlagDescription'),
-      longDescription: messages.getMessage('dataflowidFlagLongDescription')
-    })
+      summary: messages.getMessage('dataflowidFlagDescription'),
+      description: messages.getMessage('dataflowidFlagLongDescription'),
+    }),
   };
 
-  protected static requiresUsername = true;
-  protected static requiresProject = false;
-
-  protected static tableColumnData = ['id', 'label', 'status', 'waitTime', 'progress', 'retryCount', 'startDate'];
-
   public async run() {
-    const dataflow = new Dataflow(this.org as Org);
-    const dataflowJobs = ((await dataflow.getDataflowJobs(this.flags.dataflowid as string)) || []).map(job => ({
+    const { flags } = await this.parse(List);
+    const dataflow = new Dataflow(flags['target-org'].getConnection(flags['api-version']));
+    const dataflowJobs = ((await dataflow.getDataflowJobs(flags.dataflowid)) || []).map((job) => ({
       id: job.id,
       label: job.label,
       status: job.status,
       waitTime: job.waitTime,
       progress: job.progress,
       retryCount: job.retryCount,
-      startDate: job.startDate
+      startDate: job.startDate,
     }));
-    if (dataflowJobs.length) {
-      this.ux.styledHeader(messages.getMessage('dataflowsFound', [dataflowJobs.length]));
+    if (dataflowJobs.length > 0) {
+      this.styledHeader(messages.getMessage('dataflowsFound', [dataflowJobs.length]));
+      this.table(
+        dataflowJobs,
+        generateTableColumns(['id', 'label', 'status', 'waitTime', 'progress', 'retryCount', 'startDate'])
+      );
+    } else {
+      this.log(messages.getMessage('noResultsFound'));
     }
     return dataflowJobs;
   }

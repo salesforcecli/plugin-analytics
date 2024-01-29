@@ -5,86 +5,91 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { flags, SfdxCommand } from '@salesforce/command';
-import { Org, Messages, SfdxError } from '@salesforce/core';
+import {
+  Flags,
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
+import { Messages, SfError } from '@salesforce/core';
 import chalk from 'chalk';
-import { colorize, getStatusIcon, COLORS } from '../../../lib/analytics/utils';
+import { colorize, getStatusIcon, COLORS } from '../../../lib/analytics/utils.js';
 
-import TemplateLint from '../../../lib/analytics/template/lint';
+import TemplateLint, { type LintType } from '../../../lib/analytics/template/lint.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'lint');
 
-export default class Lint extends SfdxCommand {
-  public static description = messages.getMessage('lintCommandDescription');
-  public static longDescription = messages.getMessage('lintCommandLongDescription');
+export default class Lint extends SfCommand<LintType | string> {
+  public static readonly summary = messages.getMessage('lintCommandDescription');
+  public static readonly description = messages.getMessage('lintCommandLongDescription');
 
-  public static examples = [
+  public static readonly examples = [
     '$ sfdx analytics:template:lint -t templateId',
-    'sfdx analytics:template:lint -n templateApiName'
+    'sfdx analytics:template:lint -n templateApiName',
   ];
 
-  protected static flagsConfig = {
-    templateid: flags.string({
+  public static readonly flags = {
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
+    templateid: Flags.string({
       char: 't',
-      description: messages.getMessage('templateidFlagDescription'),
-      longDescription: messages.getMessage('templateidFlagLongDescription'),
-      exclusive: ['templatename']
+      summary: messages.getMessage('templateidFlagDescription'),
+      description: messages.getMessage('templateidFlagLongDescription'),
+      exclusive: ['templatename'],
     }),
-    templatename: flags.string({
+    templatename: Flags.string({
       char: 'n',
-      description: messages.getMessage('templatenameFlagDescription'),
-      longDescription: messages.getMessage('templatenameFlagLongDescription'),
-      exclusive: ['templateid']
-    })
+      summary: messages.getMessage('templatenameFlagDescription'),
+      description: messages.getMessage('templatenameFlagLongDescription'),
+      exclusive: ['templateid'],
+    }),
   };
 
-  protected static requiresUsername = true;
-  protected static requiresProject = false;
-
   public async run() {
-    const templateName = this.flags.templatename as string;
-    const templateId = this.flags.templateid as string;
-    const lint = new TemplateLint(this.org as Org);
+    const { flags } = await this.parse(Lint);
+    const templateName = flags.templatename as string;
+    const templateId = flags.templateid as string;
+    if (!templateName && !templateId) {
+      throw new SfError(messages.getMessage('missingRequiredField'));
+    }
+    const lint = new TemplateLint(flags['target-org'].getConnection(flags['api-version']));
     if (!lint.appliesToThisServerVersion()) {
       const commandNotAvailable = 'Command only available in api version 58.0 or later';
-      this.ux.log(commandNotAvailable);
+      this.log(commandNotAvailable);
       return commandNotAvailable;
     }
     const result = await lint.run(templateName ? templateName : templateId);
 
-    const tasks = result.tasks || [];
+    const tasks = result.tasks ?? [];
     if (tasks.length > 0) {
-      this.ux.styledHeader(
-        colorize(messages.getMessage('tasksFound', [result.label, String(result.score)]), chalk.blue)
-      );
+      this.styledHeader(colorize(messages.getMessage('tasksFound', [result.label, String(result.score)]), chalk.blue));
     }
 
-    this.ux.table(
-      tasks.map(task => {
-        return {
-          label: task.label || '',
-          readinessStatus: task.readinessStatus || '',
-          message: task.message || ''
-        };
-      }),
+    this.table(
+      tasks.map((task) => ({
+        label: task.label ?? '',
+        readinessStatus: task.readinessStatus ?? '',
+        message: task.message ?? '',
+      })),
       {
-        columns: [
-          { key: 'label', label: 'Task', format: v => v },
-          {
-            key: 'readinessStatus',
-            label: 'Status',
-            format: v => colorize(getStatusIcon(v) + ' ' + v, COLORS.readinessStatus(v))
-          },
-          { key: 'message', label: 'Message', format: v => v }
-        ]
+        label: { header: 'Task' },
+        readinessStatus: {
+          header: 'Status',
+          get: (row) =>
+            colorize(
+              getStatusIcon(row.readinessStatus) + ' ' + row.readinessStatus,
+              COLORS.readinessStatus(row.readinessStatus)
+            ),
+        },
+        message: { header: 'Message' },
       }
     );
 
     // check if there is any readiness failure
-    const didAnyReadinessTasksFail = tasks.some(task => task.readinessStatus === 'Failed');
+    const didAnyReadinessTasksFail = tasks.some((task) => task.readinessStatus === 'Failed');
     if (didAnyReadinessTasksFail) {
-      throw new SfdxError('Template linting failed', undefined, undefined, 1, undefined).setData(result);
+      throw new SfError(messages.getMessage('lintFailed'), undefined, undefined, 1, undefined).setData(result);
     }
 
     return result;

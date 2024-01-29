@@ -2,6 +2,7 @@
   "listCommandDescription": "list Analytics dashboards",
   "listCommandLongDescription": "Lists Analytics dashboards in the specified target org.",
   "dashboardsFound": "Found [%s] Analytics dashboards.",
+  "noResultsFound": "No results found.",
   "dashboardIdFlagDescription": "Dashboard ID",
   "dahsboardIdFlagLongDescription": "Dashboard ID.",
   "currentHistoryIdFlagDescription": "Current History ID to display",

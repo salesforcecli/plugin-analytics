@@ -5,17 +5,29 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/command/lib/test';
+import { Messages } from '@salesforce/core';
+import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js';
+import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
+import { expect } from 'chai';
+import List from '../../../src/commands/analytics/dataset/list.js';
+import {
+  expectToHaveElementValue,
+  getJsonOutput,
+  getStderr,
+  getStdout,
+  getStyledHeaders,
+  getTableData,
+  stubDefaultOrg,
+} from '../../testutils.js';
 
-core.Messages.importMessagesDirectory(__dirname);
-const messages = core.Messages.loadMessages('@salesforce/analytics', 'dataset');
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
+const messages = Messages.loadMessages('@salesforce/analytics', 'dataset');
 
 const datasetJson = {
   createdBy: {
     id: '005xx000001XCD7AAO',
     name: 'User User',
-    profilePhotoUrl: '/profilephoto/005/T'
+    profilePhotoUrl: '/profilephoto/005/T',
   },
   createdDate: '2021-01-20T20:07:19.000Z',
   currentVersionId: '0Fcxx0000004CsCCAU',
@@ -24,7 +36,7 @@ const datasetJson = {
   datasetType: 'default',
   folder: {
     id: '005xx000001XCD7AAO',
-    label: 'User User'
+    label: 'User User',
   },
   id: '0Fbxx0000004CyeCAE',
   label: 'ABCWidgetSales2017',
@@ -32,7 +44,7 @@ const datasetJson = {
   lastModifiedBy: {
     id: '005xx000001XCGLAA4',
     name: 'Integration User',
-    profilePhotoUrl: '/profilephoto/005/T'
+    profilePhotoUrl: '/profilephoto/005/T',
   },
   lastModifiedDate: '2021-01-20T20:08:34.000Z',
   lastQueriedDate: '2021-03-06T03:18:57.000Z',
@@ -41,11 +53,11 @@ const datasetJson = {
     create: true,
     manage: true,
     modify: true,
-    view: true
+    view: true,
   },
   type: 'dataset',
   url: '/services/data/v52.0/wave/datasets/0Fbxx0000004CyeCAE',
-  userXmd: {}
+  userXmd: {},
 };
 
 const nsDatasetJson = {
@@ -53,7 +65,7 @@ const nsDatasetJson = {
   createdBy: {
     id: '005R0000000vpWGIAY',
     name: 'Automated Process',
-    profilePhotoUrl: 'https://coffee-beans-1986-dev-ed--c.stmpa.stm.documentforce.com/profilephoto/005/T'
+    profilePhotoUrl: 'https://coffee-beans-1986-dev-ed--c.stmpa.stm.documentforce.com/profilephoto/005/T',
   },
   createdDate: '2021-04-29T15:28:49.000Z',
   currentVersionId: '0FcR0000000MFtXKAW',
@@ -65,7 +77,7 @@ const nsDatasetJson = {
     label: 'TrendFinder',
     name: 'TrendFinder',
     namespace: 'AnlyTxHack',
-    url: '/services/data/v53.0/wave/folders/00lR0000000VSUmIAO'
+    url: '/services/data/v53.0/wave/folders/00lR0000000VSUmIAO',
   },
   id: '0FbR000000057SlKAI',
   label: 'cestabasica',
@@ -73,12 +85,12 @@ const nsDatasetJson = {
   lastModifiedBy: {
     id: '005R0000000vpWGIAY',
     name: 'Automated Process',
-    profilePhotoUrl: 'https://coffee-beans-1986-dev-ed--c.stmpa.stm.documentforce.com/profilephoto/005/T'
+    profilePhotoUrl: 'https://coffee-beans-1986-dev-ed--c.stmpa.stm.documentforce.com/profilephoto/005/T',
   },
   lastModifiedDate: '2021-04-29T15:30:32.000Z',
   lastQueriedDate: '2021-04-30T22:00:38.000Z',
   licenseAttributes: {
-    type: 'einsteinanalytics'
+    type: 'einsteinanalytics',
   },
   name: 'cestabasica',
   namespace: 'AnlyTxHack',
@@ -86,65 +98,78 @@ const nsDatasetJson = {
     create: true,
     manage: true,
     modify: true,
-    view: true
+    view: true,
   },
   type: 'dataset',
   url: '/services/data/v53.0/wave/datasets/0FbR000000057SlKAI',
   userXmd: {},
   versionsUrl: '/services/data/v53.0/wave/datasets/0FbR000000057SlKAI/versions',
-  visibility: 'All'
+  visibility: 'All',
 };
 
 describe('analytics:dataset:list', () => {
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve({ datasets: [datasetJson, nsDatasetJson] }))
-    .stderr()
-    .stdout()
-    .command(['analytics:dataset:list'])
-    .it('runs analytics:dataset:list', ctx => {
-      expect(ctx.stderr, 'stderr').to.equal('');
-      expect(ctx.stdout, 'stdout').to.contain(messages.getMessage('datasetsFound', [2]));
-    });
+  const $$ = new TestContext();
+  const testOrg = new MockTestOrgData();
+  let sfCommandStubs: ReturnType<typeof stubSfCommandUx>;
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve({ datasets: [datasetJson, nsDatasetJson] }))
-    .stderr()
-    .stdout()
-    .command(['analytics:dataset:list', '--json'])
-    .it('runs analytics:dataset:list --json', ctx => {
-      expect(ctx.stderr, 'stderr').to.equal('');
-      expect(JSON.parse(ctx.stdout), 'stdout json').to.deep.equal({
-        status: 0,
-        result: [
-          {
-            id: datasetJson.id,
-            name: datasetJson.name,
-            label: datasetJson.label,
-            currentversionid: datasetJson.currentVersionId,
-            folderid: datasetJson.folder.id
-          },
-          {
-            id: nsDatasetJson.id,
-            namespace: nsDatasetJson.namespace,
-            name: nsDatasetJson.name,
-            label: nsDatasetJson.label,
-            currentversionid: nsDatasetJson.currentVersionId,
-            folderid: nsDatasetJson.folder.id
-          }
-        ]
-      });
-    });
+  beforeEach(() => {
+    sfCommandStubs = stubSfCommandUx($$.SANDBOX);
+  });
+  afterEach(() => {
+    $$.restore();
+  });
 
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(() => Promise.resolve({ datasets: [] }))
-    .stderr()
-    .stdout()
-    .command(['analytics:dataset:list'])
-    .it('runs analytics:dataset:list (no results)', ctx => {
-      expect(ctx.stderr).to.equal('');
-      expect(ctx.stdout).to.contain('No results found.');
+  it('runs', async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = () => Promise.resolve({ datasets: [datasetJson, nsDatasetJson] });
+
+    await List.run([]);
+    expect(getStderr(sfCommandStubs), 'stderr').to.equal('');
+    expect(getStyledHeaders(sfCommandStubs), 'styled headers').to.contain(messages.getMessage('datasetsFound', [2]));
+    const { data } = getTableData(sfCommandStubs);
+    expectToHaveElementValue(data, datasetJson.id, 'table');
+    expectToHaveElementValue(data, datasetJson.label, 'table');
+    expectToHaveElementValue(data, nsDatasetJson.id, 'table');
+    expectToHaveElementValue(data, nsDatasetJson.label, 'table');
+    expectToHaveElementValue(data, nsDatasetJson.namespace, 'table');
+  });
+
+  it('run: --json', async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = () => Promise.resolve({ datasets: [datasetJson, nsDatasetJson] });
+
+    await List.run(['--json']);
+    expect(getStderr(sfCommandStubs), 'stderr').to.equal('');
+    // expect(getStyledHeaders(sfCommandStubs)).to.equal('');
+    expect(getJsonOutput(sfCommandStubs), 'stdout json').to.deep.include({
+      result: [
+        {
+          id: datasetJson.id,
+          name: datasetJson.name,
+          label: datasetJson.label,
+          currentversionid: datasetJson.currentVersionId,
+          folderid: datasetJson.folder.id,
+        },
+        {
+          id: nsDatasetJson.id,
+          namespace: nsDatasetJson.namespace,
+          name: nsDatasetJson.name,
+          label: nsDatasetJson.label,
+          currentversionid: nsDatasetJson.currentVersionId,
+          folderid: nsDatasetJson.folder.id,
+        },
+      ],
     });
+  });
+
+  it('runs (no results)', async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = () => Promise.resolve({ datasets: [] });
+
+    await List.run([]);
+    expect(getStderr(sfCommandStubs), 'stderr').to.equal('');
+    const stdout = getStdout(sfCommandStubs);
+    expect(stdout, 'stdout').to.contain(messages.getMessage('noResultsFound'));
+    expect(getTableData(sfCommandStubs).data, 'table').to.be.undefined;
+  });
 });

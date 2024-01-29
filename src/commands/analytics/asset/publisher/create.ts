@@ -5,37 +5,42 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { flags, SfdxCommand } from '@salesforce/command';
-import { Messages, Org } from '@salesforce/core';
+import {
+  Flags,
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
+import { Messages } from '@salesforce/core';
 
-import Publisher from '../../../../lib/analytics/publisher/publisher';
+import Publisher from '../../../../lib/analytics/publisher/publisher.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'asset');
 
-export default class Create extends SfdxCommand {
-  public static description = messages.getMessage('publisherCreateCommandDescription');
-  public static longDescription = messages.getMessage('publisherCreateCommandLongDescription');
+export default class Create extends SfCommand<string | undefined> {
+  public static readonly summary = messages.getMessage('publisherCreateCommandDescription');
+  public static readonly description = messages.getMessage('publisherCreateCommandLongDescription');
 
-  public static examples = ['$ sfdx analytics:asset:publisher:create -i assetId'];
+  public static readonly examples = ['$ sfdx analytics:asset:publisher:create -i assetId'];
 
-  protected static flagsConfig = {
-    assetid: flags.id({
+  public static readonly flags = {
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
+    assetid: Flags.salesforceId({
       char: 'i',
       required: true,
-      description: messages.getMessage('assetidFlagDescription'),
-      longDescription: messages.getMessage('assetidFlagLongDescription')
-    })
+      summary: messages.getMessage('assetidFlagDescription'),
+      description: messages.getMessage('assetidFlagLongDescription'),
+    }),
   };
 
-  protected static requiresUsername = true;
-  protected static requiresProject = false;
-
   public async run() {
-    const publisher = new Publisher(this.org as Org);
-    const assetId = this.flags.assetid as string;
+    const { flags } = await this.parse(Create);
+    const publisher = new Publisher(flags['target-org'].getConnection(flags['api-version']));
+    const assetId = flags.assetid;
     const developerId = await publisher.create(assetId);
-    this.ux.log(messages.getMessage('createSuccess', [developerId]));
+    this.log(messages.getMessage('createSuccess', [developerId]));
     return developerId;
   }
 }

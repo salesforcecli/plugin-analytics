@@ -5,14 +5,20 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { flags, SfdxCommand } from '@salesforce/command';
-import { Messages, Org, SfdxError } from '@salesforce/core';
+import {
+  Flags,
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
+import { Messages, SfError } from '@salesforce/core';
 import chalk from 'chalk';
-import moment = require('moment');
+import moment from 'moment';
 
-import DatasetSvc from '../../../lib/analytics/dataset/dataset';
+import DatasetSvc, { type DatasetType } from '../../../lib/analytics/dataset/dataset.js';
+import { generateTableColumns } from '../../../lib/analytics/utils.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'dataset');
 
 function formatDate(s: string | undefined): string | undefined {
@@ -30,42 +36,42 @@ function blue(s: string): string {
   return process.platform !== 'win32' ? chalk.blue(s) : s;
 }
 
-export default class Display extends SfdxCommand {
-  public static description = messages.getMessage('displayCommandDescription');
-  public static longDescription = messages.getMessage('displayCommandLongDescription');
+export default class Display extends SfCommand<DatasetType> {
+  public static readonly summary = messages.getMessage('displayCommandDescription');
+  public static readonly description = messages.getMessage('displayCommandLongDescription');
 
-  public static examples = [
+  public static readonly examples = [
     '$ sfdx analytics:dataset:display -i datasetId',
-    '$ sfdx analytics:dataset:display -n datasetApiName'
+    '$ sfdx analytics:dataset:display -n datasetApiName',
   ];
 
-  protected static flagsConfig = {
-    datasetid: flags.id({
+  public static readonly flags = {
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
+    datasetid: Flags.salesforceId({
       char: 'i',
-      description: messages.getMessage('datasetidFlagDescription'),
-      longDescription: messages.getMessage('datasetidFlagLongDescription'),
-      exclusive: ['datasetname']
+      summary: messages.getMessage('datasetidFlagDescription'),
+      description: messages.getMessage('datasetidFlagLongDescription'),
+      exclusive: ['datasetname'],
     }),
-    datasetname: flags.string({
+    datasetname: Flags.string({
       char: 'n',
-      description: messages.getMessage('datasetnameFlagDescription'),
-      longDescription: messages.getMessage('datasetnameFlagLongDescription'),
-      exclusive: ['datasetid']
-    })
+      summary: messages.getMessage('datasetnameFlagDescription'),
+      description: messages.getMessage('datasetnameFlagLongDescription'),
+      exclusive: ['datasetid'],
+    }),
   };
 
-  protected static requiresUsername = true;
-  protected static requiresProject = false;
-
   public async run() {
-    if (!this.flags.datasetid && !this.flags.datasetname) {
-      throw new SfdxError(messages.getMessage('missingRequiredField'));
+    const { flags } = await this.parse(Display);
+    if (!flags.datasetid && !flags.datasetname) {
+      throw new SfError(messages.getMessage('missingRequiredField'));
     }
-    const svc = new DatasetSvc((this.org as Org).getConnection());
-    const dataset = await svc.fetch((this.flags.datasetid || this.flags.datasetname) as string);
+    const svc = new DatasetSvc(flags['target-org'].getConnection(flags['api-version']));
+    const dataset = await svc.fetch((flags.datasetid ?? flags.datasetname) as string);
 
     // force:org:display does a blue chalk on the headers, so do it here, too
-    this.ux.styledHeader(blue(messages.getMessage('displayDetailHeader')));
+    this.styledHeader(blue(messages.getMessage('displayDetailHeader')));
     const values = [
       { key: 'Id', value: dataset.id },
       { key: 'Namespace', value: dataset.namespace },
@@ -81,7 +87,7 @@ export default class Display extends SfdxCommand {
       { key: 'Last Modified Date', value: formatDate(dataset.lastModifiedDate) },
       { key: 'Data Refresh Date', value: formatDate(dataset.dataRefreshDate) },
       { key: 'Last Accessed Date', value: formatDate(dataset.lastAccessedDate) },
-      { key: 'Last Queried Date', value: formatDate(dataset.lastQueriedDate) }
+      { key: 'Last Queried Date', value: formatDate(dataset.lastQueriedDate) },
     ];
     if (dataset.datasetType?.toLocaleLowerCase() === 'live') {
       values.push(
@@ -91,12 +97,7 @@ export default class Display extends SfdxCommand {
         { key: 'Live Connection Source Object', value: dataset.liveConnection?.sourceObjectName }
       );
     }
-    this.ux.table(values, {
-      columns: [
-        { key: 'key', label: 'Key' },
-        { key: 'value', label: 'Value' }
-      ]
-    });
+    this.table(values, generateTableColumns(['key', 'value']));
     return dataset;
   }
 }

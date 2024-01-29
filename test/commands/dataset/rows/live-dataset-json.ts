@@ -6,15 +6,15 @@
  */
 
 import { JsonMap } from '@salesforce/ts-types';
-import { DatasetType, SourceObjectFieldsType } from '../../../../src/lib/analytics/dataset/dataset';
-import { QueryResults } from '../../../../src/lib/analytics/query/query';
+import { DatasetType, SourceObjectFieldsType } from '../../../../src/lib/analytics/dataset/dataset.js';
+import { QueryResults } from '../../../../src/lib/analytics/query/query.js';
 
 export const liveDatasetJson: DatasetType & JsonMap = Object.freeze({
   clientShardsUrl: '/services/data/v53.0/wave/datasets/0FbR000000056n1KAA/shards',
   createdBy: {
     id: '005R0000000t2B1IAI',
     name: 'Admin User',
-    profilePhotoUrl: 'https://karilwctesting-dev-ed--c.stmpa.stm.documentforce.com/profilephoto/005/T'
+    profilePhotoUrl: 'https://karilwctesting-dev-ed--c.stmpa.stm.documentforce.com/profilephoto/005/T',
   },
   createdDate: '2021-04-20T21:36:54.000Z',
   currentVersionId: '0FcR0000000M6qRKAS',
@@ -25,7 +25,7 @@ export const liveDatasetJson: DatasetType & JsonMap = Object.freeze({
     id: '00lR0000000V3a0IAC',
     label: 'LWC Testing',
     name: 'LWC_Testing',
-    url: '/services/data/v53.0/wave/folders/00lR0000000V3a0IAC'
+    url: '/services/data/v53.0/wave/folders/00lR0000000V3a0IAC',
   },
   id: '0FbR000000056n1KAA',
   label: 'AIRLINE_DELAYS',
@@ -33,26 +33,26 @@ export const liveDatasetJson: DatasetType & JsonMap = Object.freeze({
   lastModifiedBy: {
     id: '005R0000000t2B1IAI',
     name: 'Admin User',
-    profilePhotoUrl: 'https://karilwctesting-dev-ed--c.stmpa.stm.documentforce.com/profilephoto/005/T'
+    profilePhotoUrl: 'https://karilwctesting-dev-ed--c.stmpa.stm.documentforce.com/profilephoto/005/T',
   },
   lastModifiedDate: '2021-04-20T21:36:54.000Z',
   liveConnection: {
     connectionLabel: 'SnowflakeOne',
     connectionName: 'SnowflakeOne',
     connectionType: 'SnowflakeDirect',
-    sourceObjectName: 'AIRLINE_DELAYS'
+    sourceObjectName: 'AIRLINE_DELAYS',
   },
   name: 'AIRLINE_DELAYS',
   permissions: {
     create: true,
     manage: true,
     modify: true,
-    view: true
+    view: true,
   },
   type: 'dataset',
   url: '/services/data/v53.0/wave/datasets/0FbR000000056n1KAA',
   versionsUrl: '/services/data/v53.0/wave/datasets/0FbR000000056n1KAA/versions',
-  visibility: 'All'
+  visibility: 'All',
 });
 
 export const liveDatasetFieldsJson: SourceObjectFieldsType & JsonMap = Object.freeze({
@@ -60,176 +60,176 @@ export const liveDatasetFieldsJson: SourceObjectFieldsType & JsonMap = Object.fr
     {
       fieldType: 'date',
       format: "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
-      name: 'YEAR_MONTH'
+      name: 'YEAR_MONTH',
     },
     {
       fieldType: 'text',
       name: 'CARRIER_NAME',
-      precision: 32000
+      precision: 32_000,
     },
     {
       fieldType: 'text',
       name: 'AIRPORT_NAME',
-      precision: 32000
+      precision: 32_000,
     },
     {
       fieldType: 'numeric',
       name: 'FLIGHTS',
       precision: 18,
-      scale: 0
+      scale: 0,
     },
     {
       fieldType: 'numeric',
       name: 'DELAYS',
       precision: 18,
-      scale: 0
+      scale: 0,
     },
     {
       fieldType: 'numeric',
       name: 'PCT_DELAYED',
       precision: 18,
-      scale: 9
+      scale: 9,
     },
     {
       fieldType: 'numeric',
       name: 'CARRIER_CT',
       precision: 18,
-      scale: 2
+      scale: 2,
     },
     {
       fieldType: 'numeric',
       name: 'PCT_DELAYED_CARRIER',
       precision: 18,
-      scale: 9
+      scale: 9,
     },
     {
       fieldType: 'numeric',
       name: 'WEATHER_CT',
       precision: 18,
-      scale: 2
+      scale: 2,
     },
     {
       fieldType: 'numeric',
       name: 'PCT_DELAYED_WEATHER',
       precision: 18,
-      scale: 9
+      scale: 9,
     },
     {
       fieldType: 'numeric',
       name: 'NAS_CT',
       precision: 18,
-      scale: 2
+      scale: 2,
     },
     {
       fieldType: 'numeric',
       name: 'PCT_DELAYED_NAS',
       precision: 18,
-      scale: 9
+      scale: 9,
     },
     {
       fieldType: 'numeric',
       name: 'SECURITY_CT',
       precision: 18,
-      scale: 2
+      scale: 2,
     },
     {
       fieldType: 'numeric',
       name: 'PCT_DELAYED_SECURITY',
       precision: 18,
-      scale: 9
+      scale: 9,
     },
     {
       fieldType: 'numeric',
       name: 'LATE_AIRCRAFT_CT',
       precision: 18,
-      scale: 2
+      scale: 2,
     },
     {
       fieldType: 'numeric',
       name: 'PCT_DELAYED_AIRCRAFT',
       precision: 18,
-      scale: 9
+      scale: 9,
     },
     {
       fieldType: 'numeric',
       name: 'ARR_CANCELLED',
       precision: 18,
-      scale: 0
+      scale: 0,
     },
     {
       fieldType: 'numeric',
       name: 'ARR_DIVERTED',
       precision: 18,
-      scale: 0
+      scale: 0,
     },
     {
       fieldType: 'numeric',
       name: 'ARR_DELAY',
       precision: 18,
-      scale: 0
+      scale: 0,
     },
     {
       fieldType: 'numeric',
       name: 'CARRIER_DELAY',
       precision: 18,
-      scale: 0
+      scale: 0,
     },
     {
       fieldType: 'numeric',
       name: 'PCT_TIME_DELAYED_CARRIER',
       precision: 18,
-      scale: 9
+      scale: 9,
     },
     {
       fieldType: 'numeric',
       name: 'WEATHER_DELAY',
       precision: 18,
-      scale: 0
+      scale: 0,
     },
     {
       fieldType: 'numeric',
       name: 'PCT_TIME_DELAYED_WEATHER',
       precision: 18,
-      scale: 9
+      scale: 9,
     },
     {
       fieldType: 'numeric',
       name: 'NAS_DELAY',
       precision: 18,
-      scale: 0
+      scale: 0,
     },
     {
       fieldType: 'numeric',
       name: 'PCT_TIME_DELAYED_NAS',
       precision: 18,
-      scale: 9
+      scale: 9,
     },
     {
       fieldType: 'numeric',
       name: 'SECURITY_DELAY',
       precision: 18,
-      scale: 0
+      scale: 0,
     },
     {
       fieldType: 'numeric',
       name: 'PCT_TIME_DELAYED_SECURITY',
       precision: 18,
-      scale: 9
+      scale: 9,
     },
     {
       fieldType: 'numeric',
       name: 'LATE_AIRCRAFT_DELAY',
       precision: 18,
-      scale: 0
+      scale: 0,
     },
     {
       fieldType: 'numeric',
       name: 'PCT_TIME_DELAYED_AIRCRAFT',
       precision: 18,
-      scale: 9
-    }
+      scale: 9,
+    },
   ],
-  url: '/services/data/v53.0/wave/dataConnectors/SnowflakeOne/sourceObjects/AIRLINE_DELAYS/fields'
+  url: '/services/data/v53.0/wave/dataConnectors/SnowflakeOne/sourceObjects/AIRLINE_DELAYS/fields',
 });
 
 export const liveSqlResponseJson: QueryResults & JsonMap = Object.freeze({
@@ -237,121 +237,121 @@ export const liveSqlResponseJson: QueryResults & JsonMap = Object.freeze({
     columns: [
       {
         label: 'YEAR_MONTH',
-        type: 'date'
+        type: 'date',
       },
       {
         label: 'CARRIER_NAME',
-        type: 'varchar'
+        type: 'varchar',
       },
       {
         label: 'AIRPORT_NAME',
-        type: 'varchar'
+        type: 'varchar',
       },
       {
         label: 'FLIGHTS',
-        type: 'numeric'
+        type: 'numeric',
       },
       {
         label: 'DELAYS',
-        type: 'numeric'
+        type: 'numeric',
       },
       {
         label: 'PCT_DELAYED',
-        type: 'numeric'
+        type: 'numeric',
       },
       {
         label: 'CARRIER_CT',
-        type: 'numeric'
+        type: 'numeric',
       },
       {
         label: 'PCT_DELAYED_CARRIER',
-        type: 'numeric'
+        type: 'numeric',
       },
       {
         label: 'WEATHER_CT',
-        type: 'numeric'
+        type: 'numeric',
       },
       {
         label: 'PCT_DELAYED_WEATHER',
-        type: 'numeric'
+        type: 'numeric',
       },
       {
         label: 'NAS_CT',
-        type: 'numeric'
+        type: 'numeric',
       },
       {
         label: 'PCT_DELAYED_NAS',
-        type: 'numeric'
+        type: 'numeric',
       },
       {
         label: 'SECURITY_CT',
-        type: 'numeric'
+        type: 'numeric',
       },
       {
         label: 'PCT_DELAYED_SECURITY',
-        type: 'numeric'
+        type: 'numeric',
       },
       {
         label: 'LATE_AIRCRAFT_CT',
-        type: 'numeric'
+        type: 'numeric',
       },
       {
         label: 'PCT_DELAYED_AIRCRAFT',
-        type: 'numeric'
+        type: 'numeric',
       },
       {
         label: 'ARR_CANCELLED',
-        type: 'numeric'
+        type: 'numeric',
       },
       {
         label: 'ARR_DIVERTED',
-        type: 'numeric'
+        type: 'numeric',
       },
       {
         label: 'ARR_DELAY',
-        type: 'numeric'
+        type: 'numeric',
       },
       {
         label: 'CARRIER_DELAY',
-        type: 'numeric'
+        type: 'numeric',
       },
       {
         label: 'PCT_TIME_DELAYED_CARRIER',
-        type: 'numeric'
+        type: 'numeric',
       },
       {
         label: 'WEATHER_DELAY',
-        type: 'numeric'
+        type: 'numeric',
       },
       {
         label: 'PCT_TIME_DELAYED_WEATHER',
-        type: 'numeric'
+        type: 'numeric',
       },
       {
         label: 'NAS_DELAY',
-        type: 'numeric'
+        type: 'numeric',
       },
       {
         label: 'PCT_TIME_DELAYED_NAS',
-        type: 'numeric'
+        type: 'numeric',
       },
       {
         label: 'SECURITY_DELAY',
-        type: 'numeric'
+        type: 'numeric',
       },
       {
         label: 'PCT_TIME_DELAYED_SECURITY',
-        type: 'numeric'
+        type: 'numeric',
       },
       {
         label: 'LATE_AIRCRAFT_DELAY',
-        type: 'numeric'
+        type: 'numeric',
       },
       {
         label: 'PCT_TIME_DELAYED_AIRCRAFT',
-        type: 'numeric'
-      }
-    ]
+        type: 'numeric',
+      },
+    ],
   },
   records: [
     {
@@ -360,30 +360,30 @@ export const liveSqlResponseJson: QueryResults & JsonMap = Object.freeze({
       AIRPORT_NAME: 'Albuquerque  NM: Albuquerque International Sunport',
       FLIGHTS: 246,
       DELAYS: 26,
-      PCT_DELAYED: 0.105691057,
+      PCT_DELAYED: 0.105_691_057,
       CARRIER_CT: 10.93,
-      PCT_DELAYED_CARRIER: 0.420384615,
+      PCT_DELAYED_CARRIER: 0.420_384_615,
       WEATHER_CT: 0.19,
-      PCT_DELAYED_WEATHER: 0.007307692,
+      PCT_DELAYED_WEATHER: 0.007_307_692,
       NAS_CT: 6.61,
-      PCT_DELAYED_NAS: 0.254230769,
+      PCT_DELAYED_NAS: 0.254_230_769,
       SECURITY_CT: 0,
       PCT_DELAYED_SECURITY: 0,
       LATE_AIRCRAFT_CT: 8.28,
-      PCT_DELAYED_AIRCRAFT: 0.318461538,
+      PCT_DELAYED_AIRCRAFT: 0.318_461_538,
       ARR_CANCELLED: 7,
       ARR_DIVERTED: 1,
       ARR_DELAY: 1063,
       CARRIER_DELAY: 600,
-      PCT_TIME_DELAYED_CARRIER: 0.564440263,
+      PCT_TIME_DELAYED_CARRIER: 0.564_440_263,
       WEATHER_DELAY: 5,
-      PCT_TIME_DELAYED_WEATHER: 0.004703669,
+      PCT_TIME_DELAYED_WEATHER: 0.004_703_669,
       NAS_DELAY: 179,
-      PCT_TIME_DELAYED_NAS: 0.168391345,
+      PCT_TIME_DELAYED_NAS: 0.168_391_345,
       SECURITY_DELAY: 0,
       PCT_TIME_DELAYED_SECURITY: 0,
       LATE_AIRCRAFT_DELAY: 279,
-      PCT_TIME_DELAYED_AIRCRAFT: 0.262464722
+      PCT_TIME_DELAYED_AIRCRAFT: 0.262_464_722,
     },
     {
       YEAR_MONTH: '2007-12-31',
@@ -391,30 +391,30 @@ export const liveSqlResponseJson: QueryResults & JsonMap = Object.freeze({
       AIRPORT_NAME: 'Atlanta  GA: Hartsfield-Jackson Atlanta International',
       FLIGHTS: 488,
       DELAYS: 69,
-      PCT_DELAYED: 0.141393443,
+      PCT_DELAYED: 0.141_393_443,
       CARRIER_CT: 35.13,
-      PCT_DELAYED_CARRIER: 0.509130435,
+      PCT_DELAYED_CARRIER: 0.509_130_435,
       WEATHER_CT: 0.77,
-      PCT_DELAYED_WEATHER: 0.01115942,
+      PCT_DELAYED_WEATHER: 0.011_159_42,
       NAS_CT: 23.93,
-      PCT_DELAYED_NAS: 0.346811594,
+      PCT_DELAYED_NAS: 0.346_811_594,
       SECURITY_CT: 0,
       PCT_DELAYED_SECURITY: 0,
       LATE_AIRCRAFT_CT: 9.18,
-      PCT_DELAYED_AIRCRAFT: 0.133043478,
+      PCT_DELAYED_AIRCRAFT: 0.133_043_478,
       ARR_CANCELLED: 15,
       ARR_DIVERTED: 3,
       ARR_DELAY: 2956,
       CARRIER_DELAY: 1799,
-      PCT_TIME_DELAYED_CARRIER: 0.608592693,
+      PCT_TIME_DELAYED_CARRIER: 0.608_592_693,
       WEATHER_DELAY: 68,
-      PCT_TIME_DELAYED_WEATHER: 0.02300406,
+      PCT_TIME_DELAYED_WEATHER: 0.023_004_06,
       NAS_DELAY: 673,
-      PCT_TIME_DELAYED_NAS: 0.22767253,
+      PCT_TIME_DELAYED_NAS: 0.227_672_53,
       SECURITY_DELAY: 0,
       PCT_TIME_DELAYED_SECURITY: 0,
       LATE_AIRCRAFT_DELAY: 416,
-      PCT_TIME_DELAYED_AIRCRAFT: 0.140730717
+      PCT_TIME_DELAYED_AIRCRAFT: 0.140_730_717,
     },
     {
       YEAR_MONTH: '2007-12-31',
@@ -422,30 +422,30 @@ export const liveSqlResponseJson: QueryResults & JsonMap = Object.freeze({
       AIRPORT_NAME: 'Austin  TX: Austin - Bergstrom International',
       FLIGHTS: 580,
       DELAYS: 102,
-      PCT_DELAYED: 0.175862069,
+      PCT_DELAYED: 0.175_862_069,
       CARRIER_CT: 43.99,
-      PCT_DELAYED_CARRIER: 0.43127451,
+      PCT_DELAYED_CARRIER: 0.431_274_51,
       WEATHER_CT: 3.95,
-      PCT_DELAYED_WEATHER: 0.03872549,
+      PCT_DELAYED_WEATHER: 0.038_725_49,
       NAS_CT: 23.68,
-      PCT_DELAYED_NAS: 0.232156863,
+      PCT_DELAYED_NAS: 0.232_156_863,
       SECURITY_CT: 0,
       PCT_DELAYED_SECURITY: 0,
       LATE_AIRCRAFT_CT: 30.38,
-      PCT_DELAYED_AIRCRAFT: 0.297843137,
+      PCT_DELAYED_AIRCRAFT: 0.297_843_137,
       ARR_CANCELLED: 9,
       ARR_DIVERTED: 1,
       ARR_DELAY: 4040,
       CARRIER_DELAY: 1749,
-      PCT_TIME_DELAYED_CARRIER: 0.432920792,
+      PCT_TIME_DELAYED_CARRIER: 0.432_920_792,
       WEATHER_DELAY: 299,
-      PCT_TIME_DELAYED_WEATHER: 0.074009901,
+      PCT_TIME_DELAYED_WEATHER: 0.074_009_901,
       NAS_DELAY: 690,
-      PCT_TIME_DELAYED_NAS: 0.170792079,
+      PCT_TIME_DELAYED_NAS: 0.170_792_079,
       SECURITY_DELAY: 0,
       PCT_TIME_DELAYED_SECURITY: 0,
       LATE_AIRCRAFT_DELAY: 1302,
-      PCT_TIME_DELAYED_AIRCRAFT: 0.322277228
+      PCT_TIME_DELAYED_AIRCRAFT: 0.322_277_228,
     },
     {
       YEAR_MONTH: '2007-12-31',
@@ -453,30 +453,30 @@ export const liveSqlResponseJson: QueryResults & JsonMap = Object.freeze({
       AIRPORT_NAME: 'Hartford  CT: Bradley International',
       FLIGHTS: 155,
       DELAYS: 37,
-      PCT_DELAYED: 0.238709677,
+      PCT_DELAYED: 0.238_709_677,
       CARRIER_CT: 19.38,
-      PCT_DELAYED_CARRIER: 0.523783784,
+      PCT_DELAYED_CARRIER: 0.523_783_784,
       WEATHER_CT: 0.9,
-      PCT_DELAYED_WEATHER: 0.024324324,
+      PCT_DELAYED_WEATHER: 0.024_324_324,
       NAS_CT: 10.72,
-      PCT_DELAYED_NAS: 0.28972973,
+      PCT_DELAYED_NAS: 0.289_729_73,
       SECURITY_CT: 0,
       PCT_DELAYED_SECURITY: 0,
       LATE_AIRCRAFT_CT: 6,
-      PCT_DELAYED_AIRCRAFT: 0.162162162,
+      PCT_DELAYED_AIRCRAFT: 0.162_162_162,
       ARR_CANCELLED: 2,
       ARR_DIVERTED: 0,
       ARR_DELAY: 1457,
       CARRIER_DELAY: 734,
-      PCT_TIME_DELAYED_CARRIER: 0.50377488,
+      PCT_TIME_DELAYED_CARRIER: 0.503_774_88,
       WEATHER_DELAY: 77,
-      PCT_TIME_DELAYED_WEATHER: 0.052848318,
+      PCT_TIME_DELAYED_WEATHER: 0.052_848_318,
       NAS_DELAY: 270,
-      PCT_TIME_DELAYED_NAS: 0.185312286,
+      PCT_TIME_DELAYED_NAS: 0.185_312_286,
       SECURITY_DELAY: 0,
       PCT_TIME_DELAYED_SECURITY: 0,
       LATE_AIRCRAFT_DELAY: 376,
-      PCT_TIME_DELAYED_AIRCRAFT: 0.258064516
+      PCT_TIME_DELAYED_AIRCRAFT: 0.258_064_516,
     },
     {
       YEAR_MONTH: '2007-12-31',
@@ -484,13 +484,13 @@ export const liveSqlResponseJson: QueryResults & JsonMap = Object.freeze({
       AIRPORT_NAME: 'Birmingham  AL: Birmingham-Shuttlesworth International',
       FLIGHTS: 88,
       DELAYS: 19,
-      PCT_DELAYED: 0.215909091,
+      PCT_DELAYED: 0.215_909_091,
       CARRIER_CT: 6.52,
-      PCT_DELAYED_CARRIER: 0.343157895,
+      PCT_DELAYED_CARRIER: 0.343_157_895,
       WEATHER_CT: 2.28,
       PCT_DELAYED_WEATHER: 0.12,
       NAS_CT: 5.64,
-      PCT_DELAYED_NAS: 0.296842105,
+      PCT_DELAYED_NAS: 0.296_842_105,
       SECURITY_CT: 0,
       PCT_DELAYED_SECURITY: 0,
       LATE_AIRCRAFT_CT: 4.56,
@@ -499,15 +499,15 @@ export const liveSqlResponseJson: QueryResults & JsonMap = Object.freeze({
       ARR_DIVERTED: 0,
       ARR_DELAY: 731,
       CARRIER_DELAY: 307,
-      PCT_TIME_DELAYED_CARRIER: 0.41997264,
+      PCT_TIME_DELAYED_CARRIER: 0.419_972_64,
       WEATHER_DELAY: 94,
-      PCT_TIME_DELAYED_WEATHER: 0.128590971,
+      PCT_TIME_DELAYED_WEATHER: 0.128_590_971,
       NAS_DELAY: 149,
-      PCT_TIME_DELAYED_NAS: 0.203830369,
+      PCT_TIME_DELAYED_NAS: 0.203_830_369,
       SECURITY_DELAY: 0,
       PCT_TIME_DELAYED_SECURITY: 0,
       LATE_AIRCRAFT_DELAY: 181,
-      PCT_TIME_DELAYED_AIRCRAFT: 0.247606019
-    }
-  ]
+      PCT_TIME_DELAYED_AIRCRAFT: 0.247_606_019,
+    },
+  ],
 });

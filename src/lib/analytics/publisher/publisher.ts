@@ -4,9 +4,9 @@
  * Licensed under the BSD 3-Clause license.
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import { Connection, Org } from '@salesforce/core';
-import { connectRequest } from '../request';
-import { throwError } from '../utils';
+import { Connection } from '@salesforce/core';
+import { connectRequest } from '../request.js';
+import { throwError } from '../utils.js';
 
 export type PublisherType = {
   id?: string;
@@ -15,12 +15,10 @@ export type PublisherType = {
 };
 
 export default class Publisher {
-  private readonly connection: Connection;
   private readonly publishersUrl: string;
   private readonly endpointName: string;
 
-  public constructor(organization: Org) {
-    this.connection = organization.getConnection();
+  public constructor(private readonly connection: Connection) {
     this.publishersUrl = `${this.connection.baseUrl()}/wave/dashboards/`;
     this.endpointName = 'publishers';
   }
@@ -29,7 +27,7 @@ export default class Publisher {
     const response = await connectRequest<PublisherType>(this.connection, {
       method: 'POST',
       url: this.publishersUrl + encodeURIComponent(dashboardId) + '/' + this.endpointName,
-      body: '{}'
+      body: '{}',
     });
     if (response) {
       return response.id;
@@ -41,7 +39,7 @@ export default class Publisher {
   public async list(assetId: string): Promise<PublisherType[] | undefined> {
     const response = await connectRequest<{ publishers?: PublisherType[] }>(this.connection, {
       method: 'GET',
-      url: this.publishersUrl + encodeURIComponent(assetId) + '/' + this.endpointName
+      url: this.publishersUrl + encodeURIComponent(assetId) + '/' + this.endpointName,
     });
     if (response) {
       return response.publishers;
@@ -53,14 +51,14 @@ export default class Publisher {
   public deleteAll(assetId: string): Promise<void> {
     return connectRequest(this.connection, {
       method: 'DELETE',
-      url: this.publishersUrl + assetId + '/' + this.endpointName
+      url: this.publishersUrl + assetId + '/' + this.endpointName,
     });
   }
 
   public delete(assetId: string, id: string): Promise<void> {
     return connectRequest(this.connection, {
       method: 'DELETE',
-      url: this.publishersUrl + encodeURIComponent(assetId) + '/' + this.endpointName + '/' + encodeURIComponent(id)
+      url: this.publishersUrl + encodeURIComponent(assetId) + '/' + this.endpointName + '/' + encodeURIComponent(id),
     });
   }
 }

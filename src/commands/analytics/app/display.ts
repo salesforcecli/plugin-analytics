@@ -5,14 +5,20 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { flags, SfdxCommand } from '@salesforce/command';
-import { Messages, Org } from '@salesforce/core';
+import {
+  Flags,
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
+import { Messages } from '@salesforce/core';
 import chalk from 'chalk';
-import moment = require('moment');
+import moment from 'moment';
 
-import Folder, { AppStatus } from '../../../lib/analytics/app/folder';
+import Folder, { type AppFolder, AppStatus } from '../../../lib/analytics/app/folder.js';
+import { generateTableColumns } from '../../../lib/analytics/utils.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'app');
 
 function formatDate(s: string | undefined): string | undefined {
@@ -41,38 +47,38 @@ function colorStatus(s: AppStatus | undefined): string | undefined {
   return s;
 }
 
-export default class Display extends SfdxCommand {
-  public static description = messages.getMessage('displayCommandDescription');
-  public static longDescription = messages.getMessage('displayCommandLongDescription');
+export default class Display extends SfCommand<AppFolder> {
+  public static readonly summary = messages.getMessage('displayCommandDescription');
+  public static readonly description = messages.getMessage('displayCommandLongDescription');
 
-  public static examples = ['$ sfdx analytics:app:display -f folderId -a'];
+  public static readonly examples = ['$ sfdx analytics:app:display -f folderId -a'];
 
-  protected static flagsConfig = {
-    folderid: flags.id({
+  public static readonly flags = {
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
+    folderid: Flags.salesforceId({
       char: 'f',
       required: true,
-      description: messages.getMessage('folderidFlagDescription'),
-      longDescription: messages.getMessage('folderidFlagLongDescription')
+      summary: messages.getMessage('folderidFlagDescription'),
+      description: messages.getMessage('folderidFlagLongDescription'),
     }),
-    applog: flags.boolean({
+    applog: Flags.boolean({
       char: 'a',
       required: false,
       default: false,
-      description: messages.getMessage('applogFlagDescription'),
-      longDescription: messages.getMessage('applogFlagLongDescription')
-    })
+      summary: messages.getMessage('applogFlagDescription'),
+      description: messages.getMessage('applogFlagLongDescription'),
+    }),
   };
 
-  protected static requiresUsername = true;
-  protected static requiresProject = false;
-
   public async run() {
-    const folder = new Folder(this.org as Org);
-    const app = await folder.fetch(this.flags.folderid as string, !!this.flags.applog);
+    const { flags } = await this.parse(Display);
+    const folder = new Folder(flags['target-org'].getConnection(flags['api-version']));
+    const app = await folder.fetch(flags.folderid, flags.applog);
 
     // force:org:display does a blue chalk on the headers, so do it here, too
-    this.ux.styledHeader(blue(messages.getMessage('displayDetailHeader')));
-    this.ux.table(
+    this.styledHeader(blue(messages.getMessage('displayDetailHeader')));
+    this.table(
       [
         { key: 'Name', value: app.name },
         { key: 'Label', value: app.label },
@@ -84,27 +90,18 @@ export default class Display extends SfdxCommand {
         { key: 'Last Modified Date', value: formatDate(app.lastModifiedDate) },
         { key: 'Template Source Id', value: app.templateSourceId },
         { key: 'Template Version', value: app.templateVersion },
-        { key: 'Namespace', value: app.namespace }
+        { key: 'Namespace', value: app.namespace },
       ],
-      {
-        columns: [
-          { key: 'key', label: 'Key' },
-          { key: 'value', label: 'Value' }
-        ]
-      }
+      generateTableColumns(['key', 'value'])
     );
 
-    if (this.flags.applog) {
-      this.ux.styledHeader(blue(messages.getMessage('displayLogHeader')));
+    if (flags.applog) {
+      this.styledHeader(blue(messages.getMessage('displayLogHeader')));
       if (!app.appLog || !Array.isArray(app.appLog) || app.appLog.length <= 0) {
-        this.ux.log(messages.getMessage('displayNoLogAvailable'));
+        this.log(messages.getMessage('displayNoLogAvailable'));
       } else {
-        const data = app.appLog?.map(line => {
-          return { message: line?.message || line || '' };
-        });
-        this.ux.table(data, {
-          columns: [{ key: 'message', label: 'Message' }]
-        });
+        const data = app.appLog?.map((line) => ({ message: (line?.message ?? line) || '' }));
+        this.table(data, generateTableColumns(['message']));
       }
     }
     return app;

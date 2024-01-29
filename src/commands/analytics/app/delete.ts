@@ -5,53 +5,48 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { flags, SfdxCommand } from '@salesforce/command';
-import { Messages, Org } from '@salesforce/core';
-import { cli } from 'cli-ux';
+import {
+  Flags,
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
+import { Messages } from '@salesforce/core';
 
-import Folder from '../../../lib/analytics/app/folder';
+import Folder from '../../../lib/analytics/app/folder.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'app');
 
-export default class Delete extends SfdxCommand {
-  public static description = messages.getMessage('deleteCommandDescription');
-  public static longDescription = messages.getMessage('deleteCommandLongDescription');
+export default class Delete extends SfCommand<string> {
+  public static readonly summary = messages.getMessage('deleteCommandDescription');
+  public static readonly description = messages.getMessage('deleteCommandLongDescription');
 
-  public static examples = ['$ sfdx analytics:app:delete -f folderid'];
+  public static readonly examples = ['$ sfdx analytics:app:delete -f folderid'];
 
-  protected static flagsConfig = {
-    folderid: flags.id({
+  public static readonly flags = {
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
+    folderid: Flags.salesforceId({
       char: 'f',
       required: true,
-      description: messages.getMessage('folderidFlagDescription'),
-      longDescription: messages.getMessage('folderidFlagLongDescription')
+      summary: messages.getMessage('folderidFlagDescription'),
+      description: messages.getMessage('folderidFlagLongDescription'),
     }),
-    noprompt: flags.boolean({
+    noprompt: Flags.boolean({
       char: 'p',
-      description: messages.getMessage('nopromptFlagDescription'),
-      longDescription: messages.getMessage('nopromptFlagLongDescription')
-    })
+      summary: messages.getMessage('nopromptFlagDescription'),
+      description: messages.getMessage('nopromptFlagLongDescription'),
+    }),
   };
 
-  protected static requiresUsername = true;
-  protected static requiresProject = false;
-
   public async run() {
-    if (this.flags.noprompt) {
-      await this.executeCommand();
-    } else {
-      const answer = (await cli.prompt(messages.getMessage('confirmDeleteYesNo'))) as string;
-      if (answer.toUpperCase() === 'YES' || answer.toUpperCase() === 'Y') {
-        await this.executeCommand();
-      }
+    const { flags } = await this.parse(Delete);
+    if (flags.noprompt || (await this.confirm({ message: messages.getMessage('confirmDeleteYesNo') }))) {
+      const folder = new Folder(flags['target-org'].getConnection(flags['api-version']));
+      await folder.deleteFolder(flags.folderid);
+      this.log(messages.getMessage('deleteAppSuccess', [flags.folderid]));
     }
-    return this.flags.folderid as string;
-  }
-
-  private async executeCommand(): Promise<void> {
-    const folder = new Folder(this.org as Org);
-    await folder.deleteFolder(this.flags.folderid as string);
-    this.ux.log(messages.getMessage('deleteAppSuccess', [this.flags.folderid]));
+    return flags.folderid;
   }
 }

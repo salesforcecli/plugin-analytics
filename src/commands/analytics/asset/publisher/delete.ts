@@ -5,41 +5,46 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { flags, SfdxCommand } from '@salesforce/command';
-import { Messages, Org } from '@salesforce/core';
+import {
+  Flags,
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
+import { Messages } from '@salesforce/core';
 
-import Publisher from '../../../../lib/analytics/publisher/publisher';
+import Publisher from '../../../../lib/analytics/publisher/publisher.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'asset');
 
-export default class Deleteall extends SfdxCommand {
-  public static description = messages.getMessage('deleteCommandDescription');
-  public static longDescription = messages.getMessage('deleteCommandLongDescription');
+export default class Delete extends SfCommand<void> {
+  public static readonly summary = messages.getMessage('deleteCommandDescription');
+  public static readonly description = messages.getMessage('deleteCommandLongDescription');
 
-  public static examples = ['$ sfdx analytics:asset:publisher:delete -a assetId -i assetPublisherId'];
+  public static readonly examples = ['$ sfdx analytics:asset:publisher:delete -a assetId -i assetPublisherId'];
 
-  protected static flagsConfig = {
-    id: flags.id({
+  public static readonly flags = {
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
+    id: Flags.salesforceId({
       char: 'i',
       required: true,
-      description: messages.getMessage('assetPublisheridFlagDescription'),
-      longDescription: messages.getMessage('assetPublisheridFlagLongDescription')
+      summary: messages.getMessage('assetPublisheridFlagDescription'),
+      description: messages.getMessage('assetPublisheridFlagLongDescription'),
     }),
-    assetid: flags.id({
+    assetid: Flags.salesforceId({
       char: 'a',
       required: true,
-      description: messages.getMessage('assetidFlagDescription'),
-      longDescription: messages.getMessage('assetidFlagLongDescription')
-    })
+      summary: messages.getMessage('assetidFlagDescription'),
+      description: messages.getMessage('assetidFlagLongDescription'),
+    }),
   };
 
-  protected static requiresUsername = true;
-  protected static requiresProject = false;
-
   public async run() {
-    const publisher = new Publisher(this.org as Org);
-    await publisher.delete(this.flags.assetid as string, this.flags.id as string);
-    this.ux.log(messages.getMessage('deletePublisherSuccess', [this.flags.id]));
+    const { flags } = await this.parse(Delete);
+    const publisher = new Publisher(flags['target-org'].getConnection(flags['api-version']));
+    await publisher.delete(flags.assetid, flags.id);
+    this.log(messages.getMessage('deletePublisherSuccess', [flags.id]));
   }
 }

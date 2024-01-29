@@ -5,9 +5,9 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { Connection, Org } from '@salesforce/core';
-import { connectRequest, fetchAllPages } from '../request';
-import { throwError } from '../utils';
+import { Connection } from '@salesforce/core';
+import { connectRequest, fetchAllPages } from '../request.js';
+import { throwError } from '../utils.js';
 
 export type LensHistoryType = {
   id?: string;
@@ -31,11 +31,9 @@ type LensBundleType = Record<string, unknown> & {
 };
 
 export default class Lens {
-  private readonly connection: Connection;
   private readonly lensesUrl: string;
 
-  public constructor(organization: Org) {
-    this.connection = organization.getConnection();
+  public constructor(private readonly connection: Connection) {
     this.lensesUrl = `${this.connection.baseUrl()}/wave/lenses/`;
   }
 
@@ -57,8 +55,8 @@ export default class Lens {
       url: revertUrl,
       body: JSON.stringify({
         historyId,
-        historyLabel
-      })
+        historyLabel,
+      }),
     });
 
     if (response) {

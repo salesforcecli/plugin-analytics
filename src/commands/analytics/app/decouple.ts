@@ -5,43 +5,47 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { flags, SfdxCommand } from '@salesforce/command';
-import { Messages, Org } from '@salesforce/core';
+import {
+  Flags,
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
+import { Messages } from '@salesforce/core';
 
-import Folder from '../../../lib/analytics/app/folder';
+import Folder from '../../../lib/analytics/app/folder.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'app');
 
-export default class Decouple extends SfdxCommand {
-  public static description = messages.getMessage('decoupleCommandDescription');
-  public static longDescription = messages.getMessage('decoupleCommandLongDescription');
+export default class Decouple extends SfCommand<string> {
+  public static readonly summary = messages.getMessage('decoupleCommandDescription');
+  public static readonly description = messages.getMessage('decoupleCommandLongDescription');
 
-  public static examples = ['$ sfdx analytics:app:decouple -f folderId -t templateId'];
+  public static readonly examples = ['$ sfdx analytics:app:decouple -f folderId -t templateId'];
 
-  protected static flagsConfig = {
-    folderid: flags.id({
+  public static readonly flags = {
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
+    folderid: Flags.salesforceId({
       char: 'f',
       required: true,
-      description: messages.getMessage('folderidFlagDescription'),
-      longDescription: messages.getMessage('folderidFlagLongDescription')
+      summary: messages.getMessage('folderidFlagDescription'),
+      description: messages.getMessage('folderidFlagLongDescription'),
     }),
-    templateid: flags.id({
+    templateid: Flags.salesforceId({
       char: 't',
       required: true,
-      description: messages.getMessage('templateidFlagDescription'),
-      longDescription: messages.getMessage('templateidFlagLongDescription')
-    })
+      summary: messages.getMessage('templateidFlagDescription'),
+      description: messages.getMessage('templateidFlagLongDescription'),
+    }),
   };
 
-  protected static requiresUsername = true;
-  protected static requiresProject = false;
-
   public async run() {
-    const folder = new Folder(this.org as Org);
-    const folderId = await folder.decouple(this.flags.folderid as string, this.flags.templateid as string);
-    // If error occurs here fails out in the decouple call and reports back, otherwise success
-    this.ux.log(messages.getMessage('decoupleSuccess', [folderId, this.flags.templateid]));
-    return folderId;
+    const { flags } = await this.parse(Decouple);
+    const folder = new Folder(flags['target-org'].getConnection(flags['api-version']));
+    const folderId = await folder.decouple(flags.folderid, flags.templateid);
+    this.log(messages.getMessage('decoupleSuccess', [folderId ?? flags.folderid, flags.templateid]));
+    return folderId ?? flags.folderid;
   }
 }

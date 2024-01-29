@@ -2,6 +2,7 @@
   "listCommandDescription": "list Analytics auto-install requests",
   "listCommandLongDescription": "Lists Analytics auto-install requests in the specified target org.",
   "autoinstallsFound": "Found [%s] auto-install requests.",
+  "noResultsFound": "No results found.",
   "createCommandDescription": "creates auto-install request to create Analytics app",
   "createCommandLongDescription": "Creates auto-install request to create a Analytics app.",
   "updateCommandDescription": "creates auto-install request to update Analytics app",

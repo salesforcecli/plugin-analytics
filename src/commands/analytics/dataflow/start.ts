@@ -5,39 +5,44 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { flags, SfdxCommand } from '@salesforce/command';
-import { Messages, Org } from '@salesforce/core';
+import {
+  Flags,
+  SfCommand,
+  orgApiVersionFlagWithDeprecations,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
+import { Messages } from '@salesforce/core';
 
-import Dataflow from '../../../lib/analytics/dataflow/dataflow';
+import Dataflow, { type DataflowJobType } from '../../../lib/analytics/dataflow/dataflow.js';
 
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'dataflow');
 
-export default class Start extends SfdxCommand {
-  public static description = messages.getMessage('startCommandDescription');
-  public static longDescription = messages.getMessage('startCommandLongDescription');
+export default class Start extends SfCommand<DataflowJobType> {
+  public static readonly summary = messages.getMessage('startCommandDescription');
+  public static readonly description = messages.getMessage('startCommandLongDescription');
 
-  public static examples = ['$ sfdx analytics:dataflow:start --dataflowid <dataflowid>'];
+  public static readonly examples = ['$ sfdx analytics:dataflow:start --dataflowid <dataflowid>'];
 
-  protected static flagsConfig = {
-    dataflowid: flags.id({
+  public static readonly flags = {
+    'target-org': requiredOrgFlagWithDeprecations,
+    'api-version': orgApiVersionFlagWithDeprecations,
+    dataflowid: Flags.salesforceId({
       char: 'i',
       required: true,
-      description: messages.getMessage('dataflowidFlagDescription'),
-      longDescription: messages.getMessage('dataflowidFlagLongDescription')
-    })
+      summary: messages.getMessage('dataflowidFlagDescription'),
+      description: messages.getMessage('dataflowidFlagLongDescription'),
+    }),
   };
 
-  protected static requiresUsername = true;
-  protected static requiresProject = false;
-
   public async run() {
-    const dataflowId = this.flags.dataflowid as string;
-    const dataflow = new Dataflow(this.org as Org);
+    const { flags } = await this.parse(Start);
+    const dataflowId = flags.dataflowid;
+    const dataflow = new Dataflow(flags['target-org'].getConnection(flags['api-version']));
 
     const dataflowJob = await dataflow.startDataflow(dataflowId);
     const message = messages.getMessage('dataflowJobUpdate', [dataflowJob.id, dataflowJob.status]);
-    this.ux.log(message);
+    this.log(message);
     return dataflowJob;
   }
 }

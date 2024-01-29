@@ -5,8 +5,8 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { Connection, SfdxError } from '@salesforce/core';
-import { connectRequest, fetchAllPages } from '../request';
+import { Connection, SfError } from '@salesforce/core';
+import { connectRequest, fetchAllPages } from '../request.js';
 
 export type DatasetType = Record<string, unknown> & {
   id?: string;
@@ -17,6 +17,7 @@ export type DatasetType = Record<string, unknown> & {
   createdDate?: string;
   currentVersionId?: string;
   dataRefreshDate?: string;
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   datasetType?: 'Default' | 'default' | 'Live' | 'live' | 'Trended' | 'trended' | string;
   folder?: { id?: string; label?: string };
   lastAccessedDate?: string;
@@ -72,7 +73,7 @@ export default class DatasetSvc {
     if (response) {
       return response as DatasetType;
     } else {
-      throw new SfdxError('Missing response');
+      throw new SfError('Missing response');
     }
   }
 
@@ -93,7 +94,7 @@ export default class DatasetSvc {
     if (xmd) {
       return xmd;
     } else {
-      throw new SfdxError('Missing response');
+      throw new SfError('Missing response');
     }
   }
 
@@ -112,33 +113,34 @@ export default class DatasetSvc {
       )}/sourceObjects/${encodeURIComponent(sourceObjectName)}/fields`
     );
     if (Array.isArray(fields)) {
-      return fields.map(f => f.name).filter(n => !!n);
+      return fields.map((f) => f.name).filter((n) => !!n);
     } else {
-      throw new SfdxError(`Missing fields for ${connectorIdOrApiName}/${sourceObjectName}`);
+      throw new SfError(`Missing fields for ${connectorIdOrApiName}/${sourceObjectName}`);
     }
   }
 }
 
 /** Fetch the queryable field names from the specified xmd. */
 export function fetchFieldNames(xmd: XmdType): string[] {
-  const fieldsFromDates = xmd.dates?.map(d => d.fields);
+  const fieldsFromDates = xmd.dates?.map((d) => d.fields);
 
   const fieldNames: string[] = [];
-  [...(xmd.dimensions?.map(dim => dim.field) || []), ...(xmd.measures?.map(measure => measure.field) || [])].forEach(
-    fieldName => {
-      if (!fieldName) {
-        return;
-      }
-      // it's the original field
-      if (fieldsFromDates?.map(d => d?.fullField).includes(fieldName)) {
-        fieldNames.push(fieldName);
-        return;
-      }
-      const isDerived = fieldsFromDates?.some(d => d && Object.values(d).includes(fieldName));
-      if (!isDerived) {
-        fieldNames.push(fieldName);
-      }
+  [
+    ...(xmd.dimensions?.map((dim) => dim.field) ?? []),
+    ...(xmd.measures?.map((measure) => measure.field) ?? []),
+  ].forEach((fieldName) => {
+    if (!fieldName) {
+      return;
     }
-  );
+    // it's the original field
+    if (fieldsFromDates?.map((d) => d?.fullField).includes(fieldName)) {
+      fieldNames.push(fieldName);
+      return;
+    }
+    const isDerived = fieldsFromDates?.some((d) => d && Object.values(d).includes(fieldName));
+    if (!isDerived) {
+      fieldNames.push(fieldName);
+    }
+  });
   return fieldNames;
 }

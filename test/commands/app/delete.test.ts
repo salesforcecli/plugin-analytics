@@ -4,27 +4,43 @@
  * Licensed under the BSD 3-Clause license.
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import * as core from '@salesforce/core';
-import { expect, test } from '@salesforce/command/lib/test';
-import { ensureJsonMap } from '@salesforce/ts-types';
+import { Messages } from '@salesforce/core';
+import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js';
+import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
+import { expect } from 'chai';
+import { ensureJsonMap, ensureString } from '@salesforce/ts-types';
+import Delete from '../../../src/commands/analytics/app/delete.js';
+import { getStdout, stubDefaultOrg } from '../../testutils.js';
 
-core.Messages.importMessagesDirectory(__dirname);
-const messages = core.Messages.loadMessages('@salesforce/analytics', 'app');
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
+const messages = Messages.loadMessages('@salesforce/analytics', 'app');
+
 const appId = '0llxx000000000zCAA';
 
 describe('analytics:app:delete', () => {
-  test
-    .withOrg({ username: 'test@org.com' }, true)
-    .withConnectionRequest(request => {
+  const $$ = new TestContext();
+  const testOrg = new MockTestOrgData();
+  let sfCommandStubs: ReturnType<typeof stubSfCommandUx>;
+
+  beforeEach(() => {
+    sfCommandStubs = stubSfCommandUx($$.SANDBOX);
+  });
+  afterEach(() => {
+    $$.restore();
+  });
+
+  it(`runs: --noprompt --folderid ${appId}`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = (request) => {
       request = ensureJsonMap(request);
-      if (request.method === 'DELETE') {
+      if (ensureString(request.method) === 'DELETE') {
         return Promise.resolve({ id: appId });
       }
-      return Promise.reject();
-    })
-    .stdout()
-    .command(['analytics:app:delete', '--noprompt', '--folderid', appId])
-    .it('runs analytics:app:delete  --folderid 0llxx000000000zCAA --noprompt', ctx => {
-      expect(ctx.stdout).to.contain(messages.getMessage('deleteAppSuccess', [appId]));
-    });
+      return Promise.reject(new Error('Invalid request: ' + JSON.stringify(request)));
+    };
+
+    await Delete.run(['--noprompt', '--folderid', appId]);
+    const stdout = getStdout(sfCommandStubs);
+    expect(stdout, 'stdout').to.contain(messages.getMessage('deleteAppSuccess', [appId]));
+  });
 });
