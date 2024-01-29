@@ -1,3 +1,12 @@
+# [1.4.0](https://github.com/salesforcecli/plugin-analytics/compare/1.3.19...1.4.0) (2024-01-29)
+
+
+### Features
+
+* update plugin to sf ([#350](https://github.com/salesforcecli/plugin-analytics/issues/350)) ([488cf55](https://github.com/salesforcecli/plugin-analytics/commit/488cf5539bd5542fe6a350ff74d3b467a0257536))
+
+
+
 ## [1.3.19](https://github.com/salesforcecli/plugin-analytics/compare/1.3.18...1.3.19) (2023-11-02)
 
 
