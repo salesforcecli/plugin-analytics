@@ -1,3 +1,12 @@
+## [1.4.4](https://github.com/salesforcecli/plugin-analytics/compare/1.4.3...1.4.4) (2024-02-21)
+
+
+### Bug Fixes
+
+* **deps:** bump ip from 2.0.0 to 2.0.1 ([#371](https://github.com/salesforcecli/plugin-analytics/issues/371)) ([92e48c9](https://github.com/salesforcecli/plugin-analytics/commit/92e48c9fdd72de9f743e60eea5c709898f769a93))
+
+
+
 ## [1.4.3](https://github.com/salesforcecli/plugin-analytics/compare/1.4.2...1.4.3) (2024-02-18)
 
 
