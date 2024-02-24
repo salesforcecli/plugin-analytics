@@ -2051,13 +2051,13 @@
     "@salesforce/ts-types" "^2.0.9"
     tslib "^2.6.2"
 
-"@salesforce/plugin-command-reference@^3.0.66":
-  version "3.0.66"
-  resolved "https://registry.yarnpkg.com/@salesforce/plugin-command-reference/-/plugin-command-reference-3.0.66.tgz#32aabfcdd27148418813890f1f64f64d1f8dabd3"
-  integrity sha512-IT/VLJsaE9hjsmrCjBXDUF8sTahRRTV42gcgWCJOXqn6I8s/H86Zp42NifiRl441qdfa20RfavdMXcxJ3CRchA==
+"@salesforce/plugin-command-reference@^3.0.68":
+  version "3.0.68"
+  resolved "https://registry.yarnpkg.com/@salesforce/plugin-command-reference/-/plugin-command-reference-3.0.68.tgz#10761fb48f5346bdd3ed0c8e2f6cfaaaf32d1eca"
+  integrity sha512-tsAcHX2/wXIymRwUj+VEOfcX3Yz3G8wg2wCFI6pUGiEgz+6StVRXhG/lwRxNp+xHAxDmohW1FFNTQVeeJwCGqg==
   dependencies:
     "@oclif/core" "^3.19.1"
-    "@salesforce/core" "^6.5.1"
+    "@salesforce/core" "^6.5.3"
     "@salesforce/kit" "^3.0.15"
     "@salesforce/sf-plugins-core" "^5.0.13"
     "@salesforce/ts-types" "^2.0.9"
