@@ -1991,15 +1991,15 @@
     strip-ansi "6.0.1"
     ts-retry-promise "^0.8.0"
 
-"@salesforce/core@^6.4.1", "@salesforce/core@^6.4.6", "@salesforce/core@^6.5.1", "@salesforce/core@^6.5.2", "@salesforce/core@^6.5.3":
-  version "6.5.5"
-  resolved "https://registry.yarnpkg.com/@salesforce/core/-/core-6.5.5.tgz#ddfab1f6a51808ed1cadc98be3b7235d25ea436f"
-  integrity sha512-2zWTwc9m+LGJNSKXk6I01dzWEjWKkHyYZbROksIPzfWJ5lGfErzpvsTcGAAskBrJD9EpQ4/BtMSLhPSwskI7Fw==
+"@salesforce/core@^6.4.1", "@salesforce/core@^6.4.6", "@salesforce/core@^6.5.1", "@salesforce/core@^6.5.3", "@salesforce/core@^6.6.0":
+  version "6.7.0"
+  resolved "https://registry.yarnpkg.com/@salesforce/core/-/core-6.7.0.tgz#f838f5704aa2f14296fd85691c9bcd8da33dca5d"
+  integrity sha512-KIyoSdQJVwtReSpXfpFZ4D4BXHFh5xcmvY6UJjzxB3H7CqUtC/20ldal/jCD8JEy/jObfG7GyxZmZYZYF88JCw==
   dependencies:
     "@salesforce/kit" "^3.0.15"
     "@salesforce/schemas" "^1.6.1"
     "@salesforce/ts-types" "^2.0.9"
-    "@types/semver" "^7.5.7"
+    "@types/semver" "^7.5.8"
     ajv "^8.12.0"
     change-case "^4.1.2"
     faye "^1.4.0"
@@ -2097,15 +2097,15 @@
     chalk "^4"
     inquirer "^8.2.5"
 
-"@salesforce/sf-plugins-core@^7.1.10":
-  version "7.1.10"
-  resolved "https://registry.yarnpkg.com/@salesforce/sf-plugins-core/-/sf-plugins-core-7.1.10.tgz#244b13eb687efdb8c457d5108e5679817b797ea1"
-  integrity sha512-433aoM9K0++FrVdsxbGRcD9/lL3dhrp/lW9z5dFFbdocGPYqoQbp1qtiTm5ZhhmsTxUOHZ5+GwKNSNwdLogYHw==
+"@salesforce/sf-plugins-core@^7.1.14":
+  version "7.1.14"
+  resolved "https://registry.yarnpkg.com/@salesforce/sf-plugins-core/-/sf-plugins-core-7.1.14.tgz#5f07316a602b4c5d44c09bc74c294d7df9e2e260"
+  integrity sha512-KDX9vYDeVOkozRrsjVh4Pvzay++7bWWKmaHtGOwkZrBHb3mVEdCp0ryF0WaDTfaEvgNKn7kiZEDSO7oEhJSzug==
   dependencies:
     "@inquirer/confirm" "^2.0.17"
     "@inquirer/password" "^1.1.16"
-    "@oclif/core" "^3.19.2"
-    "@salesforce/core" "^6.5.2"
+    "@oclif/core" "^3.19.6"
+    "@salesforce/core" "^6.6.0"
     "@salesforce/kit" "^3.0.15"
     "@salesforce/ts-types" "^2.0.9"
     chalk "^5.3.0"
@@ -3201,10 +3201,10 @@
   resolved "https://registry.yarnpkg.com/@types/semver/-/semver-7.5.6.tgz#c65b2bfce1bec346582c07724e3f8c1017a20339"
   integrity sha512-dn1l8LaMea/IjDoHNd9J52uBbInB796CDffS6VdIxvqYCPSG0V0DzHp76GpaWnlhg88uYyPbXCDIowa86ybd5A==
 
-"@types/semver@^7.5.7":
-  version "7.5.7"
-  resolved "https://registry.yarnpkg.com/@types/semver/-/semver-7.5.7.tgz#326f5fdda70d13580777bcaa1bc6fa772a5aef0e"
-  integrity sha512-/wdoPq1QqkSj9/QOeKkFquEuPzQbHTWAMPH/PaUMB+JuR31lXhlWXRZ52IpfDYVlDOUBvX09uBrPwxGT1hjNBg==
+"@types/semver@^7.5.8":
+  version "7.5.8"
+  resolved "https://registry.yarnpkg.com/@types/semver/-/semver-7.5.8.tgz#8268a8c57a3e4abd25c165ecd36237db7948a55e"
+  integrity sha512-I8EUhyrgfLrcTkzV3TSsGyl1tSuPrEDzr0yd5m90UgNxQkyDXULk3b6MlQqTCpZpNtWe1K0hzclnZkTcLBe2UQ==
 
 "@types/shelljs@^0.8.15":
   version "0.8.15"
