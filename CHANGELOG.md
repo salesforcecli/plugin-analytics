@@ -1,3 +1,12 @@
+## [1.4.8](https://github.com/salesforcecli/plugin-analytics/compare/1.4.7...1.4.8) (2024-03-17)
+
+
+### Bug Fixes
+
+* **deps:** bump @salesforce/core from 6.7.0 to 6.7.1 ([#390](https://github.com/salesforcecli/plugin-analytics/issues/390)) ([b9a26e8](https://github.com/salesforcecli/plugin-analytics/commit/b9a26e8772ae4a8eb3e4ae5a86959ab1f1a6d5b7))
+
+
+
 ## [1.4.7](https://github.com/salesforcecli/plugin-analytics/compare/1.4.6...1.4.7) (2024-03-10)
 
 
