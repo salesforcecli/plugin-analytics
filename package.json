@@ -25,7 +25,6 @@
     "eslint-plugin-mocha": "^10.4.1",
     "eslint-plugin-sf-plugin": "^1.17.4",
     "oclif": "^4",
-    "shx": "0.3.4",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.3"
   },
@@ -40,8 +39,9 @@
   "files": [
     "/lib",
     "/messages",
-    "/oclif.manifest.json",
-    "/oclif.lock"
+    "/npm-shrinkwrap.json",
+    "/oclif.lock",
+    "/oclif.manifest.json"
   ],
   "exports": "./lib/index.js",
   "homepage": "https://github.com/salesforcecli/plugin-analytics",
@@ -142,14 +142,13 @@
     "build": "wireit",
     "clean": "sf-clean",
     "clean-all": "sf-clean all",
-    "clean:lib": "shx rm -rf lib && shx rm -rf coverage && shx rm -rf .nyc_output && shx rm -f oclif.manifest.json oclif.lock",
     "compile": "wireit",
     "docs": "sf-docs",
     "format": "wireit",
     "link-check": "wireit",
     "lint": "wireit",
     "lint-check": "wireit",
-    "postpack": "shx rm -f oclif.manifest.json oclif.lock",
+    "postpack": "sf-clean --ignore-signing-artifacts",
     "prepack": "sf-prepack",
     "prepare": "sf-install",
     "test": "wireit",

@@ -31,6 +31,11 @@ docs
 *.sig
 package.json.bak.
 
+
+npm-shrinkwrap.json
+oclif.manifest.json
+oclif.lock
+
 # -- CLEAN ALL
 *.tsbuildinfo
 .eslintcache
@@ -49,6 +54,3 @@ node_modules
 .idea
 *.swp
 .sfdx
-
-oclif.manifest.json
-oclif.lock
