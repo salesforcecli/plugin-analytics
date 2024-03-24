@@ -19,7 +19,7 @@
     "@oclif/plugin-command-snapshot": "^5.1.1",
     "@salesforce/cli-plugins-testkit": "^5.1.12",
     "@salesforce/dev-scripts": "^8.4.2",
-    "@salesforce/plugin-command-reference": "^3.0.70",
+    "@salesforce/plugin-command-reference": "^3.0.72",
     "@salesforce/ts-sinon": "^1.4.19",
     "@types/lodash.get": "^4.4.9",
     "eslint-plugin-mocha": "^10.4.1",
