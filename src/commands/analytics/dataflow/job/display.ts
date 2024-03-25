@@ -12,9 +12,8 @@ import {
   requiredOrgFlagWithDeprecations,
 } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
-import chalk from 'chalk';
 import Dataflow, { type DataflowJobType } from '../../../../lib/analytics/dataflow/dataflow.js';
-import { generateTableColumns } from '../../../../lib/analytics/utils.js';
+import { generateTableColumns, headerColor } from '../../../../lib/analytics/utils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'dataflow');
@@ -42,7 +41,7 @@ export default class Display extends SfCommand<DataflowJobType> {
     const dataflow = new Dataflow(flags['target-org'].getConnection(flags['api-version']));
 
     const dataflowJob = await dataflow.getDataflowJob(dataflowjobId);
-    this.styledHeader(chalk.blue(messages.getMessage('displayDetailHeader')));
+    this.styledHeader(headerColor(messages.getMessage('displayDetailHeader')));
     this.table(
       [
         { key: 'Id', value: dataflowJob.id },

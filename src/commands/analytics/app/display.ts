@@ -16,7 +16,7 @@ import chalk from 'chalk';
 import moment from 'moment';
 
 import Folder, { type AppFolder, AppStatus } from '../../../lib/analytics/app/folder.js';
-import { generateTableColumns } from '../../../lib/analytics/utils.js';
+import { generateTableColumns, headerColor } from '../../../lib/analytics/utils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'app');
@@ -30,10 +30,6 @@ function formatDate(s: string | undefined): string | undefined {
     // ignore invalid date from server
   }
   return undefined;
-}
-
-function blue(s: string): string {
-  return process.platform !== 'win32' ? chalk.blue(s) : s;
 }
 
 function colorStatus(s: AppStatus | undefined): string | undefined {
@@ -77,7 +73,7 @@ export default class Display extends SfCommand<AppFolder> {
     const app = await folder.fetch(flags.folderid, flags.applog);
 
     // force:org:display does a blue chalk on the headers, so do it here, too
-    this.styledHeader(blue(messages.getMessage('displayDetailHeader')));
+    this.styledHeader(headerColor(messages.getMessage('displayDetailHeader')));
     this.table(
       [
         { key: 'Name', value: app.name },
@@ -96,7 +92,7 @@ export default class Display extends SfCommand<AppFolder> {
     );
 
     if (flags.applog) {
-      this.styledHeader(blue(messages.getMessage('displayLogHeader')));
+      this.styledHeader(headerColor(messages.getMessage('displayLogHeader')));
       if (!app.appLog || !Array.isArray(app.appLog) || app.appLog.length <= 0) {
         this.log(messages.getMessage('displayNoLogAvailable'));
       } else {

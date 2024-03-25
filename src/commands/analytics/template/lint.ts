@@ -12,8 +12,7 @@ import {
   requiredOrgFlagWithDeprecations,
 } from '@salesforce/sf-plugins-core';
 import { Messages, SfError } from '@salesforce/core';
-import chalk from 'chalk';
-import { colorize, getStatusIcon, COLORS } from '../../../lib/analytics/utils.js';
+import { colorize, getStatusIcon, COLORS, headerColor } from '../../../lib/analytics/utils.js';
 
 import TemplateLint, { type LintType } from '../../../lib/analytics/template/lint.js';
 
@@ -63,7 +62,7 @@ export default class Lint extends SfCommand<LintType | string> {
 
     const tasks = result.tasks ?? [];
     if (tasks.length > 0) {
-      this.styledHeader(colorize(messages.getMessage('tasksFound', [result.label, String(result.score)]), chalk.blue));
+      this.styledHeader(headerColor(messages.getMessage('tasksFound', [result.label, String(result.score)])));
     }
 
     this.table(

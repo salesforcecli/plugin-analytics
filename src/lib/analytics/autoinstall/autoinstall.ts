@@ -4,9 +4,9 @@
  * Licensed under the BSD 3-Clause license.
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import { Connection } from '@salesforce/core';
+import { Connection, Messages } from '@salesforce/core';
 import { connectRequest, fetchAllPages } from '../request.js';
-import { CommandUx, throwError, waitFor } from '../utils.js';
+import { CommandUx, generateTableColumns, headerColor, throwError, waitFor } from '../utils.js';
 
 export type AutoInstallStatus =
   | 'New'
@@ -83,6 +83,25 @@ const createType = 'WaveAppCreate';
 const updateType = 'WaveAppUpdate';
 const deleteType = 'WaveAppDelete';
 const cancelStatusType = 'Cancelled';
+
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
+const messages = Messages.loadMessages('@salesforce/analytics', 'autoinstall');
+
+export function logAppLog(autoinstallRep: AutoInstallRequestType, ux: CommandUx) {
+  ux.styledHeader(headerColor(messages.getMessage('displayLogHeader')));
+  if (
+    !autoinstallRep.appFromRequest?.appLog ||
+    !Array.isArray(autoinstallRep.appFromRequest?.appLog) ||
+    autoinstallRep.appFromRequest.appLog.length <= 0
+  ) {
+    ux.log(messages.getMessage('displayNoLogAvailable'));
+  } else {
+    const data = autoinstallRep.appFromRequest.appLog?.map((line) => ({
+      message: (typeof line === 'string' ? line : line.message) || '',
+    }));
+    ux.table(data, generateTableColumns(['message']));
+  }
+}
 
 export default class AutoInstall {
   public readonly serverVersion: number;

@@ -13,7 +13,7 @@ import { expect } from 'chai';
 import { stubMethod } from '@salesforce/ts-sinon';
 import Create from '../../../../src/commands/analytics/autoinstall/app/create.js';
 import { AutoInstallRequestType, AutoInstallStatus } from '../../../../src/lib/analytics/autoinstall/autoinstall.js';
-import { getJsonOutput, getStdout, stubDefaultOrg } from '../../../testutils.js';
+import { getJsonOutput, getStdout, getStyledHeaders, stubDefaultOrg } from '../../../testutils.js';
 import { fs } from '../../../../src/lib/analytics/utils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
@@ -81,6 +81,7 @@ describe('analytics:autoinstall:app:create', () => {
     await Create.run(['--async', '-n', 'abc']);
     const stdout = getStdout(sfCommandStubs);
     expect(stdout, 'stdout').to.contain(messages.getMessage('appCreateRequestSuccess', [requestId]));
+    expect(stdout, 'stdout').to.not.contain(messages.getMessage('displayNoLogAvailable'));
   });
 
   // verify the --json output includes the request id
@@ -124,6 +125,26 @@ describe('analytics:autoinstall:app:create', () => {
     await Create.run(['-n', 'abc']);
     const stdout = getStdout(sfCommandStubs);
     expect(stdout, 'stdout').to.contain(messages.getMessage('appCreateSuccess', [folderId, requestId]));
+    expect(stdout, 'stdout').to.not.contain(messages.getMessage('displayNoLogAvailable'));
+  });
+
+  it('runs: -n abc --applog (with no app log)', async () => {
+    await stubDefaultOrg($$, testOrg);
+    let requestNum = 0;
+    $$.fakeConnectionRequest = () => {
+      requestNum++;
+      if (requestNum === 1) {
+        return Promise.resolve(requestWithStatus('New'));
+      }
+      if (requestNum === 3) {
+        return Promise.resolve(requestWithStatus('Success'));
+      }
+      return Promise.resolve(requestWithStatus('InProgress'));
+    };
+
+    await Create.run(['-n', 'abc', '--applog']);
+    expect(getStyledHeaders(sfCommandStubs), 'styled headers').to.contain(messages.getMessage('displayLogHeader'));
+    expect(getStdout(sfCommandStubs), 'stdout').to.contain(messages.getMessage('displayNoLogAvailable'));
   });
 
   // verfiy that --json on success includes the request id and the folder id
