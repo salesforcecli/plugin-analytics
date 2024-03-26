@@ -100,6 +100,11 @@ export function colorize(s: string, color: ChalkInstance | undefined): string {
   return color && process.platform !== 'win32' ? color(s) : s;
 }
 
+// we use blue in many of the styled headers
+export function headerColor(s: string) {
+  return colorize(s, chalk.blue);
+}
+
 const warning = chalk.hex('#ff5f00');
 
 export function getStatusIcon(s: string): string {

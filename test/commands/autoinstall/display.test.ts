@@ -13,6 +13,7 @@ import Display from '../../../src/commands/analytics/autoinstall/display.js';
 import {
   expectToHaveElementInclude,
   expectToHaveElementValue,
+  getStdout,
   getStyledHeaders,
   getTableData,
   stubDefaultOrg,
@@ -76,7 +77,6 @@ describe('analytics:app:display', () => {
     $$.fakeConnectionRequest = () => Promise.resolve(autoInstallRequest);
 
     await Display.run(['--autoinstallid', ID]);
-    expect(getStyledHeaders(sfCommandStubs), 'styled headers').to.not.contain(messages.getMessage('displayLogHeader'));
     const { data, headers } = getTableData(sfCommandStubs);
     expect(headers, 'headers').to.deep.equal(['key', 'value']);
     expectToHaveElementInclude(data, { key: 'Id', value: ID }, 'table');
@@ -84,5 +84,50 @@ describe('analytics:app:display', () => {
     expectToHaveElementInclude(data, { key: 'Last Modified By', value: 'Automated Process' }, 'table');
     // just make sure it has least one of the dates
     expectToHaveElementValue(data, /2020-03-\d\d \d\d:\d\d:\d\d$/m, 'table');
+
+    expect(getStyledHeaders(sfCommandStubs), 'styled headers').to.not.contain(messages.getMessage('displayLogHeader'));
+  });
+
+  it(`runs: --autoinstallid ${ID} -a (with no app log)`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = () => Promise.resolve(autoInstallRequest);
+
+    await Display.run(['--autoinstallid', ID, '-a']);
+    const { data, headers } = getTableData(sfCommandStubs);
+    expect(headers, 'headers').to.deep.equal(['key', 'value']);
+    expectToHaveElementInclude(data, { key: 'Id', value: ID }, 'table');
+    expectToHaveElementInclude(data, { key: 'Created By', value: 'Automated Process' }, 'table');
+    expectToHaveElementInclude(data, { key: 'Last Modified By', value: 'Automated Process' }, 'table');
+    // just make sure it has least one of the dates
+    expectToHaveElementValue(data, /2020-03-\d\d \d\d:\d\d:\d\d$/m, 'table');
+
+    expect(getStyledHeaders(sfCommandStubs), 'styled headers').to.contain(messages.getMessage('displayLogHeader'));
+    expect(getStdout(sfCommandStubs), 'stdout').to.contain(messages.getMessage('displayNoLogAvailable'));
+  });
+
+  it(`runs: --autoinstallid ${ID} -a (with app log)`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    $$.fakeConnectionRequest = () =>
+      Promise.resolve({
+        ...autoInstallRequest,
+        appFromRequest: {
+          appLog: [{ message: 'App log message' }],
+        },
+      });
+
+    await Display.run(['--autoinstallid', ID, '-a']);
+    const { data, headers } = getTableData(sfCommandStubs);
+    expect(headers, 'headers').to.deep.equal(['key', 'value']);
+    expectToHaveElementInclude(data, { key: 'Id', value: ID }, 'table');
+    expectToHaveElementInclude(data, { key: 'Created By', value: 'Automated Process' }, 'table');
+    expectToHaveElementInclude(data, { key: 'Last Modified By', value: 'Automated Process' }, 'table');
+    // just make sure it has least one of the dates
+    expectToHaveElementValue(data, /2020-03-\d\d \d\d:\d\d:\d\d$/m, 'table');
+
+    expect(getStyledHeaders(sfCommandStubs), 'styled headers').to.contain(messages.getMessage('displayLogHeader'));
+    expect(getStdout(sfCommandStubs), 'stdout').to.not.contain(messages.getMessage('displayNoLogAvailable'));
+    const { data: appLogData, headers: appLogHeaders } = getTableData(sfCommandStubs, 1);
+    expect(appLogHeaders, 'headers').to.deep.equal(['message']);
+    expectToHaveElementInclude(appLogData, { message: 'App log message' });
   });
 });

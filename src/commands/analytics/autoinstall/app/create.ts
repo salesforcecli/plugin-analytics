@@ -13,6 +13,7 @@ import {
 import { Messages, SfError } from '@salesforce/core';
 
 import AutoInstall, {
+  logAppLog,
   type AutoInstallCreateAppConfigurationBody,
   type AutoInstallRequestType,
 } from '../../../../lib/analytics/autoinstall/autoinstall.js';
@@ -88,6 +89,12 @@ export default class Create extends SfCommand<AutoInstallRequestType | { id: str
       min: MIN_POLLING_INTERVAL,
       default: DEF_POLLING_INTERVAL,
     }),
+    applog: Flags.boolean({
+      required: false,
+      default: false,
+      summary: messages.getMessage('applogFlagDescription'),
+      description: messages.getMessage('applogFlagLongDescription'),
+    }),
   };
 
   public async run() {
@@ -148,6 +155,9 @@ export default class Create extends SfCommand<AutoInstallRequestType | { id: str
         ux: commandUx(this),
         startMesg: messages.getMessage('startRequestPolling', [autoInstallId]),
       });
+      if (flags.applog) {
+        logAppLog(finalRequest, commandUx(this));
+      }
       const status = finalRequest.requestStatus?.toLocaleLowerCase();
       if (status === 'success') {
         this.log(messages.getMessage('appCreateSuccess', [finalRequest.folderId, autoInstallId]));

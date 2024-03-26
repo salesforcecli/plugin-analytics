@@ -12,11 +12,10 @@ import {
   requiredOrgFlagWithDeprecations,
 } from '@salesforce/sf-plugins-core';
 import { Messages, SfError } from '@salesforce/core';
-import chalk from 'chalk';
 import moment from 'moment';
 
 import DatasetSvc, { type DatasetType } from '../../../lib/analytics/dataset/dataset.js';
-import { generateTableColumns } from '../../../lib/analytics/utils.js';
+import { generateTableColumns, headerColor } from '../../../lib/analytics/utils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'dataset');
@@ -30,10 +29,6 @@ function formatDate(s: string | undefined): string | undefined {
     // ignore invalid date
   }
   return undefined;
-}
-
-function blue(s: string): string {
-  return process.platform !== 'win32' ? chalk.blue(s) : s;
 }
 
 export default class Display extends SfCommand<DatasetType> {
@@ -71,7 +66,7 @@ export default class Display extends SfCommand<DatasetType> {
     const dataset = await svc.fetch((flags.datasetid ?? flags.datasetname) as string);
 
     // force:org:display does a blue chalk on the headers, so do it here, too
-    this.styledHeader(blue(messages.getMessage('displayDetailHeader')));
+    this.styledHeader(headerColor(messages.getMessage('displayDetailHeader')));
     const values = [
       { key: 'Id', value: dataset.id },
       { key: 'Namespace', value: dataset.namespace },

@@ -13,7 +13,10 @@ import {
 } from '@salesforce/sf-plugins-core';
 import { Messages, SfError } from '@salesforce/core';
 
-import AutoInstall, { type AutoInstallRequestType } from '../../../../lib/analytics/autoinstall/autoinstall.js';
+import AutoInstall, {
+  logAppLog,
+  type AutoInstallRequestType,
+} from '../../../../lib/analytics/autoinstall/autoinstall.js';
 import {
   DEF_APP_CREATE_UPDATE_TIMEOUT,
   DEF_POLLING_INTERVAL,
@@ -73,6 +76,12 @@ export default class Update extends SfCommand<AutoInstallRequestType | string | 
       min: MIN_POLLING_INTERVAL,
       default: DEF_POLLING_INTERVAL,
     }),
+    applog: Flags.boolean({
+      required: false,
+      default: false,
+      summary: messages.getMessage('applogFlagDescription'),
+      description: messages.getMessage('applogFlagLongDescription'),
+    }),
   };
 
   public async run() {
@@ -95,6 +104,9 @@ export default class Update extends SfCommand<AutoInstallRequestType | string | 
         ux: commandUx(this),
         startMesg: messages.getMessage('startRequestPolling', [autoInstallId]),
       });
+      if (flags.applog) {
+        logAppLog(finalRequest, commandUx(this));
+      }
       const status = finalRequest.requestStatus?.toLocaleLowerCase();
       if (status === 'success') {
         this.log(messages.getMessage('appUpdateSuccess', [finalRequest.folderId, autoInstallId]));

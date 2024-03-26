@@ -12,17 +12,12 @@ import {
   requiredOrgFlagWithDeprecations,
 } from '@salesforce/sf-plugins-core';
 import { Messages, SfError } from '@salesforce/core';
-import chalk from 'chalk';
 
 import WaveTemplate, { type TemplateType } from '../../../lib/analytics/template/wavetemplate.js';
-import { generateTableColumns } from '../../../lib/analytics/utils.js';
+import { generateTableColumns, headerColor } from '../../../lib/analytics/utils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'template');
-
-function blue(s: string): string {
-  return process.platform !== 'win32' ? chalk.blue(s) : s;
-}
 
 export default class Display extends SfCommand<TemplateType> {
   public static readonly summary = messages.getMessage('displayCommandDescription');
@@ -60,7 +55,7 @@ export default class Display extends SfCommand<TemplateType> {
     const templateRep = await template.fetch(templateInput);
 
     // force:org:display does a blue chalk on the headers, so do it here, too
-    this.styledHeader(blue(messages.getMessage('displayDetailHeader')));
+    this.styledHeader(headerColor(messages.getMessage('displayDetailHeader')));
     this.table(
       [
         { key: 'Name', value: templateRep.name },

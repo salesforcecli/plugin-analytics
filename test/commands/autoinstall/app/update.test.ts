@@ -13,7 +13,7 @@ import { expect } from 'chai';
 import { stubMethod } from '@salesforce/ts-sinon';
 import Update from '../../../../src/commands/analytics/autoinstall/app/update.js';
 import { AutoInstallRequestType, AutoInstallStatus } from '../../../../src/lib/analytics/autoinstall/autoinstall.js';
-import { getStdout, stubDefaultOrg } from '../../../testutils.js';
+import { getStdout, getStyledHeaders, stubDefaultOrg } from '../../../testutils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'autoinstall');
@@ -58,6 +58,7 @@ describe('analytics:autoinstall:app:update', () => {
     await Update.run(['--async', '-n', 'abc', '-f', folderId]);
     const stdout = getStdout(sfCommandStubs);
     expect(stdout, 'stdout').to.contain(messages.getMessage('appUpdateRequestSuccess', [requestId]));
+    expect(stdout, 'stdout').to.not.contain(messages.getMessage('displayNoLogAvailable'));
   });
 
   it(`runs: --wait 0 -n abc -f ${folderId}`, async () => {
@@ -87,6 +88,26 @@ describe('analytics:autoinstall:app:update', () => {
     await Update.run(['-n', 'abc', '-f', folderId]);
     const stdout = getStdout(sfCommandStubs);
     expect(stdout, 'stdout').to.contain(messages.getMessage('appUpdateSuccess', [folderId, requestId]));
+    expect(stdout, 'stdout').to.not.contain(messages.getMessage('displayNoLogAvailable'));
+  });
+
+  it(`runs: -n abc -f ${folderId} --applog (with no app log)`, async () => {
+    await stubDefaultOrg($$, testOrg);
+    let requestNum = 0;
+    $$.fakeConnectionRequest = () => {
+      requestNum++;
+      if (requestNum === 1) {
+        return Promise.resolve(requestWithStatus('New'));
+      }
+      if (requestNum === 3) {
+        return Promise.resolve(requestWithStatus('Success'));
+      }
+      return Promise.resolve(requestWithStatus('InProgress'));
+    };
+
+    await Update.run(['-n', 'abc', '-f', folderId, '--applog']);
+    expect(getStyledHeaders(sfCommandStubs), 'styled headers').to.contain(messages.getMessage('displayLogHeader'));
+    expect(getStdout(sfCommandStubs), 'stdout').to.contain(messages.getMessage('displayNoLogAvailable'));
   });
 
   it(`runs: -n abc -f ${folderId} (with failure)`, async () => {

@@ -12,8 +12,7 @@ import {
   requiredOrgFlagWithDeprecations,
 } from '@salesforce/sf-plugins-core';
 import { Messages, SfError } from '@salesforce/core';
-import chalk from 'chalk';
-import { colorize, getStatusIcon, COLORS, fs } from '../../../lib/analytics/utils.js';
+import { colorize, getStatusIcon, COLORS, fs, headerColor } from '../../../lib/analytics/utils.js';
 
 import TemplateValidate, { ValidateType } from '../../../lib/analytics/template/validate.js';
 
@@ -84,7 +83,7 @@ export default class Validate extends SfCommand<ValidateType | string> {
 
     const tasks = result.tasks ?? [];
     if (tasks.length > 0) {
-      this.styledHeader(colorize(messages.getMessage('tasksFound', [result.id]), chalk.blue));
+      this.styledHeader(headerColor(messages.getMessage('tasksFound', [result.id])));
     }
 
     this.table(

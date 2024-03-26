@@ -18,15 +18,12 @@ import moment from 'moment';
 import AutoInstall, {
   AutoInstallRequestType,
   AutoInstallStatus,
+  logAppLog,
 } from '../../../lib/analytics/autoinstall/autoinstall.js';
-import { generateTableColumns } from '../../../lib/analytics/utils.js';
+import { commandUx, generateTableColumns, headerColor } from '../../../lib/analytics/utils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'autoinstall');
-
-function blue(s: string): string {
-  return process.platform !== 'win32' ? chalk.blue(s) : s;
-}
 
 function formatDate(s: string | undefined): string | undefined {
   try {
@@ -80,7 +77,7 @@ export default class Display extends SfCommand<AutoInstallRequestType> {
     const autoinstallRep = await autoinstall.fetch(flags.autoinstallid);
 
     // force:org:display does a blue chalk on the headers, so do it here, too
-    this.styledHeader(blue(messages.getMessage('displayDetailHeader')));
+    this.styledHeader(headerColor(messages.getMessage('displayDetailHeader')));
     this.table(
       [
         { key: 'Id', value: autoinstallRep.id },
@@ -106,19 +103,7 @@ export default class Display extends SfCommand<AutoInstallRequestType> {
     );
 
     if (flags.applog) {
-      this.styledHeader(blue(messages.getMessage('displayLogHeader')));
-      if (
-        !autoinstallRep.appFromRequest?.appLog ||
-        !Array.isArray(autoinstallRep.appFromRequest?.appLog) ||
-        autoinstallRep.appFromRequest.appLog.length <= 0
-      ) {
-        this.log(messages.getMessage('displayNoLogAvailable'));
-      } else {
-        const data = autoinstallRep.appFromRequest.appLog?.map((line) => ({
-          message: (typeof line === 'string' ? line : line.message) || '',
-        }));
-        this.table(data, generateTableColumns(['message']));
-      }
+      logAppLog(autoinstallRep, commandUx(this));
     }
 
     return autoinstallRep;
