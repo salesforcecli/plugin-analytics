@@ -6,7 +6,7 @@
   "bugs": "https://github.com/salesforcecli/plugin-analytics/issues",
   "dependencies": {
     "@oclif/core": "^3.18.2",
-    "@oclif/plugin-help": "^6.0.17",
+    "@oclif/plugin-help": "^6.0.20",
     "@salesforce/core": "^6.7.1",
     "@salesforce/kit": "^3.0.15",
     "@salesforce/sf-plugins-core": "^7.1.16",
