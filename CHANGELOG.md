@@ -1,3 +1,12 @@
+## [1.4.12](https://github.com/salesforcecli/plugin-analytics/compare/1.4.11...1.4.12) (2024-04-15)
+
+
+### Bug Fixes
+
+* **deps:** bump @oclif/core from 3.26.0 to 3.26.3 ([#414](https://github.com/salesforcecli/plugin-analytics/issues/414)) ([3aabfaa](https://github.com/salesforcecli/plugin-analytics/commit/3aabfaa79c8ab6379456e36fe87d9b584f345030))
+
+
+
 ## [1.4.11](https://github.com/salesforcecli/plugin-analytics/compare/1.4.10...1.4.11) (2024-03-31)
 
 
