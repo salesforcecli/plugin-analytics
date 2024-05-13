@@ -1,3 +1,12 @@
+## [1.4.15](https://github.com/salesforcecli/plugin-analytics/compare/1.4.14...1.4.15) (2024-05-13)
+
+
+### Bug Fixes
+
+* add back loglevel arg for sfdx compatibility ([#443](https://github.com/salesforcecli/plugin-analytics/issues/443)) ([7c33c51](https://github.com/salesforcecli/plugin-analytics/commit/7c33c51c3c6f726457af8b6332976ad7ef654234))
+
+
+
 ## [1.4.14](https://github.com/salesforcecli/plugin-analytics/compare/1.4.13...1.4.14) (2024-04-28)
 
 
