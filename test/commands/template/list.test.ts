@@ -56,6 +56,15 @@ describe('analytics:template:list', () => {
     });
   });
 
+  it('runs with --loglevel', async () => {
+    await runAndVerify(['--loglevel=fatal'], templateValues, () => {
+      expect(getStyledHeaders(sfCommandStubs), 'headers').to.contain(messages.getMessage('templatesFound', [1]));
+      const { data } = getTableData(sfCommandStubs);
+      expectToHaveElementValue(data, templateValues[0].name, 'table');
+      expectToHaveElementValue(data, templateValues[0].label, 'table');
+    });
+  });
+
   it('runs: --includesalesforcetemplates', async () => {
     await runAndVerify(['--includesalesforcetemplates'], templateValues, () => {
       expect(getStyledHeaders(sfCommandStubs), 'headers').to.contain(messages.getMessage('templatesFound', [2]));

@@ -35,11 +35,11 @@ describe('analytics:app:list', () => {
     $$.restore();
   });
 
-  it(`runs: --folderid ${folderId} (no results)`, async () => {
+  it(`runs: --folderid ${folderId} --loglevel debug (no results)`, async () => {
     await stubDefaultOrg($$, testOrg);
     $$.fakeConnectionRequest = () => Promise.resolve({ folders: [] });
 
-    await List.run(['--folderid', folderId]);
+    await List.run(['--folderid', folderId, '--loglevel', 'debug']);
     const stdout = getStdout(sfCommandStubs);
     expect(stdout, 'stdout').to.contain(messages.getMessage('noResultsFound'));
     expect(getTableData(sfCommandStubs).data, 'table').to.be.undefined;

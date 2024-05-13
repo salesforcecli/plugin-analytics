@@ -20,6 +20,7 @@
       "async",
       "definitionfile",
       "json",
+      "loglevel",
       "target-org",
       "templateid",
       "templatename",
@@ -32,7 +33,7 @@
     "command": "analytics:app:decouple",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["f", "o", "t"],
-    "flags": ["api-version", "folderid", "json", "target-org", "templateid"],
+    "flags": ["api-version", "folderid", "json", "loglevel", "target-org", "templateid"],
     "plugin": "@salesforce/analytics"
   },
   {
@@ -40,7 +41,7 @@
     "command": "analytics:app:delete",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["f", "o", "p"],
-    "flags": ["api-version", "folderid", "json", "noprompt", "target-org"],
+    "flags": ["api-version", "folderid", "json", "loglevel", "noprompt", "target-org"],
     "plugin": "@salesforce/analytics"
   },
   {
@@ -48,7 +49,7 @@
     "command": "analytics:app:display",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["a", "f", "o"],
-    "flags": ["api-version", "applog", "folderid", "json", "target-org"],
+    "flags": ["api-version", "applog", "folderid", "json", "loglevel", "target-org"],
     "plugin": "@salesforce/analytics"
   },
   {
@@ -56,7 +57,7 @@
     "command": "analytics:app:list",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["f", "o"],
-    "flags": ["api-version", "folderid", "json", "target-org"],
+    "flags": ["api-version", "folderid", "json", "loglevel", "target-org"],
     "plugin": "@salesforce/analytics"
   },
   {
@@ -64,7 +65,7 @@
     "command": "analytics:app:update",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["a", "f", "o", "t", "v", "w"],
-    "flags": ["allevents", "api-version", "async", "folderid", "json", "target-org", "templateid", "wait"],
+    "flags": ["allevents", "api-version", "async", "folderid", "json", "loglevel", "target-org", "templateid", "wait"],
     "plugin": "@salesforce/analytics"
   },
   {
@@ -72,7 +73,7 @@
     "command": "analytics:asset:publisher:create",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["i", "o"],
-    "flags": ["api-version", "assetid", "json", "target-org"],
+    "flags": ["api-version", "assetid", "json", "loglevel", "target-org"],
     "plugin": "@salesforce/analytics"
   },
   {
@@ -80,7 +81,7 @@
     "command": "analytics:asset:publisher:delete",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["a", "i", "o"],
-    "flags": ["api-version", "assetid", "id", "json", "target-org"],
+    "flags": ["api-version", "assetid", "id", "json", "loglevel", "target-org"],
     "plugin": "@salesforce/analytics"
   },
   {
@@ -88,7 +89,7 @@
     "command": "analytics:asset:publisher:deleteall",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["i", "o", "p"],
-    "flags": ["api-version", "assetid", "json", "noprompt", "target-org"],
+    "flags": ["api-version", "assetid", "json", "loglevel", "noprompt", "target-org"],
     "plugin": "@salesforce/analytics"
   },
   {
@@ -96,7 +97,7 @@
     "command": "analytics:asset:publisher:list",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["i", "o"],
-    "flags": ["api-version", "assetid", "json", "target-org"],
+    "flags": ["api-version", "assetid", "json", "loglevel", "target-org"],
     "plugin": "@salesforce/analytics"
   },
   {
@@ -104,7 +105,7 @@
     "command": "analytics:autoinstall:app:cancel",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["i", "o"],
-    "flags": ["api-version", "autoinstallid", "json", "target-org"],
+    "flags": ["api-version", "autoinstallid", "json", "loglevel", "target-org"],
     "plugin": "@salesforce/analytics"
   },
   {
@@ -120,6 +121,7 @@
       "appname",
       "async",
       "json",
+      "loglevel",
       "noenqueue",
       "pollinterval",
       "target-org",
@@ -134,7 +136,7 @@
     "command": "analytics:autoinstall:app:delete",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["a", "f", "o", "p", "w"],
-    "flags": ["api-version", "async", "folderid", "json", "pollinterval", "target-org", "wait"],
+    "flags": ["api-version", "async", "folderid", "json", "loglevel", "pollinterval", "target-org", "wait"],
     "plugin": "@salesforce/analytics"
   },
   {
@@ -148,6 +150,7 @@
       "async",
       "folderid",
       "json",
+      "loglevel",
       "pollinterval",
       "target-org",
       "templateid",
@@ -161,7 +164,7 @@
     "command": "analytics:autoinstall:display",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["a", "i", "o"],
-    "flags": ["api-version", "applog", "autoinstallid", "json", "target-org"],
+    "flags": ["api-version", "applog", "autoinstallid", "json", "loglevel", "target-org"],
     "plugin": "@salesforce/analytics"
   },
   {
@@ -169,7 +172,7 @@
     "command": "analytics:autoinstall:list",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["o"],
-    "flags": ["api-version", "json", "target-org"],
+    "flags": ["api-version", "json", "loglevel", "target-org"],
     "plugin": "@salesforce/analytics"
   },
   {
@@ -177,7 +180,7 @@
     "command": "analytics:dashboard:history:list",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["i", "o"],
-    "flags": ["api-version", "dashboardid", "json", "target-org"],
+    "flags": ["api-version", "dashboardid", "json", "loglevel", "target-org"],
     "plugin": "@salesforce/analytics"
   },
   {
@@ -185,7 +188,7 @@
     "command": "analytics:dashboard:history:revert",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["i", "l", "o", "y"],
-    "flags": ["api-version", "dashboardid", "historyid", "json", "label", "target-org"],
+    "flags": ["api-version", "dashboardid", "historyid", "json", "label", "loglevel", "target-org"],
     "plugin": "@salesforce/analytics"
   },
   {
@@ -193,7 +196,7 @@
     "command": "analytics:dashboard:list",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["o"],
-    "flags": ["api-version", "json", "target-org"],
+    "flags": ["api-version", "json", "loglevel", "target-org"],
     "plugin": "@salesforce/analytics"
   },
   {
@@ -201,7 +204,15 @@
     "command": "analytics:dashboard:update",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["i", "o", "r", "y"],
-    "flags": ["api-version", "currenthistoryid", "dashboardid", "json", "removecurrenthistory", "target-org"],
+    "flags": [
+      "api-version",
+      "currenthistoryid",
+      "dashboardid",
+      "json",
+      "loglevel",
+      "removecurrenthistory",
+      "target-org"
+    ],
     "plugin": "@salesforce/analytics"
   },
   {
@@ -209,7 +220,7 @@
     "command": "analytics:dataflow:history:list",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["i", "o"],
-    "flags": ["api-version", "dataflowid", "json", "target-org"],
+    "flags": ["api-version", "dataflowid", "json", "loglevel", "target-org"],
     "plugin": "@salesforce/analytics"
   },
   {
@@ -217,7 +228,7 @@
     "command": "analytics:dataflow:history:revert",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["i", "l", "o", "y"],
-    "flags": ["api-version", "dataflowid", "historyid", "json", "label", "target-org"],
+    "flags": ["api-version", "dataflowid", "historyid", "json", "label", "loglevel", "target-org"],
     "plugin": "@salesforce/analytics"
   },
   {
@@ -225,7 +236,7 @@
     "command": "analytics:dataflow:job:display",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["i", "o"],
-    "flags": ["api-version", "dataflowjobid", "json", "target-org"],
+    "flags": ["api-version", "dataflowjobid", "json", "loglevel", "target-org"],
     "plugin": "@salesforce/analytics"
   },
   {
@@ -233,7 +244,7 @@
     "command": "analytics:dataflow:job:list",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["i", "o"],
-    "flags": ["api-version", "dataflowid", "json", "target-org"],
+    "flags": ["api-version", "dataflowid", "json", "loglevel", "target-org"],
     "plugin": "@salesforce/analytics"
   },
   {
@@ -241,7 +252,7 @@
     "command": "analytics:dataflow:job:stop",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["i", "o"],
-    "flags": ["api-version", "dataflowjobid", "json", "target-org"],
+    "flags": ["api-version", "dataflowjobid", "json", "loglevel", "target-org"],
     "plugin": "@salesforce/analytics"
   },
   {
@@ -249,7 +260,7 @@
     "command": "analytics:dataflow:list",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["o"],
-    "flags": ["api-version", "json", "target-org"],
+    "flags": ["api-version", "json", "loglevel", "target-org"],
     "plugin": "@salesforce/analytics"
   },
   {
@@ -257,7 +268,7 @@
     "command": "analytics:dataflow:start",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["i", "o"],
-    "flags": ["api-version", "dataflowid", "json", "target-org"],
+    "flags": ["api-version", "dataflowid", "json", "loglevel", "target-org"],
     "plugin": "@salesforce/analytics"
   },
   {
@@ -265,7 +276,7 @@
     "command": "analytics:dataflow:update",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["f", "i", "o", "s"],
-    "flags": ["api-version", "dataflowfile", "dataflowid", "dataflowstr", "json", "target-org"],
+    "flags": ["api-version", "dataflowfile", "dataflowid", "dataflowstr", "json", "loglevel", "target-org"],
     "plugin": "@salesforce/analytics"
   },
   {
@@ -273,7 +284,7 @@
     "command": "analytics:dataset:display",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["i", "n", "o"],
-    "flags": ["api-version", "datasetid", "datasetname", "json", "target-org"],
+    "flags": ["api-version", "datasetid", "datasetname", "json", "loglevel", "target-org"],
     "plugin": "@salesforce/analytics"
   },
   {
@@ -281,7 +292,7 @@
     "command": "analytics:dataset:list",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["o"],
-    "flags": ["api-version", "json", "target-org"],
+    "flags": ["api-version", "json", "loglevel", "target-org"],
     "plugin": "@salesforce/analytics"
   },
   {
@@ -289,7 +300,17 @@
     "command": "analytics:dataset:rows:fetch",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["i", "n", "o", "r"],
-    "flags": ["api-version", "datasetid", "datasetname", "dryrun", "json", "limit", "resultformat", "target-org"],
+    "flags": [
+      "api-version",
+      "datasetid",
+      "datasetname",
+      "dryrun",
+      "json",
+      "limit",
+      "loglevel",
+      "resultformat",
+      "target-org"
+    ],
     "plugin": "@salesforce/analytics"
   },
   {
@@ -297,7 +318,7 @@
     "command": "analytics:enable",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["a", "o", "p", "w"],
-    "flags": ["api-version", "async", "json", "noenqueue", "pollinterval", "target-org", "wait"],
+    "flags": ["api-version", "async", "json", "loglevel", "noenqueue", "pollinterval", "target-org", "wait"],
     "plugin": "@salesforce/analytics"
   },
   {
@@ -305,7 +326,7 @@
     "command": "analytics:lens:history:list",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["i", "o"],
-    "flags": ["api-version", "json", "lensid", "target-org"],
+    "flags": ["api-version", "json", "lensid", "loglevel", "target-org"],
     "plugin": "@salesforce/analytics"
   },
   {
@@ -313,7 +334,7 @@
     "command": "analytics:lens:history:revert",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["i", "l", "o", "y"],
-    "flags": ["api-version", "historyid", "json", "label", "lensid", "target-org"],
+    "flags": ["api-version", "historyid", "json", "label", "lensid", "loglevel", "target-org"],
     "plugin": "@salesforce/analytics"
   },
   {
@@ -321,7 +342,7 @@
     "command": "analytics:lens:list",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["o"],
-    "flags": ["api-version", "json", "target-org"],
+    "flags": ["api-version", "json", "loglevel", "target-org"],
     "plugin": "@salesforce/analytics"
   },
   {
@@ -335,6 +356,7 @@
       "dryrun",
       "json",
       "limit",
+      "loglevel",
       "nomapnames",
       "query",
       "queryfile",
@@ -350,7 +372,7 @@
     "command": "analytics:recipe:list",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["o"],
-    "flags": ["api-version", "json", "target-org"],
+    "flags": ["api-version", "json", "loglevel", "target-org"],
     "plugin": "@salesforce/analytics"
   },
   {
@@ -358,7 +380,7 @@
     "command": "analytics:recipe:start",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["i", "o"],
-    "flags": ["api-version", "json", "recipeid", "target-org"],
+    "flags": ["api-version", "json", "loglevel", "recipeid", "target-org"],
     "plugin": "@salesforce/analytics"
   },
   {
@@ -366,7 +388,17 @@
     "command": "analytics:template:create",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["d", "f", "l", "o", "r"],
-    "flags": ["api-version", "datatransformids", "description", "folderid", "json", "label", "recipeids", "target-org"],
+    "flags": [
+      "api-version",
+      "datatransformids",
+      "description",
+      "folderid",
+      "json",
+      "label",
+      "loglevel",
+      "recipeids",
+      "target-org"
+    ],
     "plugin": "@salesforce/analytics"
   },
   {
@@ -374,7 +406,7 @@
     "command": "analytics:template:delete",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["o", "p", "t"],
-    "flags": ["api-version", "decouple", "forcedelete", "json", "noprompt", "target-org", "templateid"],
+    "flags": ["api-version", "decouple", "forcedelete", "json", "loglevel", "noprompt", "target-org", "templateid"],
     "plugin": "@salesforce/analytics"
   },
   {
@@ -382,7 +414,7 @@
     "command": "analytics:template:display",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["n", "o", "t"],
-    "flags": ["api-version", "json", "target-org", "templateid", "templatename"],
+    "flags": ["api-version", "json", "loglevel", "target-org", "templateid", "templatename"],
     "plugin": "@salesforce/analytics"
   },
   {
@@ -390,7 +422,7 @@
     "command": "analytics:template:lint",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["n", "o", "t"],
-    "flags": ["api-version", "json", "target-org", "templateid", "templatename"],
+    "flags": ["api-version", "json", "loglevel", "target-org", "templateid", "templatename"],
     "plugin": "@salesforce/analytics"
   },
   {
@@ -398,7 +430,7 @@
     "command": "analytics:template:list",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["a", "e", "o"],
-    "flags": ["api-version", "includembeddedtemplates", "includesalesforcetemplates", "json", "target-org"],
+    "flags": ["api-version", "includembeddedtemplates", "includesalesforcetemplates", "json", "loglevel", "target-org"],
     "plugin": "@salesforce/analytics"
   },
   {
@@ -412,6 +444,7 @@
       "datatransformids",
       "folderid",
       "json",
+      "loglevel",
       "recipeids",
       "target-org",
       "templateid",
@@ -424,7 +457,7 @@
     "command": "analytics:template:validate",
     "flagAliases": ["apiversion", "targetusername", "u"],
     "flagChars": ["f", "n", "o", "t"],
-    "flags": ["api-version", "json", "target-org", "templateid", "templatename", "valuesfile"],
+    "flags": ["api-version", "json", "loglevel", "target-org", "templateid", "templatename", "valuesfile"],
     "plugin": "@salesforce/analytics"
   }
 ]

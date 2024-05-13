@@ -8,6 +8,7 @@
 import {
   Flags,
   SfCommand,
+  loglevel,
   orgApiVersionFlagWithDeprecations,
   requiredOrgFlagWithDeprecations,
 } from '@salesforce/sf-plugins-core';
@@ -26,6 +27,7 @@ export default class Delete extends SfCommand<string | undefined> {
   public static readonly examples = ['$ sfdx analytics:template:delete -t templateid'];
 
   public static readonly flags = {
+    loglevel,
     'target-org': requiredOrgFlagWithDeprecations,
     'api-version': orgApiVersionFlagWithDeprecations,
     templateid: Flags.salesforceId({

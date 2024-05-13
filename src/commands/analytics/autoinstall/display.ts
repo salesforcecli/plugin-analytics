@@ -8,6 +8,7 @@
 import {
   Flags,
   SfCommand,
+  loglevel,
   orgApiVersionFlagWithDeprecations,
   requiredOrgFlagWithDeprecations,
 } from '@salesforce/sf-plugins-core';
@@ -54,6 +55,7 @@ export default class Display extends SfCommand<AutoInstallRequestType> {
   public static readonly examples = ['$ sfdx analytics:autoinstall:display -i id'];
 
   public static readonly flags = {
+    loglevel,
     'target-org': requiredOrgFlagWithDeprecations,
     'api-version': orgApiVersionFlagWithDeprecations,
     autoinstallid: Flags.salesforceId({

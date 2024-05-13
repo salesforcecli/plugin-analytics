@@ -9,6 +9,7 @@ import { EOL } from 'node:os';
 import {
   Flags,
   SfCommand,
+  loglevel,
   orgApiVersionFlagWithDeprecations,
   requiredOrgFlagWithDeprecations,
 } from '@salesforce/sf-plugins-core';
@@ -33,6 +34,7 @@ export default class Create extends SfCommand<{ id?: string; events?: StreamingR
   ];
 
   public static readonly flags = {
+    loglevel,
     'target-org': requiredOrgFlagWithDeprecations,
     'api-version': orgApiVersionFlagWithDeprecations,
     definitionfile: Flags.file({

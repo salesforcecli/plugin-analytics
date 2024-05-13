@@ -9,6 +9,7 @@ import * as path from 'node:path';
 import {
   Flags,
   SfCommand,
+  loglevel,
   orgApiVersionFlagWithDeprecations,
   requiredOrgFlagWithDeprecations,
 } from '@salesforce/sf-plugins-core';
@@ -37,6 +38,7 @@ export default class Query extends SfCommand<QueryResponse | undefined> {
   ];
 
   public static readonly flags = {
+    loglevel,
     'target-org': requiredOrgFlagWithDeprecations,
     'api-version': orgApiVersionFlagWithDeprecations,
     queryfile: Flags.file({

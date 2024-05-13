@@ -8,6 +8,7 @@
 import {
   Flags,
   SfCommand,
+  loglevel,
   orgApiVersionFlagWithDeprecations,
   requiredOrgFlagWithDeprecations,
 } from '@salesforce/sf-plugins-core';
@@ -35,6 +36,7 @@ export default class List extends SfCommand<
   public static readonly examples = ['$ sfdx analytics:dataflow:job:list --dataflowid <dataflowid>'];
 
   public static readonly flags = {
+    loglevel,
     'target-org': requiredOrgFlagWithDeprecations,
     'api-version': orgApiVersionFlagWithDeprecations,
     dataflowid: Flags.salesforceId({
