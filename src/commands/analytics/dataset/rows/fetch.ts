@@ -8,6 +8,7 @@
 import {
   Flags,
   SfCommand,
+  loglevel,
   orgApiVersionFlagWithDeprecations,
   requiredOrgFlagWithDeprecations,
 } from '@salesforce/sf-plugins-core';
@@ -34,6 +35,7 @@ export default class Fetch extends SfCommand<QueryResponse | undefined> {
   ];
 
   public static readonly flags = {
+    loglevel,
     'target-org': requiredOrgFlagWithDeprecations,
     'api-version': orgApiVersionFlagWithDeprecations,
     datasetid: Flags.salesforceId({

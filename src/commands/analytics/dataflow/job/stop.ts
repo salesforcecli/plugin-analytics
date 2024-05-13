@@ -8,6 +8,7 @@
 import {
   Flags,
   SfCommand,
+  loglevel,
   orgApiVersionFlagWithDeprecations,
   requiredOrgFlagWithDeprecations,
 } from '@salesforce/sf-plugins-core';
@@ -25,6 +26,7 @@ export default class Stop extends SfCommand<DataflowJobType> {
   public static readonly examples = ['$ sfdx analytics:dataflow:job:stop --dataflowjobid <dataflowjobid>'];
 
   public static readonly flags = {
+    loglevel,
     'target-org': requiredOrgFlagWithDeprecations,
     'api-version': orgApiVersionFlagWithDeprecations,
     dataflowjobid: Flags.salesforceId({

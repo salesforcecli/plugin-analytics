@@ -8,6 +8,7 @@
 import {
   Flags,
   SfCommand,
+  loglevel,
   orgApiVersionFlagWithDeprecations,
   requiredOrgFlagWithDeprecations,
 } from '@salesforce/sf-plugins-core';
@@ -25,6 +26,7 @@ export default class Decouple extends SfCommand<string> {
   public static readonly examples = ['$ sfdx analytics:app:decouple -f folderId -t templateId'];
 
   public static readonly flags = {
+    loglevel,
     'target-org': requiredOrgFlagWithDeprecations,
     'api-version': orgApiVersionFlagWithDeprecations,
     folderid: Flags.salesforceId({

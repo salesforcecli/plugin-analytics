@@ -307,6 +307,7 @@ export default class QuerySvc {
           ux.table(
             records,
             columnNames.reduce<Ux.Table.Columns<Row>>((all, name) => {
+              // eslint-disable-next-line no-param-reassign
               all[name] = { header: name, get: (row) => convertRowValue(row[name]) };
               return all;
             }, {})

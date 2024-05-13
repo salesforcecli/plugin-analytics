@@ -8,6 +8,7 @@
 import {
   Flags,
   SfCommand,
+  loglevel,
   orgApiVersionFlagWithDeprecations,
   requiredOrgFlagWithDeprecations,
 } from '@salesforce/sf-plugins-core';
@@ -28,6 +29,7 @@ export default class Update extends SfCommand<{ id?: string; events?: StreamingR
   public static readonly examples = ['$ sfdx analytics:app:update -f folderId -t templateId'];
 
   public static readonly flags = {
+    loglevel,
     'target-org': requiredOrgFlagWithDeprecations,
     'api-version': orgApiVersionFlagWithDeprecations,
     templateid: Flags.string({
