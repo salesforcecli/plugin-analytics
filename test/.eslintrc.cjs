@@ -13,6 +13,7 @@ module.exports = {
   rules: {
     // Allow assert style expressions. i.e. expect(true).to.be.true
     'no-unused-expressions': 'off',
+    'no-param-reassign': 'off',
     'mocha/no-identical-title': 'error',
 
     // Return types are defined by the source code. Allows for quick overwrites.

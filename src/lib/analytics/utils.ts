@@ -63,6 +63,7 @@ export function generateTableColumns<R extends Ux.Table.Data>(
     if (mutute) {
       column = mutute(key, column);
     }
+    // eslint-disable-next-line no-param-reassign
     columns[key] = column;
     return columns;
   }, {});
