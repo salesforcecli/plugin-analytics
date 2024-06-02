@@ -23,7 +23,7 @@
     "@salesforce/ts-sinon": "^1.4.19",
     "@types/lodash.get": "^4.4.9",
     "eslint-plugin-mocha": "^10.4.3",
-    "eslint-plugin-sf-plugin": "^1.18.4",
+    "eslint-plugin-sf-plugin": "^1.18.5",
     "oclif": "^4",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
