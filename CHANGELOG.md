@@ -1,3 +1,12 @@
+## [1.4.21](https://github.com/salesforcecli/plugin-analytics/compare/1.4.20...1.4.21) (2024-06-17)
+
+
+### Bug Fixes
+
+* **deps:** bump braces from 3.0.2 to 3.0.3 ([#474](https://github.com/salesforcecli/plugin-analytics/issues/474)) ([e06c5c3](https://github.com/salesforcecli/plugin-analytics/commit/e06c5c3dcb532a1f59a4d7a19b4eee35b15cabe1))
+
+
+
 ## [1.4.20](https://github.com/salesforcecli/plugin-analytics/compare/1.4.19...1.4.20) (2024-06-16)
 
 
