@@ -22,7 +22,7 @@
     "@salesforce/plugin-command-reference": "^3.1.16",
     "@salesforce/ts-sinon": "^1.4.24",
     "@types/lodash.get": "^4.4.9",
-    "eslint-plugin-mocha": "^10.4.3",
+    "eslint-plugin-mocha": "^10.5.0",
     "eslint-plugin-sf-plugin": "^1.20.1",
     "oclif": "^4",
     "ts-node": "^10.9.2",
