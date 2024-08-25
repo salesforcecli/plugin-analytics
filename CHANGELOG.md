@@ -1,3 +1,12 @@
+## [1.4.24](https://github.com/salesforcecli/plugin-analytics/compare/1.4.23...1.4.24) (2024-08-25)
+
+
+### Bug Fixes
+
+* **deps:** bump micromatch from 4.0.5 to 4.0.8 ([#533](https://github.com/salesforcecli/plugin-analytics/issues/533)) ([0be8769](https://github.com/salesforcecli/plugin-analytics/commit/0be87691f1b4fe2a9db1b7c5fad78747c83dd878))
+
+
+
 ## [1.4.23](https://github.com/salesforcecli/plugin-analytics/compare/1.4.22...1.4.23) (2024-08-04)
 
 
