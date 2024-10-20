@@ -1392,13 +1392,13 @@
     ansi-escapes "^4.3.2"
     chalk "^4.1.2"
 
-"@inquirer/password@^2.1.22":
-  version "2.1.22"
-  resolved "https://registry.yarnpkg.com/@inquirer/password/-/password-2.1.22.tgz#ec7ee5709923cf285b3e0ae53eed4fdc3c05b422"
-  integrity sha512-5Fxt1L9vh3rAKqjYwqsjU4DZsEvY/2Gll+QkqR4yEpy6wvzLxdSgFhUcxfDAOtO4BEoTreWoznC0phagwLU5Kw==
+"@inquirer/password@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@inquirer/password/-/password-2.2.0.tgz#0b6f26336c259c8a9e5f5a3f2e1a761564f764ba"
+  integrity sha512-5otqIpgsPYIshqhgtEwSspBQE40etouR8VIxzpJkv9i0dVHIpyhiivbkH9/dGiMLdyamT54YRdGJLfl8TFnLHg==
   dependencies:
-    "@inquirer/core" "^9.0.10"
-    "@inquirer/type" "^1.5.2"
+    "@inquirer/core" "^9.1.0"
+    "@inquirer/type" "^1.5.3"
     ansi-escapes "^4.3.2"
 
 "@inquirer/select@^2.5.0":
@@ -1579,7 +1579,7 @@
     wordwrap "^1.0.0"
     wrap-ansi "^7.0.0"
 
-"@oclif/core@^4", "@oclif/core@^4.0.19", "@oclif/core@^4.0.28":
+"@oclif/core@^4", "@oclif/core@^4.0.27", "@oclif/core@^4.0.28":
   version "4.0.29"
   resolved "https://registry.yarnpkg.com/@oclif/core/-/core-4.0.29.tgz#55f7a6b85e3e67dd1ce9fcef421dc2555e5ddf53"
   integrity sha512-WEbrRn+X9FG8Wk8U/JUAd4bTzCwOtKPqpCP4ijfqEK8g2ZXV1bGG3FSCTmZkZLNDt/WUYYJpC0Tjjqxn1T4Bzg==
@@ -1751,22 +1751,22 @@
     typescript "^5.4.3"
     wireit "^0.14.4"
 
-"@salesforce/kit@^3.0.15", "@salesforce/kit@^3.1.0", "@salesforce/kit@^3.2.0", "@salesforce/kit@^3.2.1", "@salesforce/kit@^3.2.2", "@salesforce/kit@^3.2.3":
+"@salesforce/kit@^3.0.15", "@salesforce/kit@^3.1.0", "@salesforce/kit@^3.2.0", "@salesforce/kit@^3.2.2", "@salesforce/kit@^3.2.3":
   version "3.2.3"
   resolved "https://registry.yarnpkg.com/@salesforce/kit/-/kit-3.2.3.tgz#a7293c384ef6133191fe3590e604e3896fdecf4a"
   integrity sha512-X8rZouLt06dxRkn+uYTwywWDS/NqZ783AyomGqgtWdUxF61EOJvu0ehtcYeutx9Ng08uuZ+s6wNvWiDsdhUcPg==
   dependencies:
     "@salesforce/ts-types" "^2.0.12"
 
-"@salesforce/plugin-command-reference@^3.1.27":
-  version "3.1.27"
-  resolved "https://registry.yarnpkg.com/@salesforce/plugin-command-reference/-/plugin-command-reference-3.1.27.tgz#3deb28bc2cdc8d2e1c89ff3b2f9e2512a6beb399"
-  integrity sha512-zQXXW9TG+WJB/yNTeZLeGPFsYHIR+HOg5qmkPxS+8PuhE8D9wBeeh9ykEcWmgNiwTMmVnkDGv8QQX8aucExJ7w==
+"@salesforce/plugin-command-reference@^3.1.29":
+  version "3.1.29"
+  resolved "https://registry.yarnpkg.com/@salesforce/plugin-command-reference/-/plugin-command-reference-3.1.29.tgz#f443aa2dad060ac3e21f66ea09d10854954dc6ae"
+  integrity sha512-g4mwu1yN83dwhM7XC7td/HLuifu4zt19eupd2FEKay5PaKTFlT+oSI90tqRVHbYy9bS4MRWUnbpjnkqkU9offA==
   dependencies:
     "@oclif/core" "^4"
     "@salesforce/core" "^8.5.7"
     "@salesforce/kit" "^3.2.3"
-    "@salesforce/sf-plugins-core" "^11.3.5"
+    "@salesforce/sf-plugins-core" "^11.3.12"
     "@salesforce/ts-types" "^2.0.11"
     chalk "^5.3.0"
     debug "^4.3.7"
@@ -1787,16 +1787,16 @@
   resolved "https://registry.yarnpkg.com/@salesforce/schemas/-/schemas-1.9.0.tgz#ba477a112653a20b4edcf989c61c57bdff9aa3ca"
   integrity sha512-LiN37zG5ODT6z70sL1fxF7BQwtCX9JOWofSU8iliSNIM+WDEeinnoFtVqPInRSNt8I0RiJxIKCrqstsmQRBNvA==
 
-"@salesforce/sf-plugins-core@^11.3.5":
-  version "11.3.7"
-  resolved "https://registry.yarnpkg.com/@salesforce/sf-plugins-core/-/sf-plugins-core-11.3.7.tgz#2cf2d4bfff13d1900ae958bfc613f5d4957f5958"
-  integrity sha512-aqOAYex3JGHUE/ECWpQuedEJXq00vJOqNr3VYF0Lp9OBAVn0AZZu10fzv+ww2hLDjA9dH782ZNqw/CiE0XKJlA==
+"@salesforce/sf-plugins-core@^11.3.12":
+  version "11.3.12"
+  resolved "https://registry.yarnpkg.com/@salesforce/sf-plugins-core/-/sf-plugins-core-11.3.12.tgz#18b3a553688428bcffea9d36abc72847497f06ae"
+  integrity sha512-hi8EcSoRHRxj4sm/V5YDtzq9bPr/cKpM4fC6abo/jRzpXygwizinc2gVQkXfVdhjK7NGMskVRQB1N+0TThG7bA==
   dependencies:
     "@inquirer/confirm" "^3.1.22"
-    "@inquirer/password" "^2.1.22"
-    "@oclif/core" "^4.0.19"
+    "@inquirer/password" "^2.2.0"
+    "@oclif/core" "^4.0.27"
     "@salesforce/core" "^8.5.1"
-    "@salesforce/kit" "^3.2.1"
+    "@salesforce/kit" "^3.2.3"
     "@salesforce/ts-types" "^2.0.12"
     ansis "^3.3.2"
     cli-progress "^3.12.0"
