@@ -1,3 +1,12 @@
+## [1.4.28](https://github.com/salesforcecli/plugin-analytics/compare/1.4.27...1.4.28) (2024-11-17)
+
+
+### Bug Fixes
+
+* **deps:** bump @oclif/plugin-help from 6.2.16 to 6.2.18 ([#599](https://github.com/salesforcecli/plugin-analytics/issues/599)) ([2c6f85d](https://github.com/salesforcecli/plugin-analytics/commit/2c6f85def4096a8cfaa6eebfee8c331aed40ed95))
+
+
+
 ## [1.4.27](https://github.com/salesforcecli/plugin-analytics/compare/1.4.26...1.4.27) (2024-10-20)
 
 
