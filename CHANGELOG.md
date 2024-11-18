@@ -1,3 +1,12 @@
+## [1.4.29](https://github.com/salesforcecli/plugin-analytics/compare/1.4.28...1.4.29) (2024-11-18)
+
+
+### Bug Fixes
+
+* **deps:** bump cross-spawn from 7.0.3 to 7.0.5 ([#596](https://github.com/salesforcecli/plugin-analytics/issues/596)) ([7e0f816](https://github.com/salesforcecli/plugin-analytics/commit/7e0f8169f4ad94e1ef714d9781fbbf5f0f6bead5))
+
+
+
 ## [1.4.28](https://github.com/salesforcecli/plugin-analytics/compare/1.4.27...1.4.28) (2024-11-17)
 
 
