@@ -20,7 +20,7 @@
     "@salesforce/cli-plugins-testkit": "^5.3.38",
     "@salesforce/dev-scripts": "^8.5.0",
     "@salesforce/plugin-command-reference": "^3.1.34",
-    "@salesforce/ts-sinon": "^1.4.29",
+    "@salesforce/ts-sinon": "^1.4.30",
     "@types/lodash.get": "^4.4.9",
     "eslint-plugin-mocha": "^10.5.0",
     "eslint-plugin-sf-plugin": "^1.20.13",
