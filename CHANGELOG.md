@@ -1,3 +1,12 @@
+## [1.4.31](https://github.com/salesforcecli/plugin-analytics/compare/1.4.30...1.4.31) (2024-12-22)
+
+
+### Bug Fixes
+
+* **deps:** bump chalk from 5.3.0 to 5.4.1 ([#614](https://github.com/salesforcecli/plugin-analytics/issues/614)) ([02da5b0](https://github.com/salesforcecli/plugin-analytics/commit/02da5b0e7ce7cd866d90bea55556f9abb5f22fee))
+
+
+
 ## [1.4.30](https://github.com/salesforcecli/plugin-analytics/compare/1.4.29...1.4.30) (2024-12-15)
 
 
