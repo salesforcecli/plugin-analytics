@@ -1493,19 +1493,19 @@
     wordwrap "^1.0.0"
     wrap-ansi "^7.0.0"
 
-"@oclif/plugin-command-snapshot@^5.2.28":
-  version "5.2.28"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-command-snapshot/-/plugin-command-snapshot-5.2.28.tgz#676a2bc483faafa95d782e201439dddf3ff6d57f"
-  integrity sha512-uXN+42xe8/FLLELRWvP0g1ZsVKYAANAOKOgxqr98KRZVFe4roh3klQtlNj2RHvSTxLQyz/K/V/Mf1q9HDUf7Eg==
+"@oclif/plugin-command-snapshot@^5.2.32":
+  version "5.2.32"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-command-snapshot/-/plugin-command-snapshot-5.2.32.tgz#3c898ff1f761438e641d130be93889562b94bc01"
+  integrity sha512-iwIo/viWRojg/y98eHAZpi42HpUl5kL82SnHdVbwqKH+C9M9ET8xDAW5WcXsTrAKEX6jMa7Xv1fG5Ch5/R45Fw==
   dependencies:
     "@oclif/core" "^4"
-    ansis "^3.9.0"
+    ansis "^3.10.0"
     globby "^14.0.2"
     just-diff "^5.2.0"
     lodash.difference "^4.5.0"
     lodash.get "^4.4.2"
     lodash.sortby "^4.7.0"
-    semver "^7.6.3"
+    semver "^7.7.0"
     ts-json-schema-generator "^1.5.1"
 
 "@oclif/plugin-help@^6.2.23", "@oclif/plugin-help@^6.2.25":
@@ -2783,10 +2783,10 @@ ansicolors@~0.3.2:
   resolved "https://registry.yarnpkg.com/ansicolors/-/ansicolors-0.3.2.tgz#665597de86a9ffe3aa9bfbe6cae5c6ea426b4979"
   integrity sha512-QXu7BPrP29VllRxH8GwB7x5iX5qWKAAMLqKQGWTeLWVlNHNOpVMJ91dsxQAIWXpjuW5wqvxu3Jd/nRjrJ+0pqg==
 
-ansis@^3.3.2, ansis@^3.5.2, ansis@^3.9.0:
-  version "3.9.0"
-  resolved "https://registry.yarnpkg.com/ansis/-/ansis-3.9.0.tgz#d195c93c31a333916142ff8f0be4d7e3872f262e"
-  integrity sha512-PcDrVe15ldexeZMsVLBAzBwF2KhZgaU0R+CHxH+x5kqn/pO+UWVBZJ+NEXMPpEOLUFeNsnNdoWYc2gwO+MVkDg==
+ansis@^3.10.0, ansis@^3.3.2, ansis@^3.5.2, ansis@^3.9.0:
+  version "3.10.0"
+  resolved "https://registry.yarnpkg.com/ansis/-/ansis-3.10.0.tgz#6886afb0f729b1fa865df6b710b97a9915b7d0d4"
+  integrity sha512-hxDKLYT7hy3Y4sF3HxI926A3urzPxi73mZBB629m9bCVF+NyKNxbwCqqm+C/YrGPtxLwnl6d8/ZASCsz6SyvJA==
 
 anymatch@~3.1.2:
   version "3.1.3"
