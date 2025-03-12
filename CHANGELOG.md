@@ -1,3 +1,12 @@
+## [1.4.37](https://github.com/salesforcecli/plugin-analytics/compare/1.4.36...1.4.37) (2025-03-12)
+
+
+### Bug Fixes
+
+* **deps:** bump @babel/runtime-corejs3 from 7.23.8 to 7.26.10 ([#655](https://github.com/salesforcecli/plugin-analytics/issues/655)) ([25b3819](https://github.com/salesforcecli/plugin-analytics/commit/25b3819a507999e898fc273da52db41b4d5b83fb))
+
+
+
 ## [1.4.36](https://github.com/salesforcecli/plugin-analytics/compare/1.4.35...1.4.36) (2025-03-02)
 
 
