@@ -1,3 +1,12 @@
+## [1.4.38](https://github.com/salesforcecli/plugin-analytics/compare/1.4.37...1.4.38) (2025-03-12)
+
+
+### Bug Fixes
+
+* **deps:** bump @babel/runtime from 7.23.8 to 7.26.10 ([#656](https://github.com/salesforcecli/plugin-analytics/issues/656)) ([2873b1b](https://github.com/salesforcecli/plugin-analytics/commit/2873b1b866ce62d1ce0c25849f12a58f02f94372))
+
+
+
 ## [1.4.37](https://github.com/salesforcecli/plugin-analytics/compare/1.4.36...1.4.37) (2025-03-12)
 
 
