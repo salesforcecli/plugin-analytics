@@ -1844,10 +1844,10 @@
     semver "^7.6.0"
     ts-retry-promise "^0.7.1"
 
-"@salesforce/core@^8.11.0", "@salesforce/core@^8.11.1", "@salesforce/core@^8.5.1", "@salesforce/core@^8.8.0":
-  version "8.11.2"
-  resolved "https://registry.yarnpkg.com/@salesforce/core/-/core-8.11.2.tgz#5ee84d48706efa07c8b4095e9998b24d7ca0afac"
-  integrity sha512-Qn4YAhO04rvId8jO4WuKUJlThRViW3MY/xtPVC++UmFBXwY6WJ/T3A2v6BEVZMa0Wr+RZW9raF5pZ6SReRPtUw==
+"@salesforce/core@^8.11.0", "@salesforce/core@^8.12.0", "@salesforce/core@^8.5.1", "@salesforce/core@^8.8.0":
+  version "8.12.0"
+  resolved "https://registry.yarnpkg.com/@salesforce/core/-/core-8.12.0.tgz#a458cc3e39f4e7df57d94f0deaaa0fd0660b18c9"
+  integrity sha512-LJIjoQ3UQJ1r/xxdQcaG5bU8MfxeO/LJhrfK/7LZeHVtp1iOIgedbwPuVNzTzYciDWh8elborarrPM4uWjtu5g==
   dependencies:
     "@jsforce/jsforce-node" "^3.8.2"
     "@salesforce/kit" "^3.2.2"
@@ -1863,7 +1863,7 @@
     jszip "3.10.1"
     pino "^9.7.0"
     pino-abstract-transport "^1.2.0"
-    pino-pretty "^11.2.2"
+    pino-pretty "^11.3.0"
     proper-lockfile "^4.1.2"
     semver "^7.6.3"
     ts-retry-promise "^0.8.1"
@@ -4217,12 +4217,12 @@ eslint-plugin-mocha@^10.5.0:
     globals "^13.24.0"
     rambda "^7.4.0"
 
-eslint-plugin-sf-plugin@^1.20.24:
-  version "1.20.24"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-sf-plugin/-/eslint-plugin-sf-plugin-1.20.24.tgz#a16ce6d252ff3f3504005485050aa023bfef89a4"
-  integrity sha512-gSBLwp6T3n9Mw1TjO7Fq+VbYA7kdPfws0f1vR3tjEHUH4UlrNPya9RnN3g5uW2S1/62kDwgOjORYu2HlRr5UDg==
+eslint-plugin-sf-plugin@^1.20.25:
+  version "1.20.25"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-sf-plugin/-/eslint-plugin-sf-plugin-1.20.25.tgz#943d861c73579d982a2c09eb5d8d5907cfdd7956"
+  integrity sha512-uknNSP5+CRHeA7PRGErKD5nCoehJY/UVofspAiwEmtzhNBfS1eUxORN9fU6WEjb9Mc3O6i7YrMznTYFhJYWr1Q==
   dependencies:
-    "@salesforce/core" "^8.11.1"
+    "@salesforce/core" "^8.12.0"
     "@typescript-eslint/utils" "^7.18.0"
 
 eslint-plugin-unicorn@^50.0.1:
@@ -6738,10 +6738,10 @@ pino-pretty@^10.3.1:
     sonic-boom "^3.0.0"
     strip-json-comments "^3.1.1"
 
-pino-pretty@^11.2.2:
-  version "11.2.2"
-  resolved "https://registry.yarnpkg.com/pino-pretty/-/pino-pretty-11.2.2.tgz#5e8ec69b31e90eb187715af07b1d29a544e60d39"
-  integrity sha512-2FnyGir8nAJAqD3srROdrF1J5BIcMT4nwj7hHSc60El6Uxlym00UbCCd8pYIterstVBFlMyF1yFV8XdGIPbj4A==
+pino-pretty@^11.3.0:
+  version "11.3.0"
+  resolved "https://registry.yarnpkg.com/pino-pretty/-/pino-pretty-11.3.0.tgz#390b3be044cf3d2e9192c7d19d44f6b690468f2e"
+  integrity sha512-oXwn7ICywaZPHmu3epHGU2oJX4nPmKvHvB/bwrJHlGcbEWaVcotkpyVHMKLKmiVryWYByNp0jpgAcXpFJDXJzA==
   dependencies:
     colorette "^2.0.7"
     dateformat "^4.6.3"
@@ -6751,7 +6751,7 @@ pino-pretty@^11.2.2:
     joycon "^3.1.1"
     minimist "^1.2.6"
     on-exit-leak-free "^2.1.0"
-    pino-abstract-transport "^1.0.0"
+    pino-abstract-transport "^2.0.0"
     pump "^3.0.0"
     readable-stream "^4.0.0"
     secure-json-parse "^2.4.0"
