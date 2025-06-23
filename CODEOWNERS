@@ -1,6 +1,6 @@
 #ECCN:Open Source 5D002
 
-#GUSINFO:TUA-Admin-Intelligent App Dev Platform,Wave Developer Experience - Analytics
+#GUSINFO:TUA-Intel-App Dev Platform, Wave Developer Experience - Analytics
 * @salesforcecli/analytics-cli
 # Techical writers will be added as reviewers on markdown changes.
 *.md @salesforcecli/cli-docs
