@@ -1,3 +1,12 @@
+## [1.4.48](https://github.com/salesforcecli/plugin-analytics/compare/1.4.47...1.4.48) (2025-09-07)
+
+
+### Bug Fixes
+
+* **deps:** bump @salesforce/kit from 3.2.3 to 3.2.4 ([#726](https://github.com/salesforcecli/plugin-analytics/issues/726)) ([68466f6](https://github.com/salesforcecli/plugin-analytics/commit/68466f698667cd3c6280bd78fb705b109a45b3d8))
+
+
+
 ## [1.4.47](https://github.com/salesforcecli/plugin-analytics/compare/1.4.46...1.4.47) (2025-08-24)
 
 
