@@ -1,3 +1,12 @@
+## [1.4.53](https://github.com/salesforcecli/plugin-analytics/compare/1.4.52...1.4.53) (2025-12-05)
+
+
+### Bug Fixes
+
+* **deps:** bump jws from 3.2.2 to 3.2.3 ([#754](https://github.com/salesforcecli/plugin-analytics/issues/754)) ([4802fbc](https://github.com/salesforcecli/plugin-analytics/commit/4802fbc324a564b5db518fca82d6e4fbcf000a37))
+
+
+
 ## [1.4.52](https://github.com/salesforcecli/plugin-analytics/compare/1.4.51...1.4.52) (2025-11-16)
 
 
