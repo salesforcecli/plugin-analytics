@@ -1,3 +1,12 @@
+## [1.4.54](https://github.com/salesforcecli/plugin-analytics/compare/1.4.53...1.4.54) (2026-01-22)
+
+
+### Bug Fixes
+
+* **deps:** bump lodash from 4.17.21 to 4.17.23 ([#763](https://github.com/salesforcecli/plugin-analytics/issues/763)) ([190482d](https://github.com/salesforcecli/plugin-analytics/commit/190482d6047cf5a99a6f5c3dd4898013543abf03))
+
+
+
 ## [1.4.53](https://github.com/salesforcecli/plugin-analytics/compare/1.4.52...1.4.53) (2025-12-05)
 
 
