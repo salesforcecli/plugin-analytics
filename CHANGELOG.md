@@ -1,3 +1,12 @@
+## [1.4.66](https://github.com/salesforcecli/plugin-analytics/compare/1.4.65...1.4.66) (2026-05-09)
+
+
+### Bug Fixes
+
+* **deps:** bump fast-xml-builder from 1.0.0 to 1.2.0 ([#807](https://github.com/salesforcecli/plugin-analytics/issues/807)) ([427be8c](https://github.com/salesforcecli/plugin-analytics/commit/427be8c002b2d03b31d758ed0e84a48cd448c982))
+
+
+
 ## [1.4.65](https://github.com/salesforcecli/plugin-analytics/compare/1.4.64...1.4.65) (2026-05-09)
 
 
