@@ -1,3 +1,12 @@
+## [1.4.71](https://github.com/salesforcecli/plugin-analytics/compare/1.4.70...1.4.71) (2026-06-21)
+
+
+### Bug Fixes
+
+* **deps:** bump form-data from 4.0.4 to 4.0.6 ([#835](https://github.com/salesforcecli/plugin-analytics/issues/835)) ([aea43e3](https://github.com/salesforcecli/plugin-analytics/commit/aea43e38f6daa108e2dd6a1461d5ba59e3c03f5b))
+
+
+
 ## [1.4.70](https://github.com/salesforcecli/plugin-analytics/compare/1.4.69...1.4.70) (2026-06-21)
 
 
