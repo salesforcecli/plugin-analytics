@@ -1,3 +1,12 @@
+## [1.4.70](https://github.com/salesforcecli/plugin-analytics/compare/1.4.69...1.4.70) (2026-06-21)
+
+
+### Bug Fixes
+
+* **deps:** bump @babel/core from 7.23.7 to 7.29.7 ([#836](https://github.com/salesforcecli/plugin-analytics/issues/836)) ([7beb964](https://github.com/salesforcecli/plugin-analytics/commit/7beb9643028effd5add324acc13c829c29ac4233))
+
+
+
 ## [1.4.69](https://github.com/salesforcecli/plugin-analytics/compare/1.4.68...1.4.69) (2026-05-31)
 
 
