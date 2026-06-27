@@ -1610,7 +1610,7 @@
     semver "^7.6.0"
     ts-retry-promise "^0.7.1"
 
-"@salesforce/core@^8.23.1", "@salesforce/core@^8.31.0", "@salesforce/core@^8.31.1", "@salesforce/core@^8.31.2":
+"@salesforce/core@^8.23.1", "@salesforce/core@^8.31.0", "@salesforce/core@^8.31.2":
   version "8.31.2"
   resolved "https://registry.yarnpkg.com/@salesforce/core/-/core-8.31.2.tgz#968448f423b553f726f42c27da6b55c4ec7eb93a"
   integrity sha512-naqnq7Z+gbl1LdnyNvrGrNUoeMUQtCOsnrS6DfqeuLMJTFqcL9Dq0/od+xcuqi0+l7HTyH0/gU1BQitWpd1rag==
@@ -1679,13 +1679,13 @@
   dependencies:
     "@salesforce/ts-types" "^2.0.12"
 
-"@salesforce/plugin-command-reference@^3.1.113":
-  version "3.1.113"
-  resolved "https://registry.yarnpkg.com/@salesforce/plugin-command-reference/-/plugin-command-reference-3.1.113.tgz#b4f7919b9dfc24cb7bd886d4dade2d4c1488034f"
-  integrity sha512-e/NE82CeCX4r8nQi/m1p/3cI32mzf/5En8xCejTrVcfKCvHgDegZX1Ly66cNFtYkSbfMbHvOqMoOgPOO0dBGlA==
+"@salesforce/plugin-command-reference@^3.1.115":
+  version "3.1.115"
+  resolved "https://registry.yarnpkg.com/@salesforce/plugin-command-reference/-/plugin-command-reference-3.1.115.tgz#86bdfa1bd6e69be27e83a77b4cc7eb791bd8b84f"
+  integrity sha512-cXYgyGIVzcjaWoP+uy4G1kne3B0TRbT+rvIQ72Erb8qUxRvxfi81kbpibI3/RHMJcE5OR5EVX8qevMcyCVo45w==
   dependencies:
     "@oclif/core" "^4"
-    "@salesforce/core" "^8.31.1"
+    "@salesforce/core" "^8.31.2"
     "@salesforce/kit" "^3.2.6"
     "@salesforce/sf-plugins-core" "^12.2.24"
     "@salesforce/ts-types" "^2.0.11"
