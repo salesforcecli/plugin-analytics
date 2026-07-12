@@ -1,3 +1,12 @@
+## [1.4.73](https://github.com/salesforcecli/plugin-analytics/compare/1.4.72...1.4.73) (2026-07-12)
+
+
+### Bug Fixes
+
+* **deps:** bump ws from 8.20.1 to 8.21.0 ([#848](https://github.com/salesforcecli/plugin-analytics/issues/848)) ([d757acc](https://github.com/salesforcecli/plugin-analytics/commit/d757acc282f294ff56051a15072a1b9f113a7440))
+
+
+
 ## [1.4.72](https://github.com/salesforcecli/plugin-analytics/compare/1.4.71...1.4.72) (2026-07-05)
 
 
