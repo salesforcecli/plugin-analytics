@@ -1,3 +1,12 @@
+## [1.4.74](https://github.com/salesforcecli/plugin-analytics/compare/1.4.73...1.4.74) (2026-07-16)
+
+
+### Bug Fixes
+
+* **deps:** bump websocket-driver from 0.7.4 to 0.7.5 ([#849](https://github.com/salesforcecli/plugin-analytics/issues/849)) ([0e37fc0](https://github.com/salesforcecli/plugin-analytics/commit/0e37fc06f66f022f6a9ff2817a1e0cf4d55d36e5))
+
+
+
 ## [1.4.73](https://github.com/salesforcecli/plugin-analytics/compare/1.4.72...1.4.73) (2026-07-12)
 
 
