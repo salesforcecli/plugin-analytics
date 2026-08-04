@@ -1,3 +1,12 @@
+## [1.4.77](https://github.com/salesforcecli/plugin-analytics/compare/1.4.76...1.4.77) (2026-08-04)
+
+
+### Bug Fixes
+
+* **deps:** bump undici from 8.7.0 to 8.10.0 ([#860](https://github.com/salesforcecli/plugin-analytics/issues/860)) ([c3ced41](https://github.com/salesforcecli/plugin-analytics/commit/c3ced414b9cf83d434e465e960e356141bca87e6))
+
+
+
 ## [1.4.76](https://github.com/salesforcecli/plugin-analytics/compare/1.4.75...1.4.76) (2026-08-02)
 
 
