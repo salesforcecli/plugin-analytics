@@ -1,3 +1,12 @@
+## [1.4.82](https://github.com/salesforcecli/plugin-analytics/compare/1.4.81...1.4.82) (2026-10-09)
+
+
+### Bug Fixes
+
+* **deps:** bump fast-copy from 3.0.1 to 3.1.0 ([#880](https://github.com/salesforcecli/plugin-analytics/issues/880)) ([f347be5](https://github.com/salesforcecli/plugin-analytics/commit/f347be5b0e8d48ed1b5cc8c03cf81b74efacebbf))
+
+
+
 ## [1.4.81](https://github.com/salesforcecli/plugin-analytics/compare/1.4.80...1.4.81) (2026-10-09)
 
 
