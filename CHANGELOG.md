@@ -1,3 +1,12 @@
+## [1.4.83](https://github.com/salesforcecli/plugin-analytics/compare/1.4.82...1.4.83) (2026-10-09)
+
+
+### Bug Fixes
+
+* **deps:** bump handlebars from 4.7.9 to 4.7.10 ([#879](https://github.com/salesforcecli/plugin-analytics/issues/879)) ([7e9102f](https://github.com/salesforcecli/plugin-analytics/commit/7e9102f5101d0b0b8b1d8d5f3443ad5089c0b17e))
+
+
+
 ## [1.4.82](https://github.com/salesforcecli/plugin-analytics/compare/1.4.81...1.4.82) (2026-10-09)
 
 
