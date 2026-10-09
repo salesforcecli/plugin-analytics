@@ -1,3 +1,12 @@
+## [1.4.81](https://github.com/salesforcecli/plugin-analytics/compare/1.4.80...1.4.81) (2026-10-09)
+
+
+### Bug Fixes
+
+* **deps:** bump moment from 2.30.1 to 2.31.0 ([#878](https://github.com/salesforcecli/plugin-analytics/issues/878)) ([5520869](https://github.com/salesforcecli/plugin-analytics/commit/55208697337ee50303680dc09368a8b16472b095))
+
+
+
 ## [1.4.80](https://github.com/salesforcecli/plugin-analytics/compare/1.4.79...1.4.80) (2026-08-16)
 
 
