@@ -1,3 +1,12 @@
+## [1.4.85](https://github.com/salesforcecli/plugin-analytics/compare/1.4.84...1.4.85) (2026-10-10)
+
+
+### Bug Fixes
+
+* **deps:** bump baseline-browser-mapping from 2.10.38 to 2.11.28 ([#876](https://github.com/salesforcecli/plugin-analytics/issues/876)) ([52bfe7d](https://github.com/salesforcecli/plugin-analytics/commit/52bfe7dda503c8e7144437c4588d063ff8d4e597))
+
+
+
 ## [1.4.84](https://github.com/salesforcecli/plugin-analytics/compare/1.4.83...1.4.84) (2026-10-09)
 
 
