@@ -1,3 +1,12 @@
+## [1.4.86](https://github.com/salesforcecli/plugin-analytics/compare/1.4.85...1.4.86) (2026-10-30)
+
+
+### Bug Fixes
+
+* **deps:** bump fast-uri from 3.1.5 to 3.1.9 ([#881](https://github.com/salesforcecli/plugin-analytics/issues/881)) ([d256a34](https://github.com/salesforcecli/plugin-analytics/commit/d256a34c8e0ff7ade363c0aebab6d3438915fd57))
+
+
+
 ## [1.4.85](https://github.com/salesforcecli/plugin-analytics/compare/1.4.84...1.4.85) (2026-10-10)
 
 
