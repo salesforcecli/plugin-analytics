@@ -1,3 +1,12 @@
+## [1.4.88](https://github.com/salesforcecli/plugin-analytics/compare/1.4.87...1.4.88) (2026-11-08)
+
+
+### Bug Fixes
+
+* **deps:** bump brace-expansion from 1.1.11 to 1.1.21 ([#885](https://github.com/salesforcecli/plugin-analytics/issues/885)) ([7e3f48b](https://github.com/salesforcecli/plugin-analytics/commit/7e3f48bb869327d2bbd9c7855f10501c7325aea1))
+
+
+
 ## [1.4.87](https://github.com/salesforcecli/plugin-analytics/compare/1.4.86...1.4.87) (2026-10-30)
 
 
