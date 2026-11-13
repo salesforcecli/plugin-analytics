@@ -3,6 +3,7 @@ import sfPlugin from 'eslint-plugin-sf-plugin';
 import mocha from 'eslint-plugin-mocha';
 
 export default [
+  { ignores: ['.wireit/**'] },
   ...salesforce,
   ...sfPlugin.configs.recommended,
   {
