@@ -7,7 +7,7 @@
 
 import { format } from 'node:util';
 import { OrgConfigProperties } from '@salesforce/core';
-import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js';
+import { MockTestOrgData, TestContext } from '@salesforce/core/testSetup';
 import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
 import { AnyJson, ensureAnyJson } from '@salesforce/ts-types';
 import { assert, expect } from 'chai';
@@ -86,11 +86,11 @@ export function expectToHaveElementMatching<T extends Record<string, unknown>>(
 ) {
   assert.isDefined(a, prefix);
   assert.isArray(a, prefix);
-  for (const e of a!) {
+  for (const e of a) {
     try {
       assertion(e);
       return true;
-    } catch (ignore) {
+    } catch {
       /* keep looping over the array */
     }
   }
@@ -116,7 +116,6 @@ export function expectToHaveElementInclude<T extends Record<string, unknown>>(
 /** Expect an array to contain an object that at least one value matching the specified value. */
 export function expectToHaveElementValue<T extends Record<string, unknown>>(
   a: readonly T[] | undefined,
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   expected: RegExp | AnyJson,
   prefix?: string
 ) {

@@ -8,7 +8,8 @@
 import * as url from 'node:url';
 import { Connection } from '@salesforce/core';
 import { type JsonCollection, type JsonMap } from '@salesforce/ts-types';
-import { type HttpRequest } from 'jsforce';
+
+type HttpRequest = Exclude<Parameters<Connection['request']>[0], string>;
 
 /** Make a jsforce request to a connect-api resource, turning off entity encoding. */
 export function connectRequest<T = JsonCollection>(

@@ -1,5 +1,6 @@
 {
   "test": {
     "testsPath": "test/**/*.test.ts"
-  }
+  },
+  "license": "BSD-3-Clause"
 }
