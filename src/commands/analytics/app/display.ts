@@ -27,7 +27,7 @@ function formatDate(s: string | undefined): string | undefined {
     if (s) {
       return moment(s).format(messages.getMessage('displayDateFormat'));
     }
-  } catch (e) {
+  } catch {
     // ignore invalid date from server
   }
   return undefined;

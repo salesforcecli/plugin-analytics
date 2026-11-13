@@ -8,7 +8,7 @@
 /* eslint-disable camelcase */
 
 import { Messages, SfError } from '@salesforce/core';
-import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js';
+import { MockTestOrgData, TestContext } from '@salesforce/core/testSetup';
 import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
 import { stubMethod } from '@salesforce/ts-sinon';
 import { AnyJson, JsonMap, ensureJsonMap, ensureString } from '@salesforce/ts-types';

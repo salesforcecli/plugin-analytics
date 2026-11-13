@@ -71,13 +71,7 @@ export default class Validate extends SfCommand<ValidateType | string> {
       try {
         json = JSON.parse(await fs.readFile(path));
       } catch (e) {
-        throw new SfError(
-          `Error parsing ${path}`,
-          undefined,
-          undefined,
-          undefined,
-          e instanceof Error ? e : new Error(e ? String(e) : '<unknown>')
-        );
+        throw new SfError(`Error parsing ${path}`, undefined, undefined, undefined, SfError.wrap(e));
       }
     }
 
