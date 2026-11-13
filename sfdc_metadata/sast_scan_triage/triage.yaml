@@ -1,0 +1,9 @@
+false_positive:
+  - id: '.github/workflows/onRelease.yml:4f436dbe760c062b3a67bee3db777800233c6eb9715d2b825018a3806993c204'
+    justification: >-
+      Per guidance from the Platform CLI team, this finding is triaged as
+      a false positive for the Salesforce CLI team's shared publishing workflow.
+      Using secrets: inherit for package signing and change-case workflows
+      follows the team's supported publishing pattern.
+      https://salesforce-internal.slack.com/archives/C06V045BZD0/p1794591453352719
+not_exploitable: []
