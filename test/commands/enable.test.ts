@@ -13,7 +13,7 @@ import { JsonMap, ensureJsonMap } from '@salesforce/ts-types';
 import { expect } from 'chai';
 import { AutoInstallRequestType, AutoInstallStatus } from '../../src/lib/analytics/autoinstall/autoinstall.js';
 import Enable from '../../src/commands/analytics/enable.js';
-import { getJsonOutput, getStderr, getStdout, stubDefaultOrg } from '../testutils.js';
+import { getJsonOutput, getStderr, getStdout, stubDefaultOrg, stubAutoInstallRequests } from '../testutils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'autoinstall');
@@ -36,10 +36,12 @@ describe('analytics:enable', () => {
   const $$ = new TestContext();
   const testOrg = new MockTestOrgData();
   let sfCommandStubs: ReturnType<typeof stubSfCommandUx>;
+  let pollRequest: ReturnType<typeof stubAutoInstallRequests>['pollRequest'];
 
   beforeEach(() => {
     sfCommandStubs = stubSfCommandUx($$.SANDBOX);
     stubSpinner($$.SANDBOX);
+    ({ pollRequest } = stubAutoInstallRequests($$, requestWithStatus('New')));
     // have the polling happen immediately
     stubMethod($$.SANDBOX, global, 'setTimeout').callsFake(stubTimeout);
   });
@@ -49,9 +51,9 @@ describe('analytics:enable', () => {
 
   it('runs: --async', async () => {
     await stubDefaultOrg($$, testOrg);
-    $$.fakeConnectionRequest = () => Promise.resolve(requestWithStatus('New'));
 
     const result = await Enable.run(['--async']);
+    expect(pollRequest.callCount, 'install polls').to.equal(0);
     expect(result).to.equal(DEFAULT_REQUEST_ID);
 
     const stdout = getStdout(sfCommandStubs);
@@ -60,9 +62,9 @@ describe('analytics:enable', () => {
 
   it('runs: --wait 0', async () => {
     await stubDefaultOrg($$, testOrg);
-    $$.fakeConnectionRequest = () => Promise.resolve(requestWithStatus('New'));
 
     const result = await Enable.run(['--wait', '0']);
+    expect(pollRequest.callCount, 'install polls').to.equal(0);
     expect(result, 'result').to.equal(DEFAULT_REQUEST_ID);
 
     const stdout = getStdout(sfCommandStubs);
@@ -71,19 +73,9 @@ describe('analytics:enable', () => {
 
   it('runs with Success status', async () => {
     await stubDefaultOrg($$, testOrg);
-    let requestNum = 0;
-    $$.fakeConnectionRequest = () => {
-      requestNum++;
-      if (requestNum === 1) {
-        return Promise.resolve(requestWithStatus('New'));
-      }
-      if (requestNum === 4) {
-        return Promise.resolve(requestWithStatus('Success'));
-      }
-      return Promise.resolve(requestWithStatus('InProgress'));
-    };
 
     const result = await Enable.run([]);
+    expect(pollRequest.callCount, 'install polls').to.equal(2);
     expect(typeof result, 'result type').to.equal('object');
     expect((result as AutoInstallRequestType).id, 'request id').to.equal(DEFAULT_REQUEST_ID);
     expect((result as AutoInstallRequestType).requestStatus, 'request status').to.equal('Success');
@@ -94,21 +86,12 @@ describe('analytics:enable', () => {
 
   it('runs with Failed status', async () => {
     await stubDefaultOrg($$, testOrg);
-    let requestNum = 0;
-    $$.fakeConnectionRequest = () => {
-      requestNum++;
-      if (requestNum === 1) {
-        return Promise.resolve(requestWithStatus('New'));
-      }
-      if (requestNum === 3) {
-        return Promise.resolve(requestWithStatus('Failed'));
-      }
-      return Promise.resolve(requestWithStatus('InProgress'));
-    };
+    pollRequest.onSecondCall().resolves(requestWithStatus('Failed'));
 
     try {
       await Enable.run(['--json']);
     } catch (e: unknown) {
+      expect(pollRequest.callCount, 'install polls').to.equal(2);
       expect(e, 'error').to.be.instanceOf(SfError);
       expect((e as SfError).message, 'error message').to.contain(
         messages.getMessage('enableFailed', [DEFAULT_REQUEST_ID])
@@ -127,21 +110,12 @@ describe('analytics:enable', () => {
 
   it('runs with Cancelled status', async () => {
     await stubDefaultOrg($$, testOrg);
-    let requestNum = 0;
-    $$.fakeConnectionRequest = () => {
-      requestNum++;
-      if (requestNum === 1) {
-        return Promise.resolve(requestWithStatus('New'));
-      }
-      if (requestNum === 3) {
-        return Promise.resolve(requestWithStatus('Cancelled'));
-      }
-      return Promise.resolve(requestWithStatus('InProgress'));
-    };
+    pollRequest.onSecondCall().resolves(requestWithStatus('Cancelled'));
 
     try {
       await Enable.run([]);
     } catch (error: unknown) {
+      expect(pollRequest.callCount, 'install polls').to.equal(2);
       expect(error, 'error').to.be.instanceOf(SfError);
       expect((error as SfError).message, 'error message').to.contain(
         messages.getMessage('requestCancelled', [DEFAULT_REQUEST_ID])
@@ -153,18 +127,17 @@ describe('analytics:enable', () => {
 
   it('runs with timeout in polling', async () => {
     await stubDefaultOrg($$, testOrg);
-    let requestNum = 0;
-    $$.fakeConnectionRequest = () => {
-      requestNum++;
-      if (requestNum === 1) {
-        return Promise.resolve(requestWithStatus('New'));
-      }
+    const clock = $$.SANDBOX.useFakeTimers({ toFake: ['Date'] });
+    pollRequest.resetBehavior();
+    pollRequest.callsFake(() => {
+      clock.tick(30);
       return Promise.resolve(requestWithStatus('InProgress'));
-    };
+    });
 
     try {
       await Enable.run(['--wait', '.001']);
     } catch (error) {
+      expect(pollRequest.callCount, 'install polls').to.equal(2);
       expect(error, 'error').to.be.instanceOf(SfError);
       expect((error as SfError).message, 'error message)').to.contain(
         messages.getMessage('requestPollingTimeout', ['0UZ6g000000E9qDGAS', 'InProgress'])
@@ -180,21 +153,13 @@ describe('analytics:enable', () => {
 
   it('runs with error during polling', async () => {
     await stubDefaultOrg($$, testOrg);
-    let requestNum = 0;
     const errorMessage = 'expected error in polling';
-    $$.fakeConnectionRequest = () => {
-      requestNum++;
-      if (requestNum === 1) {
-        return Promise.resolve(requestWithStatus('New'));
-      } else if (requestNum === 3) {
-        return Promise.reject(new SfError(errorMessage));
-      }
-      return Promise.resolve(requestWithStatus('InProgress'));
-    };
+    pollRequest.onSecondCall().rejects(new SfError(errorMessage));
 
     try {
       await Enable.run([]);
     } catch (error) {
+      expect(pollRequest.callCount, 'install polls').to.equal(2);
       expect(error, 'error').to.be.instanceOf(SfError);
       expect((error as SfError).message, 'error message)').to.contain(errorMessage);
       const stderr = getStderr(sfCommandStubs);
