@@ -1,3 +1,12 @@
+## [1.4.89](https://github.com/salesforcecli/plugin-analytics/compare/1.4.88...1.4.89) (2026-11-17)
+
+
+### Bug Fixes
+
+* @W-24703942 Updates trusted npm publishing, dev scripts v15, TSv6, eslint, etc ([#886](https://github.com/salesforcecli/plugin-analytics/issues/886)) ([906ae71](https://github.com/salesforcecli/plugin-analytics/commit/906ae71bd02a6b6fbfa14f62fb77c10e021bcfb5))
+
+
+
 ## [1.4.88](https://github.com/salesforcecli/plugin-analytics/compare/1.4.87...1.4.88) (2026-11-08)
 
 
