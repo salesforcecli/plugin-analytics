@@ -59,13 +59,7 @@ export default class Update extends SfCommand<DataflowType> {
       try {
         json = JSON.parse(await fs.readFile(path));
       } catch (e) {
-        throw new SfError(
-          `Error parsing ${path}`,
-          undefined,
-          undefined,
-          undefined,
-          e instanceof Error ? e : new Error(e ? String(e) : '<unknown>')
-        );
+        throw new SfError(`Error parsing ${path}`, undefined, undefined, undefined, SfError.wrap(e));
       }
     } else if (flags.dataflowstr) {
       json = JSON.parse(String(flags.dataflowstr));

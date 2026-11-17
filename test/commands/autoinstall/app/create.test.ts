@@ -6,14 +6,20 @@
  */
 
 import { Messages, SfError } from '@salesforce/core';
-import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js';
+import { MockTestOrgData, TestContext } from '@salesforce/core/testSetup';
 import { stubSfCommandUx, stubSpinner } from '@salesforce/sf-plugins-core';
 import { AnyJson, JsonMap, ensureJsonMap, ensureString } from '@salesforce/ts-types';
 import { expect } from 'chai';
 import { stubMethod } from '@salesforce/ts-sinon';
 import Create from '../../../../src/commands/analytics/autoinstall/app/create.js';
 import { AutoInstallRequestType, AutoInstallStatus } from '../../../../src/lib/analytics/autoinstall/autoinstall.js';
-import { getJsonOutput, getStdout, getStyledHeaders, stubDefaultOrg } from '../../../testutils.js';
+import {
+  getJsonOutput,
+  getStdout,
+  getStyledHeaders,
+  stubDefaultOrg,
+  stubAutoInstallRequests,
+} from '../../../testutils.js';
 import { fs } from '../../../../src/lib/analytics/utils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
@@ -63,10 +69,13 @@ describe('analytics:autoinstall:app:create', () => {
   const $$ = new TestContext();
   const testOrg = new MockTestOrgData();
   let sfCommandStubs: ReturnType<typeof stubSfCommandUx>;
+  let createRequest: ReturnType<typeof stubAutoInstallRequests>['createRequest'];
+  let pollRequest: ReturnType<typeof stubAutoInstallRequests>['pollRequest'];
 
   beforeEach(() => {
     sfCommandStubs = stubSfCommandUx($$.SANDBOX);
     stubSpinner($$.SANDBOX);
+    ({ createRequest, pollRequest } = stubAutoInstallRequests($$, requestWithStatus('New')));
     // have the polling happen immediately
     stubMethod($$.SANDBOX, global, 'setTimeout').callsFake(stubTimeout);
   });
@@ -76,9 +85,9 @@ describe('analytics:autoinstall:app:create', () => {
 
   it('runs --async -n abc', async () => {
     await stubDefaultOrg($$, testOrg);
-    $$.fakeConnectionRequest = () => Promise.resolve(requestWithStatus('New'));
 
     await Create.run(['--async', '-n', 'abc']);
+    expect(pollRequest.callCount, 'install polls').to.equal(0);
     const stdout = getStdout(sfCommandStubs);
     expect(stdout, 'stdout').to.contain(messages.getMessage('appCreateRequestSuccess', [requestId]));
     expect(stdout, 'stdout').to.not.contain(messages.getMessage('displayNoLogAvailable'));
@@ -87,9 +96,9 @@ describe('analytics:autoinstall:app:create', () => {
   // verify the --json output includes the request id
   it('runs --async -n abc --json', async () => {
     await stubDefaultOrg($$, testOrg);
-    $$.fakeConnectionRequest = () => Promise.resolve(requestWithStatus('New'));
 
     await Create.run(['--async', '-n', 'abc', '--json']);
+    expect(pollRequest.callCount, 'install polls').to.equal(0);
     expect(getJsonOutput(sfCommandStubs), 'stdout json').to.deep.include({
       result: {
         id: requestId,
@@ -99,30 +108,20 @@ describe('analytics:autoinstall:app:create', () => {
 
   it('runs --wait 0 -n abc', async () => {
     await stubDefaultOrg($$, testOrg);
-    $$.fakeConnectionRequest = () => Promise.resolve(requestWithStatus('New'));
 
     const newLocal = '0';
     // --wait 0 should be the same as --async so this should return right away
     await Create.run(['--wait', newLocal, '-n', 'abc']);
+    expect(pollRequest.callCount, 'install polls').to.equal(0);
     const stdout = getStdout(sfCommandStubs);
     expect(stdout, 'stdout').to.contain(messages.getMessage('appCreateRequestSuccess', [requestId]));
   });
 
   it('runs: -n abc', async () => {
     await stubDefaultOrg($$, testOrg);
-    let requestNum = 0;
-    $$.fakeConnectionRequest = () => {
-      requestNum++;
-      if (requestNum === 1) {
-        return Promise.resolve(requestWithStatus('New'));
-      }
-      if (requestNum === 4) {
-        return Promise.resolve(requestWithStatus('Success'));
-      }
-      return Promise.resolve(requestWithStatus('InProgress'));
-    };
 
     await Create.run(['-n', 'abc']);
+    expect(pollRequest.callCount, 'install polls').to.equal(2);
     const stdout = getStdout(sfCommandStubs);
     expect(stdout, 'stdout').to.contain(messages.getMessage('appCreateSuccess', [folderId, requestId]));
     expect(stdout, 'stdout').to.not.contain(messages.getMessage('displayNoLogAvailable'));
@@ -130,19 +129,9 @@ describe('analytics:autoinstall:app:create', () => {
 
   it('runs: -n abc --applog (with no app log)', async () => {
     await stubDefaultOrg($$, testOrg);
-    let requestNum = 0;
-    $$.fakeConnectionRequest = () => {
-      requestNum++;
-      if (requestNum === 1) {
-        return Promise.resolve(requestWithStatus('New'));
-      }
-      if (requestNum === 3) {
-        return Promise.resolve(requestWithStatus('Success'));
-      }
-      return Promise.resolve(requestWithStatus('InProgress'));
-    };
 
     await Create.run(['-n', 'abc', '--applog']);
+    expect(pollRequest.callCount, 'install polls').to.equal(2);
     expect(getStyledHeaders(sfCommandStubs), 'styled headers').to.contain(messages.getMessage('displayLogHeader'));
     expect(getStdout(sfCommandStubs), 'stdout').to.contain(messages.getMessage('displayNoLogAvailable'));
   });
@@ -150,19 +139,9 @@ describe('analytics:autoinstall:app:create', () => {
   // verfiy that --json on success includes the request id and the folder id
   it('runs: -n abc --json', async () => {
     await stubDefaultOrg($$, testOrg);
-    let requestNum = 0;
-    $$.fakeConnectionRequest = () => {
-      requestNum++;
-      if (requestNum === 1) {
-        return Promise.resolve(requestWithStatus('New'));
-      }
-      if (requestNum === 4) {
-        return Promise.resolve(requestWithStatus('Success'));
-      }
-      return Promise.resolve(requestWithStatus('InProgress'));
-    };
 
     await Create.run(['-n', 'abc', '--json']);
+    expect(pollRequest.callCount, 'install polls').to.equal(2);
     expect(getJsonOutput(sfCommandStubs), 'stdout json').to.deep.include({
       result: {
         id: requestId,
@@ -178,21 +157,12 @@ describe('analytics:autoinstall:app:create', () => {
 
   it('runs: -n abc (with failure)', async () => {
     await stubDefaultOrg($$, testOrg);
-    let requestNum = 0;
-    $$.fakeConnectionRequest = () => {
-      requestNum++;
-      if (requestNum === 1) {
-        return Promise.resolve(requestWithStatus('New'));
-      }
-      if (requestNum === 3) {
-        return Promise.resolve(requestWithStatus('Failed'));
-      }
-      return Promise.resolve(requestWithStatus('InProgress'));
-    };
+    pollRequest.onSecondCall().resolves(requestWithStatus('Failed'));
 
     try {
       await Create.run(['-n', 'abc']);
     } catch (error) {
+      expect(pollRequest.callCount, 'install polls').to.equal(2);
       expect(error, 'error').to.be.instanceOf(SfError);
       expect((error as SfError).message, 'message').to.contain(messages.getMessage('appCreateFailed', [requestId]));
       return;
@@ -204,21 +174,12 @@ describe('analytics:autoinstall:app:create', () => {
   // request id and folder id)
   it('runs: -n abc --json (with failure)', async () => {
     await stubDefaultOrg($$, testOrg);
-    let requestNum = 0;
-    $$.fakeConnectionRequest = () => {
-      requestNum++;
-      if (requestNum === 1) {
-        return Promise.resolve(requestWithStatus('New'));
-      }
-      if (requestNum === 3) {
-        return Promise.resolve(requestWithStatus('Failed'));
-      }
-      return Promise.resolve(requestWithStatus('InProgress'));
-    };
+    pollRequest.onSecondCall().resolves(requestWithStatus('Failed'));
 
     try {
       await Create.run(['-n', 'abc', '--json']);
     } catch (error) {
+      expect(pollRequest.callCount, 'install polls').to.equal(2);
       expect(error, 'error').to.be.instanceOf(SfError);
       expect((error as SfError).message, 'message').to.contain(messages.getMessage('appCreateFailed', [requestId]));
       expect(getJsonOutput(sfCommandStubs), 'error data').to.deep.include({
@@ -243,21 +204,12 @@ describe('analytics:autoinstall:app:create', () => {
 
   it('runs: -n abc (cancelled)', async () => {
     await stubDefaultOrg($$, testOrg);
-    let requestNum = 0;
-    $$.fakeConnectionRequest = () => {
-      requestNum++;
-      if (requestNum === 1) {
-        return Promise.resolve(requestWithStatus('New'));
-      }
-      if (requestNum === 3) {
-        return Promise.resolve(requestWithStatus('Cancelled'));
-      }
-      return Promise.resolve(requestWithStatus('InProgress'));
-    };
+    pollRequest.onSecondCall().resolves(requestWithStatus('Cancelled'));
 
     try {
       await Create.run(['-n', 'abc']);
     } catch (error) {
+      expect(pollRequest.callCount, 'install polls').to.equal(2);
       expect(error, 'error').to.be.instanceOf(SfError);
       expect((error as SfError).message, 'message').to.contain(messages.getMessage('requestCancelled', [requestId]));
       return;
@@ -267,21 +219,12 @@ describe('analytics:autoinstall:app:create', () => {
 
   it('runs: -n abc (skipped)', async () => {
     await stubDefaultOrg($$, testOrg);
-    let requestNum = 0;
-    $$.fakeConnectionRequest = () => {
-      requestNum++;
-      if (requestNum === 1) {
-        return Promise.resolve(requestWithStatus('New'));
-      }
-      if (requestNum === 3) {
-        return Promise.resolve(requestWithStatus('Skipped'));
-      }
-      return Promise.resolve(requestWithStatus('InProgress'));
-    };
+    pollRequest.onSecondCall().resolves(requestWithStatus('Skipped'));
 
     try {
       await Create.run(['-n', 'abc']);
     } catch (error) {
+      expect(pollRequest.callCount, 'install polls').to.equal(2);
       expect(error, 'error').to.be.instanceOf(SfError);
       expect((error as SfError).message, 'message').to.contain(messages.getMessage('requestSkipped', [requestId]));
       return;
@@ -291,18 +234,17 @@ describe('analytics:autoinstall:app:create', () => {
 
   it('runs: -n abc -w .001 (timeout)', async () => {
     await stubDefaultOrg($$, testOrg);
-    let requestNum = 0;
-    $$.fakeConnectionRequest = () => {
-      requestNum++;
-      if (requestNum === 1) {
-        return Promise.resolve(requestWithStatus('New'));
-      }
+    const clock = $$.SANDBOX.useFakeTimers({ toFake: ['Date'] });
+    pollRequest.resetBehavior();
+    pollRequest.callsFake(() => {
+      clock.tick(30);
       return Promise.resolve(requestWithStatus('InProgress'));
-    };
+    });
 
     try {
       await Create.run(['-n', 'abc', '-w', '.001']);
     } catch (error) {
+      expect(pollRequest.callCount, 'install polls').to.equal(2);
       expect(error, 'error').to.be.instanceOf(SfError);
       expect((error as SfError).message, 'message').to.contain(
         messages.getMessage('requestPollingTimeout', [requestId, 'InProgress'])
@@ -314,21 +256,12 @@ describe('analytics:autoinstall:app:create', () => {
 
   it('runs: -n abc (with error)', async () => {
     await stubDefaultOrg($$, testOrg);
-    let requestNum = 0;
-    $$.fakeConnectionRequest = () => {
-      requestNum++;
-      if (requestNum === 1) {
-        return Promise.resolve(requestWithStatus('New'));
-      }
-      if (requestNum === 3) {
-        return Promise.reject(new SfError('expected error in polling'));
-      }
-      return Promise.resolve(requestWithStatus('InProgress'));
-    };
+    pollRequest.onSecondCall().rejects(new SfError('expected error in polling'));
 
     try {
       await Create.run(['-n', 'abc']);
     } catch (error) {
+      expect(pollRequest.callCount, 'install polls').to.equal(2);
       expect(error, 'error').to.be.instanceOf(SfError);
       expect((error as SfError).message, 'message').to.contain('expected error in polling');
       return;
@@ -339,17 +272,13 @@ describe('analytics:autoinstall:app:create', () => {
   // Test that --appname and --appdescription values appear in the request body
   it('runs: --async -n abc --appname customname --appdescription customdesc', async () => {
     await stubDefaultOrg($$, testOrg);
-    let requestBody: AnyJson | undefined;
-    $$.fakeConnectionRequest = (request) => {
-      request = ensureJsonMap(request);
-      requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
-      return Promise.resolve(requestWithStatus('New'));
-    };
 
     await Create.run(['--async', '-n', 'abc', '--appname', 'customname', '--appdescription', 'customdesc']);
+    expect(pollRequest.callCount, 'install polls').to.equal(0);
     const stdout = getStdout(sfCommandStubs);
     expect(stdout, 'stdout').to.contain(messages.getMessage('appCreateRequestSuccess', [requestId]));
-    expect(requestBody, 'reques tbody').to.have.nested.include({
+    const requestBody = JSON.parse(ensureString(ensureJsonMap(createRequest.firstCall.args[0]).body)) as AnyJson;
+    expect(requestBody, 'request body').to.have.nested.include({
       'configuration.appConfiguration.appLabel': 'customname',
       'configuration.appConfiguration.appName': 'customname',
       'configuration.appConfiguration.appDescription': 'customdesc',
@@ -358,17 +287,13 @@ describe('analytics:autoinstall:app:create', () => {
 
   it('runs: --appconfiguration config/foo.json --async -n abc', async () => {
     await stubDefaultOrg($$, testOrg);
-    let requestBody: AnyJson | undefined;
-    $$.fakeConnectionRequest = (request) => {
-      request = ensureJsonMap(request);
-      requestBody = JSON.parse(ensureString(request.body)) as AnyJson;
-      return Promise.resolve(requestWithStatus('New'));
-    };
     stubMethod($$.SANDBOX, fs, 'readFile').resolves(JSON.stringify(testAppConfigJson));
 
     await Create.run(['--appconfiguration', 'config/foo.json', '--async', '-n', 'abc']);
+    expect(pollRequest.callCount, 'install polls').to.equal(0);
     const stdout = getStdout(sfCommandStubs);
     expect(stdout, 'stdout').to.contain(messages.getMessage('appCreateRequestSuccess', [requestId]));
+    const requestBody = JSON.parse(ensureString(ensureJsonMap(createRequest.firstCall.args[0]).body)) as AnyJson;
     expect(requestBody, 'request body').to.deep.include({
       configuration: {
         appConfiguration: testAppConfigJson,

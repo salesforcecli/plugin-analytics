@@ -72,13 +72,11 @@ export default class Folder {
   public async create(body: CreateAppBody): Promise<string | undefined> {
     if (this.serverVersion >= 55.0 && body.templateSourceId) {
       if (!body.templateOptions) {
-        // eslint-disable-next-line no-param-reassign
         body = {
           ...body,
           templateOptions: { dynamicOptions: { productionType: 'ATF_3_0', runtimeLogEntryLevel: 'Warning' } },
         };
       } else if (!body.templateOptions.dynamicOptions) {
-        // eslint-disable-next-line no-param-reassign
         body.templateOptions = {
           ...body.templateOptions,
           dynamicOptions: { productionType: 'ATF_3_0', runtimeLogEntryLevel: 'Warning' },

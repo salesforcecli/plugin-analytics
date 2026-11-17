@@ -7,10 +7,60 @@
 
 import { format } from 'node:util';
 import { OrgConfigProperties } from '@salesforce/core';
-import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js';
+import { MockTestOrgData, TestContext } from '@salesforce/core/testSetup';
 import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
-import { AnyJson, ensureAnyJson } from '@salesforce/ts-types';
+import { AnyJson, JsonMap, ensureAnyJson, ensureJsonMap, ensureString } from '@salesforce/ts-types';
 import { assert, expect } from 'chai';
+import { AutoInstallRequestType } from '../src/lib/analytics/autoinstall/autoinstall.js';
+
+/** Mock auto-install submission and polling independently of org setup requests.
+ * Tests may override individual poll responses; unexpected requests or extra polls fail.
+ */
+export function stubAutoInstallRequests($$: TestContext, newRequest: AutoInstallRequestType & JsonMap) {
+  const createRequest = $$.SANDBOX.stub<[JsonMap], Promise<AnyJson>>().resolves(newRequest);
+  const pollRequest = $$.SANDBOX.stub<[], Promise<AnyJson>>().rejects(new Error('Unexpected extra install poll'));
+  pollRequest.onFirstCall().resolves({ ...newRequest, requestStatus: 'InProgress' });
+  pollRequest.onSecondCall().resolves({ ...newRequest, requestStatus: 'Success' });
+  $$.fakeConnectionRequest = (request) => {
+    const options = typeof request === 'string' ? { url: request, method: 'GET' } : ensureJsonMap(request);
+    const url = new URL(ensureString(options.url));
+    const method = ensureString(options.method);
+    if (
+      method === 'GET' &&
+      url.pathname.endsWith('/query') &&
+      url.searchParams.get('q')?.includes('FROM Organization')
+    ) {
+      return Promise.resolve({
+        totalSize: 1,
+        done: true,
+        records: [
+          {
+            Name: 'Test Org',
+            InstanceName: 'TEST',
+            IsSandbox: true,
+            TrialExpirationDate: null,
+            NamespacePrefix: null,
+            OrganizationType: 'Developer Edition',
+          },
+        ],
+      });
+    }
+    if (method === 'POST' && url.pathname.endsWith('/wave/auto-install-requests/')) {
+      expect(pollRequest.callCount, 'creation happens before polling').to.equal(0);
+      return createRequest(options);
+    }
+    if (
+      method === 'GET' &&
+      url.pathname.endsWith(`/wave/auto-install-requests/${ensureString(newRequest.id)}`) &&
+      url.searchParams.get('filterGroup') === 'Supplemental'
+    ) {
+      expect(createRequest.callCount, 'poll the request created by this command').to.equal(1);
+      return pollRequest();
+    }
+    throw new Error(`Unexpected request: ${method} ${url.href}`);
+  };
+  return { createRequest, pollRequest };
+}
 
 /** Stub the specified org and set it as the default org for a test. */
 export async function stubDefaultOrg($$: TestContext, testOrg: MockTestOrgData) {
@@ -86,11 +136,11 @@ export function expectToHaveElementMatching<T extends Record<string, unknown>>(
 ) {
   assert.isDefined(a, prefix);
   assert.isArray(a, prefix);
-  for (const e of a!) {
+  for (const e of a) {
     try {
       assertion(e);
       return true;
-    } catch (ignore) {
+    } catch {
       /* keep looping over the array */
     }
   }
@@ -116,7 +166,6 @@ export function expectToHaveElementInclude<T extends Record<string, unknown>>(
 /** Expect an array to contain an object that at least one value matching the specified value. */
 export function expectToHaveElementValue<T extends Record<string, unknown>>(
   a: readonly T[] | undefined,
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   expected: RegExp | AnyJson,
   prefix?: string
 ) {

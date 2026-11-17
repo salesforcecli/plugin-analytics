@@ -89,9 +89,11 @@ export default class Delete extends SfCommand<string | undefined> {
       if (folders && folders.length > 0) {
         for (const folder of folders) {
           if (forceDelete) {
+            // eslint-disable-next-line no-await-in-loop -- Process dependent apps sequentially before deleting the template.
             await folderSvc.deleteFolder(folder.id);
             this.log(messages.getMessage('deleteAppSuccess', [folder.label ?? folder.name, folder.id]));
           } else {
+            // eslint-disable-next-line no-await-in-loop -- Process dependent apps sequentially before deleting the template.
             await folderSvc.decouple(folder.id, templateid);
             this.log(messages.getMessage('decoupleAppSuccess', [folder.label ?? folder.name, folder.id]));
           }

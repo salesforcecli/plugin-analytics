@@ -28,7 +28,7 @@ import { commandUx, fs, numberFlag, throwWithData } from '../../../../lib/analyt
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/analytics', 'autoinstall');
 
-export default class Create extends SfCommand<AutoInstallRequestType | { id: string }> {
+export default class Create extends SfCommand<AutoInstallRequestType | { id: string | undefined }> {
   public static readonly summary = messages.getMessage('createCommandDescription');
   public static readonly description = messages.getMessage('createCommandLongDescription');
 
@@ -121,13 +121,7 @@ export default class Create extends SfCommand<AutoInstallRequestType | { id: str
       try {
         json = JSON.parse(await fs.readFile(path));
       } catch (e) {
-        throw new SfError(
-          `Error parsing ${path}`,
-          undefined,
-          undefined,
-          undefined,
-          e instanceof Error ? e : new Error(e ? String(e) : '<unknown>')
-        );
+        throw new SfError(`Error parsing ${path}`, undefined, undefined, undefined, SfError.wrap(e));
       }
       if (typeof json !== 'object') {
         throw new SfError(`Invalid json in ${path}, expected an object, found a ${typeof json}`);
@@ -139,7 +133,7 @@ export default class Create extends SfCommand<AutoInstallRequestType | { id: str
 
     const autoInstallId = await autoinstall.create(
       templateInput,
-      fileAppConfiguration ? fileAppConfiguration : defaultAppConfiguration,
+      fileAppConfiguration ?? defaultAppConfiguration,
       !flags.noenqueue
     );
 

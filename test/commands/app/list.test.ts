@@ -6,7 +6,7 @@
  */
 
 import { Messages } from '@salesforce/core';
-import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js';
+import { MockTestOrgData, TestContext } from '@salesforce/core/testSetup';
 import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
 import { expect } from 'chai';
 import { ensureJsonMap, ensureString } from '@salesforce/ts-types';
@@ -77,7 +77,7 @@ describe('analytics:app:list', () => {
     await stubDefaultOrg($$, testOrg);
     $$.fakeConnectionRequest = (request) => {
       request = ensureJsonMap(request);
-      const url = ensureString(request.url, 'request.url is not a string, got ' + String(request.url));
+      const url = ensureString(request.url, 'request.url is not a string');
       // the initial (page 1) url is /wave/folders/
       if (url.endsWith('/folders/')) {
         return Promise.resolve({
@@ -117,7 +117,7 @@ describe('analytics:app:list', () => {
         });
       }
 
-      return Promise.reject(`unknown url: ${url}`);
+      return Promise.reject(new Error(`unknown url: ${url}`));
     };
 
     await List.run([]);

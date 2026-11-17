@@ -6,8 +6,9 @@
  */
 
 import { promises as _fs } from 'node:fs';
-import { Errors, Flags, ux } from '@oclif/core';
+import { Errors, Flags } from '@oclif/core';
 import { SfError } from '@salesforce/core';
+import { AnyJson } from '@salesforce/ts-types';
 import { camelCaseToTitleCase } from '@salesforce/kit';
 import { SfCommand, Ux } from '@salesforce/sf-plugins-core';
 import _get from 'lodash.get';
@@ -20,7 +21,7 @@ export const numberFlag = Flags.custom<number, { max?: number; min?: number }>({
     let num: number;
     try {
       num = Number.parseFloat(input);
-    } catch (error) {
+    } catch {
       throw new Errors.CLIError(`Expected an number but received: ${input}`);
     }
     if (opts.min !== undefined && num < opts.min)
@@ -55,15 +56,15 @@ export function commandUx<T>(command: SfCommand<T>): CommandUx {
 /** Generate default table columns for specified table data keys. */
 export function generateTableColumns<R extends Ux.Table.Data>(
   keys: string[],
-  mutute?: (key: string, column: Partial<ux.Table.table.Column<R>>) => Partial<ux.Table.table.Column<R>>
+  mutute?: (key: string, column: Ux.Table.Columns<R>[string]) => Ux.Table.Columns<R>[string]
 ): Ux.Table.Columns<R> {
   return keys.reduce<Ux.Table.Columns<R>>((columns, key) => {
     // This is what the old `tableColumnData` used to do for table column header labels
-    let column: Partial<ux.Table.table.Column<R>> = { header: camelCaseToTitleCase(key).toUpperCase() };
+    let column: Ux.Table.Columns<R>[string] = { header: camelCaseToTitleCase(key).toUpperCase() };
     if (mutute) {
       column = mutute(key, column);
     }
-    // eslint-disable-next-line no-param-reassign
+
     columns[key] = column;
     return columns;
   }, {});
@@ -77,9 +78,11 @@ export const fs = {
   readFile: (path: string, charset: BufferEncoding = 'utf8') => _fs.readFile(path, charset),
 };
 
-export function throwWithData(mesg: string, data: unknown): never {
+export function throwWithData(mesg: string, data: AnyJson | undefined): never {
   const e = new SfError(mesg);
-  e.setData(data);
+  if (data !== undefined) {
+    e.setData(data);
+  }
   throw e;
 }
 
@@ -87,11 +90,8 @@ export function throwError(response: unknown): never {
   // For Gacks, the error message is on response.body[0].message but for handled errors
   // the error message is on response.body.Errors[0].description.
   const errMessage =
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     (_get(response, 'Errors[0].description') as unknown as string) ||
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     (_get(response, '[0].message') as unknown as string) ||
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     (_get(response, 'message') as unknown as string) ||
     'Unknown Error';
   throw new SfError(errMessage);
@@ -177,6 +177,7 @@ export function waitFor<T>(
         }
       } catch (e) {
         if (rejectOnError) {
+          // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors -- Preserve the polling function's original rejection value.
           reject(e);
           return;
         }
@@ -193,6 +194,7 @@ export function waitFor<T>(
             reject(error);
           }
         } catch (e) {
+          // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors -- Preserve the polling function's original rejection value.
           reject(e);
         }
         return;

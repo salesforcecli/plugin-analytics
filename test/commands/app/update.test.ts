@@ -6,7 +6,7 @@
  */
 
 import { Messages, SfError, StreamingClient } from '@salesforce/core';
-import { MockTestOrgData, TestContext } from '@salesforce/core/lib/testSetup.js';
+import { MockTestOrgData, TestContext } from '@salesforce/core/testSetup';
 import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
 import { stubMethod } from '@salesforce/ts-sinon';
 import { expect } from 'chai';

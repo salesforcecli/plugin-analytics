@@ -5,6 +5,7 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import { Connection, Messages } from '@salesforce/core';
+import { AnyJson } from '@salesforce/ts-types';
 import { connectRequest, fetchAllPages } from '../request.js';
 import { CommandUx, generateTableColumns, headerColor, throwError, waitFor } from '../utils.js';
 
@@ -18,7 +19,7 @@ export type AutoInstallStatus =
   | 'Success'
   | 'Failed';
 
-export type AutoInstallRequestType = Record<string, unknown> & {
+export type AutoInstallRequestType = Record<string, AnyJson> & {
   id?: string;
   requestType?: string;
   requestName?: string;

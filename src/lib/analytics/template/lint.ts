@@ -5,10 +5,11 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import { Connection } from '@salesforce/core';
+import { AnyJson } from '@salesforce/ts-types';
 import { connectRequest } from '../request.js';
 import { throwError } from '../utils.js';
 
-export type LintType = Record<string, unknown> & {
+export type LintType = Record<string, AnyJson> & {
   label?: string;
   score?: number;
   tasks?: Tasks[];

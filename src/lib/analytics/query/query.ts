@@ -307,7 +307,6 @@ export default class QuerySvc {
           ux.table(
             records,
             columnNames.reduce<Ux.Table.Columns<Row>>((all, name) => {
-              // eslint-disable-next-line no-param-reassign
               all[name] = { header: name, get: (row) => convertRowValue(row[name]) };
               return all;
             }, {})
@@ -330,6 +329,7 @@ export function convertRowValue(value: unknown): string {
     return '[' + value.join(',') + ']';
   }
   // otherwise do our best to convert to string
+  // eslint-disable-next-line @typescript-eslint/no-base-to-string -- Preserve existing CSV coercion for non-string query values.
   return typeof value === 'string' ? value : String(value);
 }
 

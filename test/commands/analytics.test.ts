@@ -5,7 +5,7 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { TestContext } from '@salesforce/core/lib/testSetup.js';
+import { TestContext } from '@salesforce/core/testSetup';
 import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
 import { ensureJsonMap, type JsonMap } from '@salesforce/ts-types';
 import { expect } from 'chai';

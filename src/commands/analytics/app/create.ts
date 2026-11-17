@@ -143,13 +143,7 @@ async function generateCreateAppBody({
     try {
       json = JSON.parse(await fs.readFile(definitionfile));
     } catch (e) {
-      throw new SfError(
-        `Error parsing ${definitionfile}`,
-        undefined,
-        undefined,
-        undefined,
-        e instanceof Error ? e : new Error(e ? String(e) : '<unknown>')
-      );
+      throw new SfError(`Error parsing ${definitionfile}`, undefined, undefined, undefined, SfError.wrap(e));
     }
     if (typeof json !== 'object') {
       throw new SfError(`Invalid json in ${definitionfile}, expected an object, found a ${typeof json}`);

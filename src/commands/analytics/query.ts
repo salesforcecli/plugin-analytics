@@ -116,7 +116,7 @@ export default class Query extends SfCommand<QueryResponse | undefined> {
       const query: QueryRequest = {
         query: queryStr,
         queryLanguage,
-        timezone: flags.timezone as string,
+        timezone: flags.timezone,
       };
 
       this.debug('POSTing query: ' + JSON.stringify(query, undefined, 2));
