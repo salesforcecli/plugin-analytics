@@ -1,3 +1,12 @@
+## [1.4.91](https://github.com/salesforcecli/plugin-analytics/compare/1.4.90...1.4.91) (2026-11-18)
+
+
+### Bug Fixes
+
+* **deps:** bump js-yaml from 3.14.1 to 3.15.2 ([#889](https://github.com/salesforcecli/plugin-analytics/issues/889)) ([31e83c2](https://github.com/salesforcecli/plugin-analytics/commit/31e83c2c93b2e1fce23f3488c895b4c2fa378447))
+
+
+
 ## [1.4.90](https://github.com/salesforcecli/plugin-analytics/compare/1.4.89...1.4.90) (2026-11-18)
 
 
