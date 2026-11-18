@@ -1,3 +1,12 @@
+## [1.4.90](https://github.com/salesforcecli/plugin-analytics/compare/1.4.89...1.4.90) (2026-11-18)
+
+
+### Bug Fixes
+
+* **deps:** bump zod from 4.3.6 to 4.6.7 ([#890](https://github.com/salesforcecli/plugin-analytics/issues/890)) ([447a8dc](https://github.com/salesforcecli/plugin-analytics/commit/447a8dcb6bd1eca654b31df1ff5fd3cf0323969a))
+
+
+
 ## [1.4.89](https://github.com/salesforcecli/plugin-analytics/compare/1.4.88...1.4.89) (2026-11-17)
 
 
